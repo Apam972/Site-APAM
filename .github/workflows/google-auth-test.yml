@@ -10,7 +10,8 @@ jobs:
     permissions:
       contents: read
       id-token: write
-
+      env:
+  DRIVE_FOLDER_ID: "1Ejv4YuxKEvEAP1bPR1uWSVri-u5YvJKr"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
