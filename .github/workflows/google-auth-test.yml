@@ -1,0 +1,27 @@
+name: Test Google Auth
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-auth:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authentification Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          project_id: apam-site-506020
+          workload_identity_provider: projects/388224398802/locations/global/workloadIdentityPools/github-apam/providers/github
+          service_account: apam-site-sync@apam-site-506020.iam.gserviceaccount.com
+
+      - name: Vérification
+        run: |
+          echo "Authentification Google Cloud réussie."
