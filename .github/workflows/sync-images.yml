@@ -3,6 +3,14 @@ name: Synchronisation des images APAM
 on:
   workflow_dispatch:
 
+  schedule:
+    - cron: "0 9 * * 3"
+      timezone: "America/Martinique"
+
+    - cron: "0 17 * * 5"
+      timezone: "America/Martinique"
+
+
 jobs:
   sync-images:
     runs-on: ubuntu-latest
