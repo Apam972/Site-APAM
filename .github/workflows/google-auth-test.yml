@@ -23,6 +23,15 @@ jobs:
           workload_identity_provider: projects/388224398802/locations/global/workloadIdentityPools/github-apam/providers/github-actions
           service_account: apam-site-sync@apam-site-506020.iam.gserviceaccount.com
 
-      - name: Vérification
+      - # name: Vérification
+       #run: |
+         # echo "Authentification Google Cloud réussie."
+         - name: Installer les dépendances
         run: |
-          echo "Authentification Google Cloud réussie."
+          python -m pip install --upgrade pip
+          pip install google-auth google-api-python-client
+
+      - name: Tester Google Drive
+        run: |
+          python scripts/test_drive.py
+          
