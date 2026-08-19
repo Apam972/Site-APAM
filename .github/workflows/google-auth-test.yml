@@ -19,7 +19,7 @@ jobs:
         uses: google-github-actions/auth@v3
         with:
           project_id: apam-site-506020
-          workload_identity_provider: projects/388224398802/locations/global/workloadIdentityPools/github-apam/providers/github
+          workload_identity_provider: projects/388224398802/locations/global/workloadIdentityPools/github-apam/providers/github-actions
           service_account: apam-site-sync@apam-site-506020.iam.gserviceaccount.com
 
       - name: Vérification
