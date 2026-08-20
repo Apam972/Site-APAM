@@ -55,6 +55,7 @@ def load_catalog() -> list[dict]:
         print(f"ERREUR : images.json est invalide : {exc}")
         sys.exit(1)
 
+
 def save_catalog(catalog: list[dict]) -> None:
     """Sauvegarde le catalogue JSON."""
     JSON_FILE.parent.mkdir(parents=True, exist_ok=True)
@@ -87,7 +88,15 @@ def get_drive_files(service) -> list[dict]:
                 pageToken=page_token,
                 fields=(
                     "nextPageToken,"
-                    "files(id,name,mimeType,size,createdTime,modifiedTime)"
+                    "files("
+                    "id,"
+                    "name,"
+                    "mimeType,"
+                    "size,"
+                    "md5Checksum,"
+                    "createdTime,"
+                    "modifiedTime"
+                    ")"
                 ),
                 orderBy="createdTime desc",
             )
@@ -127,6 +136,7 @@ def build_entry(file: dict, local_name: str) -> dict:
         "description": "",
         "date": file.get("createdTime", "")[:10],
         "drive_id": file["id"],
+        "md5_checksum": file.get("md5Checksum", ""),
         "modified_time": file.get("modifiedTime", ""),
         "synced_at": datetime.now(timezone.utc).isoformat(),
     }
@@ -157,18 +167,41 @@ def main() -> int:
 
     catalog = load_catalog()
 
-    known_files = {
-        entry.get("drive_id"): entry
+    # IDs Drive déjà connus
+    known_drive_ids = {
+        entry.get("drive_id")
         for entry in catalog
         if entry.get("drive_id")
     }
 
+    # Hash MD5 déjà connus
+    known_hashes = {
+        entry.get("md5_checksum")
+        for entry in catalog
+        if entry.get("md5_checksum")
+    }
+
     added_count = 0
+    duplicate_count = 0
 
     for file in drive_files:
         drive_id = file["id"]
+        md5_checksum = file.get("md5Checksum", "")
 
-        if drive_id in known_files:
+        # Même fichier Drive déjà synchronisé
+        if drive_id in known_drive_ids:
+            print(
+                f"Déjà synchronisé : {file['name']}"
+            )
+            continue
+
+        # Même contenu déjà présent sous un autre ID Drive
+        if md5_checksum and md5_checksum in known_hashes:
+            print(
+                f"Doublon détecté : {file['name']} "
+                f"(hash MD5 déjà présent)"
+            )
+            duplicate_count += 1
             continue
 
         extension = ALLOWED_MIME_TYPES[file["mimeType"]]
@@ -190,13 +223,26 @@ def main() -> int:
             )
 
             catalog.append(entry)
+
+            # On met immédiatement à jour les ensembles
+            # pour éviter les doublons pendant la même exécution.
+            known_drive_ids.add(drive_id)
+
+            if md5_checksum:
+                known_hashes.add(md5_checksum)
+
             added_count += 1
 
-            print(f"  -> téléchargée sous {local_name}")
+            print(
+                f"  -> téléchargée sous {local_name}"
+            )
 
         except Exception as exc:
-            print(f"  ERREUR lors du téléchargement : {exc}")
+            print(
+                f"  ERREUR lors du téléchargement : {exc}"
+            )
 
+    # Plus récent en premier
     catalog.sort(
         key=lambda item: item.get("date", ""),
         reverse=True,
@@ -206,6 +252,7 @@ def main() -> int:
 
     print()
     print(f"Images ajoutées : {added_count}")
+    print(f"Doublons ignorés : {duplicate_count}")
     print(f"Images dans le catalogue : {len(catalog)}")
     print("Synchronisation terminée.")
 
