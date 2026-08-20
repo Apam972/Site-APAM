@@ -717,7 +717,53 @@ body {
     background-color: rgba(255, 255, 255, 0.25);
     transform: scale(1.05);
 }
+.lightbox-prev,
+.lightbox-next {
+    position: absolute;
 
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 50px;
+    height: 50px;
+
+    border: none;
+    border-radius: 50%;
+
+    background-color: rgba(255, 255, 255, 0.15);
+    color: white;
+
+    font-family: Arial, sans-serif;
+    font-size: 42px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.3s ease,
+        transform 0.3s ease;
+}
+
+.lightbox-prev {
+    left: 25px;
+}
+
+.lightbox-next {
+    right: 25px;
+}
+
+.lightbox-prev:hover,
+.lightbox-next:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+.lightbox-prev:hover {
+    transform: translateY(-50%) scale(1.05);
+}
+
+.lightbox-next:hover {
+    transform: translateY(-50%) scale(1.05);
+}
 /* #endregion */
 
 /* #region FOOTER */

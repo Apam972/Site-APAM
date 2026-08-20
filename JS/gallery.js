@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", async () => {
 
     const gallery = document.getElementById("apam-gallery");
-
+    let currentIndex = 0;
+     let images = [];
     if (!gallery) {
         return;
     }
@@ -14,7 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             throw new Error(`Erreur HTTP ${response.status}`);
         }
 
-        const images = await response.json();
+         images = await response.json();
 
         gallery.innerHTML = "";
 
@@ -27,7 +28,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
-        images.forEach((image) => {
+        images.forEach((image, index) => {
 
     const item = document.createElement("article");
     item.className = "gallery-item";
@@ -39,24 +40,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     imageElement.loading = "lazy";
 
     imageElement.addEventListener("click", () => {
-
-        const lightbox = document.getElementById("photo-lightbox");
-        const lightboxImage = document.querySelector(".lightbox-image");
-
-        lightboxImage.src = imageElement.src;
-        lightboxImage.alt = imageElement.alt;
-
-        lightbox.classList.add("active");
-        lightbox.setAttribute("aria-hidden", "false");
-    });
+    openLightbox(index);
+});
 
     item.appendChild(imageElement);
 
     gallery.appendChild(item);
 });
 
+
 const lightbox = document.getElementById("photo-lightbox");
 const closeButton = document.querySelector(".lightbox-close");
+const prevButton = document.querySelector(".lightbox-prev");
+const nextButton = document.querySelector(".lightbox-next");
+
+if (prevButton && nextButton) {
+
+    prevButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        showPreviousImage();
+    });
+
+    nextButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        showNextImage();
+    });
+}
 
 if (lightbox && closeButton) {
 
@@ -97,4 +106,46 @@ if (lightbox && closeButton) {
             </p>
         `;
     }
+
+    function openLightbox(index) {
+    const lightbox = document.getElementById("photo-lightbox");
+    const lightboxImage = document.querySelector(".lightbox-image");
+
+    if (!lightbox || !lightboxImage) {
+        return;
+    }
+
+    currentIndex = index;
+
+    const image = images[currentIndex];
+
+    lightboxImage.src = `assets/image-apam/${image.file}`;
+    lightboxImage.alt = image.title || "Photo de l'APAM";
+
+    lightbox.classList.add("active");
+    lightbox.setAttribute("aria-hidden", "false");
+}
+function showPreviousImage() {
+    if (images.length === 0) {
+        return;
+    }
+
+    currentIndex =
+        (currentIndex - 1 + images.length) % images.length;
+
+    openLightbox(currentIndex);
+}
+
+
+function showNextImage() {
+    if (images.length === 0) {
+        return;
+    }
+
+    currentIndex =
+        (currentIndex + 1) % images.length;
+
+    openLightbox(currentIndex);
+}
+
 });
