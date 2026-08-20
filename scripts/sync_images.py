@@ -8,7 +8,7 @@ from pathlib import Path
 
 import google.auth
 from googleapiclient.discovery import build
-from googleapiclient.http import MediaIoBaseDownload
+from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 
 
 # ============================================================
@@ -21,10 +21,16 @@ IMAGE_DIR = PROJECT_ROOT / "assets" / "image-apam"
 JSON_FILE = PROJECT_ROOT / "data" / "images.json"
 
 DRIVE_FOLDER_ID = os.environ.get("DRIVE_FOLDER_ID")
+ARCHIVE_FOLDER_ID = os.environ.get("ARCHIVE_FOLDER_ID")
 
 SCOPES = [
-    "https://www.googleapis.com/auth/drive.readonly"
+    "https://www.googleapis.com/auth/drive"
 ]
+
+
+# ============================================================
+# TYPES DE MÉDIAS ACCEPTÉS
+# ============================================================
 
 ALLOWED_MIME_TYPES = {
     # Images
@@ -52,8 +58,8 @@ ALLOWED_MIME_TYPES = {
 }
 
 
-# À partir de 10 suppressions détectées,
-# on déclenche le mode de protection.
+# À partir de 10 suppressions :
+# mode sécurité + archive.
 SECURITY_DELETE_THRESHOLD = 10
 
 
@@ -71,7 +77,6 @@ def load_catalog() -> list[dict]:
         with JSON_FILE.open("r", encoding="utf-8") as file:
             content = file.read().strip()
 
-        # Fichier vide = catalogue vide
         if not content:
             return []
 
@@ -93,7 +98,7 @@ def save_catalog(catalog: list[dict]) -> None:
 
     JSON_FILE.parent.mkdir(
         parents=True,
-        exist_ok=True
+        exist_ok=True,
     )
 
     with JSON_FILE.open("w", encoding="utf-8") as file:
@@ -107,11 +112,33 @@ def save_catalog(catalog: list[dict]) -> None:
 
 
 # ============================================================
-# GOOGLE DRIVE
+# TYPE DE MÉDIA
+# ============================================================
+
+def get_media_type(mime_type: str) -> str:
+    """Détermine le type de média à partir du MIME type."""
+
+    if mime_type.startswith("image/"):
+        return "image"
+
+    if mime_type.startswith("video/"):
+        return "video"
+
+    if mime_type.startswith("audio/"):
+        return "audio"
+
+    if mime_type == "application/pdf":
+        return "pdf"
+
+    return "file"
+
+
+# ============================================================
+# GOOGLE DRIVE - LECTURE
 # ============================================================
 
 def get_drive_files(service) -> list[dict]:
-    """Récupère les médias présents dans le dossier Drive."""
+    """Récupère les médias présents dans le dossier source."""
 
     if not DRIVE_FOLDER_ID:
         print("ERREUR : DRIVE_FOLDER_ID n'est pas défini.")
@@ -163,10 +190,14 @@ def get_drive_files(service) -> list[dict]:
     return files
 
 
+# ============================================================
+# GOOGLE DRIVE - TÉLÉCHARGEMENT
+# ============================================================
+
 def download_file(
     service,
     file: dict,
-    destination: Path
+    destination: Path,
 ) -> None:
     """Télécharge un média depuis Google Drive."""
 
@@ -189,46 +220,133 @@ def download_file(
 
 
 # ============================================================
-# DÉTERMINATION DU TYPE DE FICHIER
+# GOOGLE DRIVE - ARCHIVE
 # ============================================================
 
-def get_media_type(mime_type: str) -> str:
-    """Détermine le type de média à partir du MIME type."""
+def create_archive_folder(
+    service,
+    incident_name: str,
+) -> str:
+    """Crée le dossier correspondant à l'incident."""
 
-    if mime_type.startswith("image/"):
-        return "image"
+    if not ARCHIVE_FOLDER_ID:
+        raise RuntimeError(
+            "ARCHIVE_FOLDER_ID n'est pas défini."
+        )
 
-    if mime_type.startswith("video/"):
-        return "video"
+    metadata = {
+        "name": incident_name,
+        "mimeType": "application/vnd.google-apps.folder",
+        "parents": [ARCHIVE_FOLDER_ID],
+    }
 
-    if mime_type.startswith("audio/"):
-        return "audio"
+    result = (
+        service.files()
+        .create(
+            body=metadata,
+            fields="id,name",
+            supportsAllDrives=True,
+        )
+        .execute()
+    )
 
-    if mime_type == "application/pdf":
-        return "pdf"
+    return result["id"]
 
-    return "file"
+
+def upload_file_to_archive(
+    service,
+    file_path: Path,
+    archive_folder_id: str,
+) -> str:
+    """Envoie un fichier dans le dossier d'archive."""
+
+    metadata = {
+        "name": file_path.name,
+        "parents": [archive_folder_id],
+    }
+
+    media = MediaFileUpload(
+        str(file_path),
+        mimetype="application/octet-stream",
+        resumable=True,
+    )
+
+    result = (
+        service.files()
+        .create(
+            body=metadata,
+            media_body=media,
+            fields="id,name",
+            supportsAllDrives=True,
+        )
+        .execute()
+    )
+
+    return result["id"]
+
+
+def upload_incident_report(
+    service,
+    report: dict,
+    archive_folder_id: str,
+) -> str:
+    """Crée et envoie le rapport JSON de l'incident."""
+
+    report_path = PROJECT_ROOT / "incident.json"
+
+    try:
+
+        report_path.write_text(
+            json.dumps(
+                report,
+                ensure_ascii=False,
+                indent=4,
+            ),
+            encoding="utf-8",
+        )
+
+        return upload_file_to_archive(
+            service,
+            report_path,
+            archive_folder_id,
+        )
+
+    finally:
+
+        if report_path.exists():
+            report_path.unlink()
 
 
 # ============================================================
-# CRÉATION D'UNE ENTRÉE JSON
+# ENTRÉE DU CATALOGUE
 # ============================================================
 
 def build_entry(
     file: dict,
-    local_name: str
+    local_name: str,
 ) -> dict:
     """Construit une entrée du catalogue."""
 
     return {
         "file": local_name,
-        "type": get_media_type(file["mimeType"]),
+        "type": get_media_type(
+            file["mimeType"]
+        ),
         "title": Path(file["name"]).stem,
         "description": "",
-        "date": file.get("createdTime", "")[:10],
+        "date": file.get(
+            "createdTime",
+            "",
+        )[:10],
         "drive_id": file["id"],
-        "md5_checksum": file.get("md5Checksum", ""),
-        "modified_time": file.get("modifiedTime", ""),
+        "md5_checksum": file.get(
+            "md5Checksum",
+            "",
+        ),
+        "modified_time": file.get(
+            "modifiedTime",
+            "",
+        ),
         "synced_at": datetime.now(
             timezone.utc
         ).isoformat(),
@@ -241,18 +359,38 @@ def build_entry(
 
 def main() -> int:
 
-    print("=== Synchronisation des médias APAM ===")
+    print(
+        "=== Synchronisation des médias APAM ==="
+    )
 
     IMAGE_DIR.mkdir(
         parents=True,
-        exist_ok=True
+        exist_ok=True,
     )
+
+    # --------------------------------------------------------
+    # VÉRIFICATIONS
+    # --------------------------------------------------------
+
+    if not DRIVE_FOLDER_ID:
+        print(
+            "ERREUR : DRIVE_FOLDER_ID est manquant."
+        )
+        return 1
+
+    if not ARCHIVE_FOLDER_ID:
+        print(
+            "ERREUR : ARCHIVE_FOLDER_ID est manquant."
+        )
+        return 1
 
     # --------------------------------------------------------
     # AUTHENTIFICATION
     # --------------------------------------------------------
 
-    print("Authentification Google Cloud...")
+    print(
+        "Authentification Google Cloud..."
+    )
 
     credentials, _ = google.auth.default(
         scopes=SCOPES
@@ -268,12 +406,17 @@ def main() -> int:
     # LECTURE DRIVE
     # --------------------------------------------------------
 
-    print("Lecture du dossier Google Drive...")
+    print(
+        "Lecture du dossier Google Drive..."
+    )
 
-    drive_files = get_drive_files(service)
+    drive_files = get_drive_files(
+        service
+    )
 
     print(
-        f"{len(drive_files)} média(s) trouvé(s) dans Drive."
+        f"{len(drive_files)} média(s) "
+        "trouvé(s) dans Drive."
     )
 
     # --------------------------------------------------------
@@ -282,7 +425,6 @@ def main() -> int:
 
     catalog = load_catalog()
 
-    # Index du catalogue actuel
     catalog_by_drive_id = {
         entry.get("drive_id"): entry
         for entry in catalog
@@ -295,7 +437,6 @@ def main() -> int:
         if entry.get("md5_checksum")
     }
 
-    # IDs présents actuellement dans Drive
     drive_ids = {
         file["id"]
         for file in drive_files
@@ -311,42 +452,199 @@ def main() -> int:
         if entry.get("drive_id")
     ]
 
-    tracked_count = len(tracked_entries)
-
     missing_entries = [
         entry
         for entry in tracked_entries
-        if entry.get("drive_id") not in drive_ids
+        if entry.get("drive_id")
+        not in drive_ids
     ]
 
-    deletion_count = len(missing_entries)
-
-    print(
-        f"{deletion_count} média(s) absent(s) de Drive."
+    deletion_count = len(
+        missing_entries
     )
 
-    deletion_allowed = True
+    print(
+        f"{deletion_count} média(s) "
+        "absent(s) de Drive."
+    )
 
-    if deletion_count >= SECURITY_DELETE_THRESHOLD:
+    # --------------------------------------------------------
+    # MODE SÉCURITÉ
+    # --------------------------------------------------------
 
-        deletion_allowed = False
+    security_mode = (
+        deletion_count
+        >= SECURITY_DELETE_THRESHOLD
+    )
+
+    archive_folder_id = None
+    incident_name = None
+
+    if security_mode:
+
+        now = datetime.now().astimezone()
+
+        incident_name = now.strftime(
+            "%Y-%m-%d_%H-%M-%S"
+        )
 
         print()
         print(
-            "⚠️ PROTECTION : suppression importante détectée."
+            "⚠️ MODE SÉCURITÉ ACTIVÉ"
         )
+
         print(
-            f"Médias suivis : {tracked_count}"
+            f"Médias supprimés détectés : "
+            f"{deletion_count}"
         )
+
         print(
-            f"Médias absents : {deletion_count}"
-        )
-        print(
-            f"Seuil de sécurité : "
+            f"Seuil : "
             f"{SECURITY_DELETE_THRESHOLD}"
         )
+
         print(
-            "Aucune suppression ne sera effectuée."
+            f"Incident : {incident_name}"
+        )
+
+        # ----------------------------------------------------
+        # CRÉATION DU DOSSIER INCIDENT
+        # ----------------------------------------------------
+
+        try:
+
+            print(
+                "Création du dossier "
+                "d'archive..."
+            )
+
+            archive_folder_id = (
+                create_archive_folder(
+                    service,
+                    incident_name,
+                )
+            )
+
+            print(
+                f"Dossier d'incident créé : "
+                f"{archive_folder_id}"
+            )
+
+        except Exception as exc:
+
+            print()
+            print(
+                "❌ IMPOSSIBLE DE CRÉER "
+                "L'ARCHIVE."
+            )
+
+            print(
+                f"Erreur : {exc}"
+            )
+
+            print(
+                "AUCUNE SUPPRESSION "
+                "NE SERA EFFECTUÉE."
+            )
+
+            return 1
+
+        # ----------------------------------------------------
+        # ARCHIVAGE DES MÉDIAS
+        # ----------------------------------------------------
+
+        archived_count = 0
+
+        try:
+
+            for entry in missing_entries:
+
+                local_name = entry.get(
+                    "file"
+                )
+
+                if not local_name:
+                    continue
+
+                local_path = (
+                    IMAGE_DIR / local_name
+                )
+
+                if not local_path.exists():
+
+                    print(
+                        f"⚠️ Fichier local absent : "
+                        f"{local_name}"
+                    )
+
+                    continue
+
+                print(
+                    f"Archivage : {local_name}"
+                )
+
+                upload_file_to_archive(
+                    service,
+                    local_path,
+                    archive_folder_id,
+                )
+
+                archived_count += 1
+
+            # ------------------------------------------------
+            # RAPPORT INCIDENT
+            # ------------------------------------------------
+
+            report = {
+                "incident": incident_name,
+                "date": datetime.now().strftime(
+                    "%Y-%m-%d"
+                ),
+                "heure": datetime.now().strftime(
+                    "%H:%M:%S"
+                ),
+                "medias_supprimes": deletion_count,
+                "medias_archives": archived_count,
+                "seuil_securite": (
+                    SECURITY_DELETE_THRESHOLD
+                ),
+                "source": "Google Drive",
+                "raison": (
+                    "Seuil de suppression atteint"
+                ),
+            }
+
+            upload_incident_report(
+                service,
+                report,
+                archive_folder_id,
+            )
+
+            print(
+                "Rapport incident archivé."
+            )
+
+        except Exception as exc:
+
+            print()
+            print(
+                "❌ ERREUR PENDANT "
+                "L'ARCHIVAGE."
+            )
+
+            print(
+                f"Erreur : {exc}"
+            )
+
+            print(
+                "AUCUNE SUPPRESSION "
+                "NE SERA EFFECTUÉE."
+            )
+
+            return 1
+
+        print(
+            "✅ Archivage de sécurité réussi."
         )
 
     # --------------------------------------------------------
@@ -361,7 +659,7 @@ def main() -> int:
     updated_catalog = []
 
     # --------------------------------------------------------
-    # TRAITEMENT DES AJOUTS / MODIFICATIONS
+    # AJOUTS / MODIFICATIONS
     # --------------------------------------------------------
 
     for file in drive_files:
@@ -370,11 +668,13 @@ def main() -> int:
 
         md5_checksum = file.get(
             "md5Checksum",
-            ""
+            "",
         )
 
-        existing_entry = catalog_by_drive_id.get(
-            drive_id
+        existing_entry = (
+            catalog_by_drive_id.get(
+                drive_id
+            )
         )
 
         # ----------------------------------------------------
@@ -383,22 +683,24 @@ def main() -> int:
 
         if existing_entry:
 
-            local_name = existing_entry["file"]
-            destination = IMAGE_DIR / local_name
+            local_name = existing_entry[
+                "file"
+            ]
 
-            previous_md5 = existing_entry.get(
-                "md5_checksum",
-                ""
+            destination = (
+                IMAGE_DIR / local_name
             )
 
-            previous_modified = existing_entry.get(
-                "modified_time",
-                ""
+            previous_md5 = (
+                existing_entry.get(
+                    "md5_checksum",
+                    "",
+                )
             )
 
             current_modified = file.get(
                 "modifiedTime",
-                ""
+                "",
             )
 
             current_type = get_media_type(
@@ -412,11 +714,13 @@ def main() -> int:
             if (
                 md5_checksum
                 and previous_md5
-                and md5_checksum != previous_md5
+                and md5_checksum
+                != previous_md5
             ):
 
                 print(
-                    f"Média modifié : {file['name']}"
+                    f"Média modifié : "
+                    f"{file['name']}"
                 )
 
                 try:
@@ -424,37 +728,40 @@ def main() -> int:
                     download_file(
                         service,
                         file,
-                        destination
+                        destination,
                     )
 
-                    existing_entry["md5_checksum"] = (
-                        md5_checksum
-                    )
+                    existing_entry[
+                        "md5_checksum"
+                    ] = md5_checksum
 
-                    existing_entry["modified_time"] = (
-                        current_modified
-                    )
+                    existing_entry[
+                        "modified_time"
+                    ] = current_modified
 
-                    existing_entry["synced_at"] = (
-                        datetime.now(
-                            timezone.utc
-                        ).isoformat()
-                    )
+                    existing_entry[
+                        "synced_at"
+                    ] = datetime.now(
+                        timezone.utc
+                    ).isoformat()
 
-                    existing_entry["title"] = (
-                        Path(file["name"]).stem
-                    )
+                    existing_entry[
+                        "title"
+                    ] = Path(
+                        file["name"]
+                    ).stem
 
-                    existing_entry["type"] = (
-                        current_type
-                    )
+                    existing_entry[
+                        "type"
+                    ] = current_type
 
                     updated_count += 1
 
                 except Exception as exc:
 
                     print(
-                        "  ERREUR lors de la mise à jour : "
+                        "  ERREUR lors "
+                        "de la mise à jour : "
                         f"{exc}"
                     )
 
@@ -462,7 +769,7 @@ def main() -> int:
             # FICHIER LOCAL MANQUANT
             # ------------------------------------------------
 
-            elif destination.exists() is False:
+            elif not destination.exists():
 
                 print(
                     f"Média local manquant : "
@@ -474,29 +781,29 @@ def main() -> int:
                     download_file(
                         service,
                         file,
-                        destination
+                        destination,
                     )
 
-                    existing_entry["synced_at"] = (
-                        datetime.now(
-                            timezone.utc
-                        ).isoformat()
-                    )
+                    existing_entry[
+                        "synced_at"
+                    ] = datetime.now(
+                        timezone.utc
+                    ).isoformat()
 
-                    existing_entry["type"] = (
-                        current_type
-                    )
+                    existing_entry[
+                        "type"
+                    ] = current_type
 
                     updated_count += 1
 
                 except Exception as exc:
 
                     print(
-                        "  ERREUR lors de la restauration : "
+                        "  ERREUR lors de "
+                        "la restauration : "
                         f"{exc}"
                     )
 
-            # Toujours conserver le média connu
             updated_catalog.append(
                 existing_entry
             )
@@ -513,8 +820,8 @@ def main() -> int:
         ):
 
             print(
-                f"Doublon détecté : {file['name']} "
-                "(hash MD5 déjà présent)"
+                f"Doublon détecté : "
+                f"{file['name']}"
             )
 
             duplicate_count += 1
@@ -528,10 +835,13 @@ def main() -> int:
             f"{drive_id}{extension}"
         )
 
-        destination = IMAGE_DIR / local_name
+        destination = (
+            IMAGE_DIR / local_name
+        )
 
         print(
-            f"Nouveau média : {file['name']}"
+            f"Nouveau média : "
+            f"{file['name']}"
         )
 
         try:
@@ -539,12 +849,12 @@ def main() -> int:
             download_file(
                 service,
                 file,
-                destination
+                destination,
             )
 
             entry = build_entry(
                 file,
-                local_name
+                local_name,
             )
 
             updated_catalog.append(
@@ -575,57 +885,46 @@ def main() -> int:
             )
 
     # --------------------------------------------------------
-    # SUPPRESSION DES MÉDIAS ABSENTS DE DRIVE
+    # SUPPRESSIONS
     # --------------------------------------------------------
 
-    if deletion_allowed:
+    for entry in missing_entries:
 
-        for entry in missing_entries:
+        local_name = entry.get(
+            "file"
+        )
 
-            local_name = entry.get(
-                "file"
-            )
+        if not local_name:
+            continue
 
-            if not local_name:
-                continue
+        destination = (
+            IMAGE_DIR / local_name
+        )
 
-            destination = (
-                IMAGE_DIR / local_name
-            )
+        # Si le mode sécurité était activé,
+        # l'archive a déjà été validée.
+        #
+        # Sinon, on supprime normalement.
 
-            print(
-                f"Média supprimé de Drive : "
-                f"{local_name}"
-            )
+        print(
+            f"Média supprimé de Drive : "
+            f"{local_name}"
+        )
 
-            if destination.exists():
+        if destination.exists():
 
-                try:
+            try:
 
-                    destination.unlink()
+                destination.unlink()
 
-                    deleted_count += 1
+                deleted_count += 1
 
-                except OSError as exc:
+            except OSError as exc:
 
-                    print(
-                        "  ERREUR lors de la "
-                        f"suppression : {exc}"
-                    )
-
-            # L'entrée ne sera pas ajoutée
-            # à updated_catalog.
-
-    else:
-
-        # Protection activée :
-        # on garde temporairement les entrées
-        # dans le catalogue.
-        for entry in missing_entries:
-
-            updated_catalog.append(
-                entry
-            )
+                print(
+                    "  ERREUR lors de "
+                    f"la suppression : {exc}"
+                )
 
     # --------------------------------------------------------
     # TRI
@@ -634,7 +933,7 @@ def main() -> int:
     updated_catalog.sort(
         key=lambda item: item.get(
             "date",
-            ""
+            "",
         ),
         reverse=True,
     )
@@ -648,26 +947,32 @@ def main() -> int:
     )
 
     # --------------------------------------------------------
-    # LOGS
+    # RÉSULTAT
     # --------------------------------------------------------
 
     print()
-    print("=== Résultat ===")
-
     print(
-        f"Médias ajoutés : {added_count}"
+        "=== Résultat de la synchronisation ==="
     )
 
     print(
-        f"Médias mis à jour : {updated_count}"
+        f"Médias ajoutés : "
+        f"{added_count}"
     )
 
     print(
-        f"Doublons ignorés : {duplicate_count}"
+        f"Médias mis à jour : "
+        f"{updated_count}"
     )
 
     print(
-        f"Médias supprimés : {deleted_count}"
+        f"Doublons ignorés : "
+        f"{duplicate_count}"
+    )
+
+    print(
+        f"Médias supprimés : "
+        f"{deleted_count}"
     )
 
     print(
@@ -675,11 +980,12 @@ def main() -> int:
         f"{len(updated_catalog)}"
     )
 
-    if not deletion_allowed:
+    if security_mode:
 
+        print()
         print(
-            "⚠️ Les suppressions ont été "
-            "bloquées par la protection."
+            f"✅ Incident {incident_name} "
+            "archivé avec succès."
         )
 
     print(
