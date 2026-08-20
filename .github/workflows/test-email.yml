@@ -19,17 +19,22 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Authentification Google Cloud
+        id: auth
         uses: google-github-actions/auth@v3
         with:
           project_id: apam-site-506020
           workload_identity_provider: projects/388224398802/locations/global/workloadIdentityPools/github-apam/providers/github-actions
           service_account: apam-site-sync@apam-site-506020.iam.gserviceaccount.com
-
+          token_format: access_token
+          access_token_scopes: https://www.googleapis.com/auth/gmail.send
+          access_token_subject: auto@apam972.com
       - name: Installer les dépendances
         run: |
           python -m pip install --upgrade pip
           pip install google-auth google-api-python-client
 
       - name: Tester Gmail
+        env:
+            GMAIL_ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
         run: |
-          python scripts/test_email.py
+            python scripts/test_email.py
