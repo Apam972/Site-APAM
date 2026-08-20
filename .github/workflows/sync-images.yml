@@ -37,11 +37,26 @@ jobs:
 
 
       # ======================================================
-      # AUTHENTIFICATION GOOGLE CLOUD
+      # AUTHENTIFICATION GOOGLE CLOUD / DRIVE
       # ======================================================
 
       - name: Authentification Google Cloud
-        id: auth
+        id: google-auth
+        uses: google-github-actions/auth@v3
+        with:
+          project_id: apam-site-506020
+
+          workload_identity_provider: projects/388224398802/locations/global/workloadIdentityPools/github-apam/providers/github-actions
+
+          service_account: apam-site-sync@apam-site-506020.iam.gserviceaccount.com
+
+
+      # ======================================================
+      # AUTHENTIFICATION GMAIL
+      # ======================================================
+
+      - name: Authentification Gmail
+        id: gmail-auth
         uses: google-github-actions/auth@v3
         with:
           project_id: apam-site-506020
@@ -52,11 +67,12 @@ jobs:
 
           token_format: access_token
 
-          access_token_scopes: |
-            https://www.googleapis.com/auth/drive
-            https://www.googleapis.com/auth/gmail.send
+          access_token_scopes: https://www.googleapis.com/auth/gmail.send
 
           access_token_subject: mail.auto@apam972.com
+
+          create_credentials_file: false
+          export_environment_variables: false
 
 
       # ======================================================
@@ -70,12 +86,12 @@ jobs:
 
 
       # ======================================================
-      # SYNCHRONISATION
+      # SYNCHRONISATION DES MÉDIAS
       # ======================================================
 
       - name: Synchroniser les médias
         env:
-          GMAIL_ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+          GMAIL_ACCESS_TOKEN: ${{ steps.gmail-auth.outputs.access_token }}
         run: |
           python scripts/sync_images.py
 
@@ -84,7 +100,7 @@ jobs:
       # PUBLICATION SUR GITHUB
       # ======================================================
 
-      - name: Publier les nouvelles modifications
+      - name: Publier les modifications
         run: |
 
           git config user.name "github-actions[bot]"
