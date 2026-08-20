@@ -23,7 +23,7 @@ jobs:
       DRIVE_FOLDER_ID: "1Ejv4YuxKEvEAP1bPR1uWSVri-u5YvJKr"
       ARCHIVE_FOLDER_ID: "1RCuEJSndjKJrWL7TilYqbhtk5gxg9czy"
 
-      MAIL_COMMUNICATION: "ADRESSE_DU_CHARGE_DE_COMMUNICATION"
+      MAIL_COMMUNICATION: "admin@apam972.com"
       MAIL_DIRECTION: "admin@apam972.com"
 
     steps:
