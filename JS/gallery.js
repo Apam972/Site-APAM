@@ -29,19 +29,60 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         images.forEach((image) => {
 
-            const item = document.createElement("article");
-            item.className = "gallery-item";
+    const item = document.createElement("article");
+    item.className = "gallery-item";
 
-            const imageElement = document.createElement("img");
+    const imageElement = document.createElement("img");
 
-            imageElement.src = `assets/image-apam/${image.file}`;
-            imageElement.alt = image.title || "Photo de l'APAM";
-            imageElement.loading = "lazy";
+    imageElement.src = `assets/image-apam/${image.file}`;
+    imageElement.alt = image.title || "Photo de l'APAM";
+    imageElement.loading = "lazy";
 
-            item.appendChild(imageElement);
+    imageElement.addEventListener("click", () => {
 
-            gallery.appendChild(item);
-        });
+        const lightbox = document.getElementById("photo-lightbox");
+        const lightboxImage = document.querySelector(".lightbox-image");
+
+        lightboxImage.src = imageElement.src;
+        lightboxImage.alt = imageElement.alt;
+
+        lightbox.classList.add("active");
+        lightbox.setAttribute("aria-hidden", "false");
+    });
+
+    item.appendChild(imageElement);
+
+    gallery.appendChild(item);
+});
+
+const lightbox = document.getElementById("photo-lightbox");
+const closeButton = document.querySelector(".lightbox-close");
+
+if (lightbox && closeButton) {
+
+    closeButton.addEventListener("click", () => {
+
+        lightbox.classList.remove("active");
+        lightbox.setAttribute("aria-hidden", "true");
+
+        const lightboxImage = document.querySelector(".lightbox-image");
+        lightboxImage.src = "";
+        lightboxImage.alt = "";
+    });
+
+    lightbox.addEventListener("click", (event) => {
+
+        if (event.target === lightbox) {
+
+            lightbox.classList.remove("active");
+            lightbox.setAttribute("aria-hidden", "true");
+
+            const lightboxImage = document.querySelector(".lightbox-image");
+            lightboxImage.src = "";
+            lightboxImage.alt = "";
+        }
+    });
+}
 
     } catch (error) {
 
