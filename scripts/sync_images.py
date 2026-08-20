@@ -1,12 +1,15 @@
 from __future__ import annotations
 
+import base64
 import json
 import os
 import sys
 from datetime import datetime, timezone
+from email.message import EmailMessage
 from pathlib import Path
 
 import google.auth
+from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 
@@ -23,9 +26,20 @@ JSON_FILE = PROJECT_ROOT / "data" / "images.json"
 DRIVE_FOLDER_ID = os.environ.get("DRIVE_FOLDER_ID")
 ARCHIVE_FOLDER_ID = os.environ.get("ARCHIVE_FOLDER_ID")
 
+MAIL_SENDER = "mail.auto@apam972.com"
+
+MAIL_RECIPIENTS = [
+    os.environ.get("MAIL_COMMUNICATION"),
+    os.environ.get("MAIL_DIRECTION"),
+]
+
 SCOPES = [
     "https://www.googleapis.com/auth/drive"
 ]
+
+# À partir de 10 suppressions :
+# archivage + alerte email.
+SECURITY_DELETE_THRESHOLD = 10
 
 
 # ============================================================
@@ -56,11 +70,6 @@ ALLOWED_MIME_TYPES = {
     # Documents
     "application/pdf": ".pdf",
 }
-
-
-# À partir de 10 suppressions :
-# mode sécurité + archive.
-SECURITY_DELETE_THRESHOLD = 10
 
 
 # ============================================================
@@ -116,7 +125,7 @@ def save_catalog(catalog: list[dict]) -> None:
 # ============================================================
 
 def get_media_type(mime_type: str) -> str:
-    """Détermine le type de média à partir du MIME type."""
+    """Détermine le type de média."""
 
     if mime_type.startswith("image/"):
         return "image"
@@ -138,11 +147,12 @@ def get_media_type(mime_type: str) -> str:
 # ============================================================
 
 def get_drive_files(service) -> list[dict]:
-    """Récupère les médias présents dans le dossier source."""
+    """Récupère les médias du dossier Drive."""
 
     if not DRIVE_FOLDER_ID:
-        print("ERREUR : DRIVE_FOLDER_ID n'est pas défini.")
-        sys.exit(1)
+        raise RuntimeError(
+            "DRIVE_FOLDER_ID est manquant."
+        )
 
     query = (
         f"'{DRIVE_FOLDER_ID}' in parents "
@@ -173,6 +183,8 @@ def get_drive_files(service) -> list[dict]:
                     ")"
                 ),
                 orderBy="createdTime desc",
+                supportsAllDrives=True,
+                includeItemsFromAllDrives=True,
             )
             .execute()
         )
@@ -215,7 +227,6 @@ def download_file(
         done = False
 
         while not done:
-
             _, done = downloader.next_chunk()
 
 
@@ -227,11 +238,11 @@ def create_archive_folder(
     service,
     incident_name: str,
 ) -> str:
-    """Crée le dossier correspondant à l'incident."""
+    """Crée le dossier d'incident dans Archive secure."""
 
     if not ARCHIVE_FOLDER_ID:
         raise RuntimeError(
-            "ARCHIVE_FOLDER_ID n'est pas défini."
+            "ARCHIVE_FOLDER_ID est manquant."
         )
 
     metadata = {
@@ -258,7 +269,7 @@ def upload_file_to_archive(
     file_path: Path,
     archive_folder_id: str,
 ) -> str:
-    """Envoie un fichier dans le dossier d'archive."""
+    """Envoie un fichier dans l'archive."""
 
     metadata = {
         "name": file_path.name,
@@ -289,8 +300,8 @@ def upload_incident_report(
     service,
     report: dict,
     archive_folder_id: str,
-) -> str:
-    """Crée et envoie le rapport JSON de l'incident."""
+) -> None:
+    """Crée et envoie incident.json."""
 
     report_path = PROJECT_ROOT / "incident.json"
 
@@ -305,7 +316,7 @@ def upload_incident_report(
             encoding="utf-8",
         )
 
-        return upload_file_to_archive(
+        upload_file_to_archive(
             service,
             report_path,
             archive_folder_id,
@@ -315,6 +326,100 @@ def upload_incident_report(
 
         if report_path.exists():
             report_path.unlink()
+
+
+# ============================================================
+# EMAIL - ALERTE
+# ============================================================
+
+def send_alert_email(
+    access_token: str,
+    incident_name: str,
+    deleted_count: int,
+    archived_count: int,
+) -> None:
+    """Envoie l'alerte de suppression importante."""
+
+    recipients = [
+        email
+        for email in MAIL_RECIPIENTS
+        if email
+    ]
+
+    if not recipients:
+        raise RuntimeError(
+            "Aucun destinataire d'alerte n'est configuré."
+        )
+
+    if not access_token:
+        raise RuntimeError(
+            "GMAIL_ACCESS_TOKEN est manquant."
+        )
+
+    credentials = Credentials(
+        token=access_token
+    )
+
+    gmail = build(
+        "gmail",
+        "v1",
+        credentials=credentials,
+    )
+
+    message = EmailMessage()
+
+    message["From"] = MAIL_SENDER
+    message["To"] = ", ".join(recipients)
+
+    message["Subject"] = (
+        "⚠️ APAM — Alerte de synchronisation des médias"
+    )
+
+    message.set_content(
+        f"""Bonjour,
+
+Le système automatique du site APAM a détecté une
+suppression importante de médias dans Google Drive.
+
+Incident :
+{incident_name}
+
+Médias supprimés de Drive :
+{deleted_count}
+
+Médias archivés :
+{archived_count}
+
+Les médias ont été archivés avant leur suppression
+du site.
+
+Dossier d'archive :
+Archive secure/{incident_name}
+
+Merci de vérifier le dossier « Image de l'APAM ».
+
+— APAM
+Système de notifications automatiques
+"""
+    )
+
+    raw_message = base64.urlsafe_b64encode(
+        message.as_bytes()
+    ).decode()
+
+    (
+        gmail.users()
+        .messages()
+        .send(
+            userId="me",
+            body={
+                "raw": raw_message
+            },
+        )
+        .execute()
+    )
+
+    print("✅ Email d'alerte envoyé.")
 
 
 # ============================================================
@@ -368,10 +473,6 @@ def main() -> int:
         exist_ok=True,
     )
 
-    # --------------------------------------------------------
-    # VÉRIFICATIONS
-    # --------------------------------------------------------
-
     if not DRIVE_FOLDER_ID:
         print(
             "ERREUR : DRIVE_FOLDER_ID est manquant."
@@ -383,10 +484,6 @@ def main() -> int:
             "ERREUR : ARCHIVE_FOLDER_ID est manquant."
         )
         return 1
-
-    # --------------------------------------------------------
-    # AUTHENTIFICATION
-    # --------------------------------------------------------
 
     print(
         "Authentification Google Cloud..."
@@ -420,7 +517,7 @@ def main() -> int:
     )
 
     # --------------------------------------------------------
-    # CHARGEMENT CATALOGUE
+    # CATALOGUE
     # --------------------------------------------------------
 
     catalog = load_catalog()
@@ -468,17 +565,18 @@ def main() -> int:
         "absent(s) de Drive."
     )
 
-    # --------------------------------------------------------
-    # MODE SÉCURITÉ
-    # --------------------------------------------------------
-
     security_mode = (
         deletion_count
         >= SECURITY_DELETE_THRESHOLD
     )
 
-    archive_folder_id = None
     incident_name = None
+    archive_folder_id = None
+    archived_count = 0
+
+    # --------------------------------------------------------
+    # MODE SÉCURITÉ / ARCHIVAGE
+    # --------------------------------------------------------
 
     if security_mode:
 
@@ -492,30 +590,23 @@ def main() -> int:
         print(
             "⚠️ MODE SÉCURITÉ ACTIVÉ"
         )
-
         print(
             f"Médias supprimés détectés : "
             f"{deletion_count}"
         )
-
         print(
             f"Seuil : "
             f"{SECURITY_DELETE_THRESHOLD}"
         )
-
         print(
             f"Incident : {incident_name}"
         )
 
-        # ----------------------------------------------------
-        # CRÉATION DU DOSSIER INCIDENT
-        # ----------------------------------------------------
-
+        # Création du dossier incident
         try:
 
             print(
-                "Création du dossier "
-                "d'archive..."
+                "Création du dossier d'archive..."
             )
 
             archive_folder_id = (
@@ -526,22 +617,19 @@ def main() -> int:
             )
 
             print(
-                f"Dossier d'incident créé : "
+                f"Dossier créé : "
                 f"{archive_folder_id}"
             )
 
         except Exception as exc:
 
-            print()
             print(
-                "❌ IMPOSSIBLE DE CRÉER "
-                "L'ARCHIVE."
+                "❌ Impossible de créer "
+                "l'archive."
             )
-
             print(
                 f"Erreur : {exc}"
             )
-
             print(
                 "AUCUNE SUPPRESSION "
                 "NE SERA EFFECTUÉE."
@@ -549,12 +637,7 @@ def main() -> int:
 
             return 1
 
-        # ----------------------------------------------------
-        # ARCHIVAGE DES MÉDIAS
-        # ----------------------------------------------------
-
-        archived_count = 0
-
+        # Archivage des médias
         try:
 
             for entry in missing_entries:
@@ -591,20 +674,21 @@ def main() -> int:
 
                 archived_count += 1
 
-            # ------------------------------------------------
-            # RAPPORT INCIDENT
-            # ------------------------------------------------
-
+            # Rapport de l'incident
             report = {
                 "incident": incident_name,
-                "date": datetime.now().strftime(
+                "date": now.strftime(
                     "%Y-%m-%d"
                 ),
-                "heure": datetime.now().strftime(
+                "heure": now.strftime(
                     "%H:%M:%S"
                 ),
-                "medias_supprimes": deletion_count,
-                "medias_archives": archived_count,
+                "medias_supprimes": (
+                    deletion_count
+                ),
+                "medias_archives": (
+                    archived_count
+                ),
                 "seuil_securite": (
                     SECURITY_DELETE_THRESHOLD
                 ),
@@ -621,31 +705,23 @@ def main() -> int:
             )
 
             print(
-                "Rapport incident archivé."
+                "✅ Archive de sécurité créée."
             )
 
         except Exception as exc:
 
-            print()
             print(
-                "❌ ERREUR PENDANT "
-                "L'ARCHIVAGE."
+                "❌ Erreur pendant l'archivage."
             )
-
             print(
                 f"Erreur : {exc}"
             )
-
             print(
                 "AUCUNE SUPPRESSION "
                 "NE SERA EFFECTUÉE."
             )
 
             return 1
-
-        print(
-            "✅ Archivage de sécurité réussi."
-        )
 
     # --------------------------------------------------------
     # COMPTEURS
@@ -698,19 +774,11 @@ def main() -> int:
                 )
             )
 
-            current_modified = file.get(
-                "modifiedTime",
-                "",
-            )
-
             current_type = get_media_type(
                 file["mimeType"]
             )
 
-            # ------------------------------------------------
-            # MÉDIA MODIFIÉ
-            # ------------------------------------------------
-
+            # Média modifié
             if (
                 md5_checksum
                 and previous_md5
@@ -737,7 +805,10 @@ def main() -> int:
 
                     existing_entry[
                         "modified_time"
-                    ] = current_modified
+                    ] = file.get(
+                        "modifiedTime",
+                        "",
+                    )
 
                     existing_entry[
                         "synced_at"
@@ -765,10 +836,7 @@ def main() -> int:
                         f"{exc}"
                     )
 
-            # ------------------------------------------------
-            # FICHIER LOCAL MANQUANT
-            # ------------------------------------------------
-
+            # Fichier local supprimé
             elif not destination.exists():
 
                 print(
@@ -799,8 +867,8 @@ def main() -> int:
                 except Exception as exc:
 
                     print(
-                        "  ERREUR lors de "
-                        "la restauration : "
+                        "  ERREUR lors "
+                        "de la restauration : "
                         f"{exc}"
                     )
 
@@ -901,11 +969,6 @@ def main() -> int:
             IMAGE_DIR / local_name
         )
 
-        # Si le mode sécurité était activé,
-        # l'archive a déjà été validée.
-        #
-        # Sinon, on supprime normalement.
-
         print(
             f"Média supprimé de Drive : "
             f"{local_name}"
@@ -927,7 +990,7 @@ def main() -> int:
                 )
 
     # --------------------------------------------------------
-    # TRI
+    # TRI + SAUVEGARDE
     # --------------------------------------------------------
 
     updated_catalog.sort(
@@ -938,13 +1001,50 @@ def main() -> int:
         reverse=True,
     )
 
-    # --------------------------------------------------------
-    # SAUVEGARDE
-    # --------------------------------------------------------
-
     save_catalog(
         updated_catalog
     )
+
+    # --------------------------------------------------------
+    # ENVOI DE L'ALERTE EMAIL
+    # --------------------------------------------------------
+
+    if security_mode:
+
+        gmail_access_token = os.environ.get(
+            "GMAIL_ACCESS_TOKEN"
+        )
+
+        if not gmail_access_token:
+
+            print(
+                "⚠️ GMAIL_ACCESS_TOKEN est absent."
+            )
+            print(
+                "L'archive et la suppression "
+                "ont été effectuées, "
+                "mais l'alerte email n'a pas "
+                "pu être envoyée."
+            )
+
+        else:
+
+            try:
+
+                send_alert_email(
+                    access_token=gmail_access_token,
+                    incident_name=incident_name,
+                    deleted_count=deletion_count,
+                    archived_count=archived_count,
+                )
+
+            except Exception as exc:
+
+                print(
+                    "⚠️ ERREUR lors de l'envoi "
+                    "de l'alerte email : "
+                    f"{exc}"
+                )
 
     # --------------------------------------------------------
     # RÉSULTAT
@@ -982,10 +1082,13 @@ def main() -> int:
 
     if security_mode:
 
-        print()
         print(
-            f"✅ Incident {incident_name} "
-            "archivé avec succès."
+            f"Incident : {incident_name}"
+        )
+
+        print(
+            f"Médias archivés : "
+            f"{archived_count}"
         )
 
     print(
