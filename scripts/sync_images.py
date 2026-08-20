@@ -37,7 +37,13 @@ def load_catalog() -> list[dict]:
 
     try:
         with JSON_FILE.open("r", encoding="utf-8") as file:
-            data = json.load(file)
+            content = file.read().strip()
+
+        # Fichier vide = catalogue vide
+        if not content:
+            return []
+
+        data = json.loads(content)
 
         if not isinstance(data, list):
             print("ERREUR : images.json doit contenir une liste.")
@@ -48,7 +54,6 @@ def load_catalog() -> list[dict]:
     except json.JSONDecodeError as exc:
         print(f"ERREUR : images.json est invalide : {exc}")
         sys.exit(1)
-
 
 def save_catalog(catalog: list[dict]) -> None:
     """Sauvegarde le catalogue JSON."""
