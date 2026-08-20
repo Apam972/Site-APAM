@@ -148,4 +148,29 @@ function showNextImage() {
     openLightbox(currentIndex);
 }
 
+function getMediaType(mimeType) {
+
+    if (!mimeType) {
+        return "file";
+    }
+
+    if (mimeType.startsWith("image/")) {
+        return "image";
+    }
+
+    if (mimeType.startsWith("video/")) {
+        return "video";
+    }
+
+    if (mimeType.startsWith("audio/")) {
+        return "audio";
+    }
+
+    if (mimeType === "application/pdf") {
+        return "pdf";
+    }
+
+    return "file";
+}
+
 });
