@@ -5,7 +5,7 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
 
-ARCHIVE_FOLDER_ID = "16sigtO_6-sSXYhW1Cgz8lFjKIKBPuC9a"
+ARCHIVE_FOLDER_ID = "0APiMc1UWCSwcUk9PVA"
 
 TEST_FILE = Path("archive-test.txt")
 
@@ -44,14 +44,15 @@ def main() -> None:
     )
 
     uploaded = (
-        service.files()
-        .create(
-            body=metadata,
-            media_body=media,
-            fields="id,name"
-        )
-        .execute()
+    service.files()
+    .create(
+        body=metadata,
+        media_body=media,
+        fields="id,name",
+        supportsAllDrives=True,
     )
+    .execute()
+)
 
     print(
         f"Fichier envoyé : "
