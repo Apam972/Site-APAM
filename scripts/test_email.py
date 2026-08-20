@@ -8,7 +8,7 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 
 
-SENDER = "auto@apam972.com"
+SENDER = "mail.auto@apam972.com"
 
 RECIPIENT = os.environ.get(
     "TEST_EMAIL",
