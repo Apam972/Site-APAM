@@ -12,7 +12,7 @@ jobs:
       id-token: write
 
     env:
-      ARCHIVE_FOLDER_ID: "0APiMc1UWCSwcUk9PVA"
+      ARCHIVE_FOLDER_ID: "1RCuEJSndjKJrWL7TilYqbhtk5gxg9czy"
 
     steps:
       - name: Checkout
