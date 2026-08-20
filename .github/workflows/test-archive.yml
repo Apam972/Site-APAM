@@ -1,0 +1,36 @@
+name: Test Archive Secure
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-archive:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    env:
+      ARCHIVE_FOLDER_ID: "16sigtO_6-sSXYhW1Cgz8lFjKIKBPuC9a"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authentification Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          project_id: apam-site-506020
+          workload_identity_provider: projects/388224398802/locations/global/workloadIdentityPools/github-apam/providers/github-actions
+          service_account: apam-site-sync@apam-site-506020.iam.gserviceaccount.com
+
+      - name: Installer les dépendances
+        run: |
+          python -m pip install --upgrade pip
+          pip install google-auth google-api-python-client
+
+      - name: Tester Archive secure
+        run: |
+          python scripts/test_archive.py
+          
