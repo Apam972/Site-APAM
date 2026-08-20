@@ -12,8 +12,7 @@ jobs:
       id-token: write
 
     env:
-      env:
-  ARCHIVE_FOLDER_ID: "0APiMc1UWCSwcUk9PVA"
+      ARCHIVE_FOLDER_ID: "0APiMc1UWCSwcUk9PVA"
 
     steps:
       - name: Checkout
@@ -34,4 +33,3 @@ jobs:
       - name: Tester Archive secure
         run: |
           python scripts/test_archive.py
-          
