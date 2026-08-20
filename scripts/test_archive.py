@@ -5,7 +5,7 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
 
-ARCHIVE_FOLDER_ID = "0APiMc1UWCSwcUk9PVA"
+ARCHIVE_FOLDER_ID = "1RCuEJSndjKJrWL7TilYqbhtk5gxg9czy"
 
 TEST_FILE = Path("archive-test.txt")
 
