@@ -624,6 +624,10 @@ body {
     overflow: hidden;
     border-radius: 20px;
     background-color: #FFFFFF;
+        position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: 15px;
 }
 
 .gallery-item img {
