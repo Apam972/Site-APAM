@@ -762,160 +762,159 @@ def main() -> int:
 
         if existing_entry:
 
-    local_name = existing_entry[
-        "file"
-    ]
+            local_name = existing_entry[
+                "file"
+            ]
 
-    destination = (
-        IMAGE_DIR / local_name
-    )
-
-    previous_md5 = (
-        existing_entry.get(
-            "md5_checksum",
-            "",
-        )
-    )
-
-    current_type = get_media_type(
-        file["mimeType"]
-    )
-
-    # ========================================================
-    # SYNCHRONISATION DES MÉTADONNÉES
-    # ========================================================
-
-    existing_entry[
-        "title"
-    ] = Path(
-        file["name"]
-    ).stem
-
-    existing_entry[
-        "description"
-    ] = file.get(
-        "description",
-        "",
-    )
-
-    existing_entry[
-        "date"
-    ] = file.get(
-        "createdTime",
-        "",
-    )[:10]
-
-    existing_entry[
-        "type"
-    ] = current_type
-
-    # ========================================================
-    # MÉDIA MODIFIÉ
-    # ========================================================
-
-    if (
-        md5_checksum
-        and previous_md5
-        and md5_checksum
-        != previous_md5
-    ):
-
-        print(
-            f"Média modifié : "
-            f"{file['name']}"
-        )
-
-        try:
-
-            download_file(
-                service,
-                file,
-                destination,
+            destination = (
+                IMAGE_DIR / local_name
             )
 
-            existing_entry[
-                "md5_checksum"
-            ] = md5_checksum
+            previous_md5 = (
+                existing_entry.get(
+                    "md5_checksum",
+                    "",
+                )
+            )
+
+            current_type = get_media_type(
+                file["mimeType"]
+            )
+
+            # ========================================================
+            # SYNCHRONISATION DES MÉTADONNÉES
+            # ========================================================
 
             existing_entry[
-                "modified_time"
+                "title"
+            ] = Path(
+                file["name"]
+            ).stem
+
+            existing_entry[
+                "description"
             ] = file.get(
-                "modifiedTime",
+                "description",
                 "",
             )
 
             existing_entry[
-                "synced_at"
-            ] = datetime.now(
-                timezone.utc
-            ).isoformat()
-
-            updated_count += 1
-
-        except Exception as exc:
-
-            print(
-                "  ERREUR lors "
-                "de la mise à jour : "
-                f"{exc}"
-            )
-
-    # ========================================================
-    # FICHIER LOCAL MANQUANT
-    # ========================================================
-
-    elif not destination.exists():
-
-        print(
-            f"Média local manquant : "
-            f"{file['name']}"
-        )
-
-        try:
-
-            download_file(
-                service,
-                file,
-                destination,
-            )
-
-            existing_entry[
-                "md5_checksum"
-            ] = md5_checksum
-
-            existing_entry[
-                "modified_time"
+                "date"
             ] = file.get(
-                "modifiedTime",
+                "createdTime",
                 "",
-            )
+            )[:10]
 
             existing_entry[
-                "synced_at"
-            ] = datetime.now(
-                timezone.utc
-            ).isoformat()
+                "type"
+            ] = current_type
 
-            updated_count += 1
+            # ========================================================
+            # MÉDIA MODIFIÉ
+            # ========================================================
 
-        except Exception as exc:
+            if (
+                md5_checksum
+                and previous_md5
+                and md5_checksum
+                != previous_md5
+            ):
 
-            print(
-                "  ERREUR lors "
-                "de la restauration : "
-                f"{exc}"
+                print(
+                    f"Média modifié : "
+                    f"{file['name']}"
+                )
+
+                try:
+
+                    download_file(
+                        service,
+                        file,
+                        destination,
+                    )
+
+                    existing_entry[
+                        "md5_checksum"
+                    ] = md5_checksum
+
+                    existing_entry[
+                        "modified_time"
+                    ] = file.get(
+                        "modifiedTime",
+                        "",
+                    )
+
+                    existing_entry[
+                        "synced_at"
+                    ] = datetime.now(
+                        timezone.utc
+                    ).isoformat()
+
+                    updated_count += 1
+
+                except Exception as exc:
+
+                    print(
+                        "  ERREUR lors "
+                        "de la mise à jour : "
+                        f"{exc}"
+                    )
+
+            # ========================================================
+            # FICHIER LOCAL MANQUANT
+            # ========================================================
+
+            elif not destination.exists():
+
+                print(
+                    f"Média local manquant : "
+                    f"{file['name']}"
+                )
+
+                try:
+
+                    download_file(
+                        service,
+                        file,
+                        destination,
+                    )
+
+                    existing_entry[
+                        "md5_checksum"
+                    ] = md5_checksum
+
+                    existing_entry[
+                        "modified_time"
+                    ] = file.get(
+                        "modifiedTime",
+                        "",
+                    )
+
+                    existing_entry[
+                        "synced_at"
+                    ] = datetime.now(
+                        timezone.utc
+                    ).isoformat()
+
+                    updated_count += 1
+
+                except Exception as exc:
+
+                    print(
+                        "  ERREUR lors "
+                        "de la restauration : "
+                        f"{exc}"
+                    )
+
+            # ========================================================
+            # CONSERVATION DE L'ENTRÉE
+            # ========================================================
+
+            updated_catalog.append(
+                existing_entry
             )
 
-    # ========================================================
-    # CONSERVATION DE L'ENTRÉE
-    # ========================================================
-
-    updated_catalog.append(
-        existing_entry
-    )
-
-    continue
-
+            continue
         # ----------------------------------------------------
         # NOUVEAU MÉDIA
         # ----------------------------------------------------
