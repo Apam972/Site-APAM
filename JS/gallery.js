@@ -40,6 +40,31 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
 
+    function formatDate(dateString) {
+
+        if (!dateString) {
+            return "";
+        }
+
+        const date = new Date(
+            `${dateString}T00:00:00`
+        );
+
+        if (Number.isNaN(date.getTime())) {
+            return dateString;
+        }
+
+        return new Intl.DateTimeFormat(
+            "fr-FR",
+            {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            }
+        ).format(date);
+    }
+
+
     function getMediaTypeFromFile(fileName) {
 
         if (!fileName) {
@@ -51,6 +76,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             .pop()
             .toLowerCase();
 
+
         const imageExtensions = [
             "jpg",
             "jpeg",
@@ -61,6 +87,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             "svg"
         ];
 
+
         const videoExtensions = [
             "mp4",
             "webm",
@@ -69,27 +96,45 @@ document.addEventListener("DOMContentLoaded", async () => {
             "mkv"
         ];
 
+
         const audioExtensions = [
             "mp3",
             "wav",
             "ogg"
         ];
 
-        if (imageExtensions.includes(extension)) {
+
+        if (
+            imageExtensions.includes(
+                extension
+            )
+        ) {
             return "image";
         }
 
-        if (videoExtensions.includes(extension)) {
+
+        if (
+            videoExtensions.includes(
+                extension
+            )
+        ) {
             return "video";
         }
 
-        if (audioExtensions.includes(extension)) {
+
+        if (
+            audioExtensions.includes(
+                extension
+            )
+        ) {
             return "audio";
         }
+
 
         if (extension === "pdf") {
             return "pdf";
         }
+
 
         return "file";
     }
@@ -101,7 +146,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             return media.type;
         }
 
-        return getMediaTypeFromFile(media.file);
+        return getMediaTypeFromFile(
+            media.file
+        );
     }
 
 
@@ -110,16 +157,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     // ========================================================
 
     const lightbox =
-        document.getElementById("photo-lightbox");
+        document.getElementById(
+            "photo-lightbox"
+        );
+
 
     const closeButton =
-        document.querySelector(".lightbox-close");
+        document.querySelector(
+            ".lightbox-close"
+        );
+
 
     const prevButton =
-        document.querySelector(".lightbox-prev");
+        document.querySelector(
+            ".lightbox-prev"
+        );
+
 
     const nextButton =
-        document.querySelector(".lightbox-next");
+        document.querySelector(
+            ".lightbox-next"
+        );
 
 
     let lightboxMediaContainer = null;
@@ -128,12 +186,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (lightbox) {
 
         lightboxMediaContainer =
-            lightbox.querySelector(".lightbox-media");
+            lightbox.querySelector(
+                ".lightbox-media"
+            );
+
 
         if (!lightboxMediaContainer) {
 
             lightboxMediaContainer =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
             lightboxMediaContainer.className =
                 "lightbox-media";
@@ -151,7 +214,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     // ========================================================
-    // AFFICHAGE D'UN MÉDIA DANS LA LIGHTBOX
+    // AFFICHAGE DU MÉDIA DANS LA LIGHTBOX
     // ========================================================
 
     function renderLightboxMedia(media) {
@@ -160,24 +223,135 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
-        lightboxMediaContainer.innerHTML = "";
+
+        lightboxMediaContainer.innerHTML =
+            "";
+
+
+        // ----------------------------------------------------
+        // CONTENEURS
+        // ----------------------------------------------------
+
+        const mediaContent =
+            document.createElement(
+                "div"
+            );
+
+        mediaContent.className =
+            "lightbox-media-content";
+
+
+        const info =
+            document.createElement(
+                "div"
+            );
+
+        info.className =
+            "lightbox-info";
+
+
+        // ----------------------------------------------------
+        // INFORMATIONS
+        // ----------------------------------------------------
+
+        const titleText =
+            media.title || "";
+
+
+        const descriptionText =
+            media.description || "";
+
+
+        const dateText =
+            media.date || "";
+
+
+        if (titleText) {
+
+            const titleElement =
+                document.createElement(
+                    "h2"
+                );
+
+            titleElement.className =
+                "lightbox-title";
+
+            titleElement.textContent =
+                titleText;
+
+            info.appendChild(
+                titleElement
+            );
+        }
+
+
+        if (dateText) {
+
+            const dateElement =
+                document.createElement(
+                    "p"
+                );
+
+            dateElement.className =
+                "lightbox-date";
+
+            dateElement.textContent =
+                formatDate(
+                    dateText
+                );
+
+            info.appendChild(
+                dateElement
+            );
+        }
+
+
+        if (descriptionText) {
+
+            const descriptionElement =
+                document.createElement(
+                    "p"
+                );
+
+            descriptionElement.className =
+                "lightbox-description";
+
+            descriptionElement.textContent =
+                descriptionText;
+
+            info.appendChild(
+                descriptionElement
+            );
+        }
+
+
+        // ----------------------------------------------------
+        // SOURCE
+        // ----------------------------------------------------
 
         const source =
             `assets/image-apam/${media.file}`;
+
 
         const title =
             media.title ||
             "Média de l'APAM";
 
 
+        const type =
+            getItemType(media);
+
+
         // ----------------------------------------------------
         // IMAGE
         // ----------------------------------------------------
 
-        if (getItemType(media) === "image") {
+        if (type === "image") {
 
             const imageElement =
-                document.createElement("img");
+                document.createElement(
+                    "img"
+                );
 
             imageElement.className =
                 "lightbox-image";
@@ -191,11 +365,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             imageElement.loading =
                 "eager";
 
-            lightboxMediaContainer.appendChild(
+
+            mediaContent.appendChild(
                 imageElement
             );
-
-            return;
         }
 
 
@@ -203,10 +376,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         // VIDÉO
         // ----------------------------------------------------
 
-        if (getItemType(media) === "video") {
+        else if (type === "video") {
 
             const videoElement =
-                document.createElement("video");
+                document.createElement(
+                    "video"
+                );
 
             videoElement.className =
                 "lightbox-video";
@@ -231,11 +406,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 title
             );
 
-            lightboxMediaContainer.appendChild(
+
+            mediaContent.appendChild(
                 videoElement
             );
-
-            return;
         }
 
 
@@ -243,27 +417,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         // AUDIO
         // ----------------------------------------------------
 
-        if (getItemType(media) === "audio") {
-
-            const wrapper =
-                document.createElement("div");
-
-            wrapper.className =
-                "lightbox-audio";
-
-
-            const titleElement =
-                document.createElement("p");
-
-            titleElement.className =
-                "lightbox-media-title";
-
-            titleElement.textContent =
-                title;
-
+        else if (type === "audio") {
 
             const audioElement =
-                document.createElement("audio");
+                document.createElement(
+                    "audio"
+                );
+
+            audioElement.className =
+                "lightbox-audio-player";
 
             audioElement.controls =
                 true;
@@ -278,19 +440,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 source;
 
 
-            wrapper.appendChild(
-                titleElement
-            );
-
-            wrapper.appendChild(
+            mediaContent.appendChild(
                 audioElement
             );
-
-            lightboxMediaContainer.appendChild(
-                wrapper
-            );
-
-            return;
         }
 
 
@@ -298,10 +450,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         // PDF
         // ----------------------------------------------------
 
-        if (getItemType(media) === "pdf") {
+        else if (type === "pdf") {
 
             const link =
-                document.createElement("a");
+                document.createElement(
+                    "a"
+                );
 
             link.className =
                 "lightbox-file-link";
@@ -318,11 +472,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             link.textContent =
                 `Ouvrir le PDF : ${title}`;
 
-            lightboxMediaContainer.appendChild(
+
+            mediaContent.appendChild(
                 link
             );
-
-            return;
         }
 
 
@@ -330,27 +483,50 @@ document.addEventListener("DOMContentLoaded", async () => {
         // AUTRE FICHIER
         // ----------------------------------------------------
 
-        const link =
-            document.createElement("a");
+        else {
 
-        link.className =
-            "lightbox-file-link";
+            const link =
+                document.createElement(
+                    "a"
+                );
 
-        link.href =
-            source;
+            link.className =
+                "lightbox-file-link";
 
-        link.target =
-            "_blank";
+            link.href =
+                source;
 
-        link.rel =
-            "noopener noreferrer";
+            link.target =
+                "_blank";
 
-        link.textContent =
-            `Ouvrir le fichier : ${title}`;
+            link.rel =
+                "noopener noreferrer";
+
+            link.textContent =
+                `Ouvrir le fichier : ${title}`;
+
+
+            mediaContent.appendChild(
+                link
+            );
+        }
+
+
+        // ----------------------------------------------------
+        // AJOUT À LA LIGHTBOX
+        // ----------------------------------------------------
 
         lightboxMediaContainer.appendChild(
-            link
+            mediaContent
         );
+
+
+        if (info.children.length > 0) {
+
+            lightboxMediaContainer.appendChild(
+                info
+            );
+        }
     }
 
 
@@ -364,12 +540,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
+
         if (
             !Array.isArray(images) ||
             images.length === 0
         ) {
             return;
         }
+
 
         if (
             index < 0 ||
@@ -378,19 +556,24 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
+
         currentIndex =
             index;
 
+
         const media =
             images[currentIndex];
+
 
         renderLightboxMedia(
             media
         );
 
+
         lightbox.classList.add(
             "active"
         );
+
 
         lightbox.setAttribute(
             "aria-hidden",
@@ -409,17 +592,22 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
+
         lightbox.classList.remove(
             "active"
         );
+
 
         lightbox.setAttribute(
             "aria-hidden",
             "true"
         );
 
+
         if (lightboxMediaContainer) {
-            lightboxMediaContainer.innerHTML = "";
+
+            lightboxMediaContainer.innerHTML =
+                "";
         }
     }
 
@@ -437,6 +625,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
+
         currentIndex =
             (
                 currentIndex -
@@ -444,6 +633,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 images.length
             ) %
             images.length;
+
 
         openLightbox(
             currentIndex
@@ -464,12 +654,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
+
         currentIndex =
             (
                 currentIndex +
                 1
             ) %
             images.length;
+
 
         openLightbox(
             currentIndex
@@ -487,6 +679,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             await fetch(
                 "./data/images.json"
             );
+
 
         if (!response.ok) {
 
@@ -810,16 +1003,69 @@ document.addEventListener("DOMContentLoaded", async () => {
             );
         }
 
+
+        // ====================================================
+        // CLAVIER
+        // ====================================================
+
+        document.addEventListener(
+            "keydown",
+            (event) => {
+
+                if (
+                    !lightbox ||
+                    !lightbox.classList.contains(
+                        "active"
+                    )
+                ) {
+                    return;
+                }
+
+
+                if (
+                    event.key ===
+                    "Escape"
+                ) {
+
+                    closeLightbox();
+                    return;
+                }
+
+
+                if (
+                    event.key ===
+                    "ArrowLeft"
+                ) {
+
+                    showPreviousImage();
+                    return;
+                }
+
+
+                if (
+                    event.key ===
+                    "ArrowRight"
+                ) {
+
+                    showNextImage();
+                }
+            }
+        );
+
+
     } catch (error) {
 
         console.error(
-            "Impossible de charger la galerie APAM :",
+            "Impossible de charger "
+            + "la galerie APAM :",
             error
         );
 
+
         gallery.innerHTML = `
             <p class="gallery-error">
-                Impossible de charger les médias.
+                Impossible de charger
+                les médias.
             </p>
         `;
     }

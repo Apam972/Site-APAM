@@ -730,8 +730,37 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
 }
-
+.lightbox-media-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.lightbox-info {
+    width: min(90vw, 800px);
+    margin-top: 18px;
+    text-align: center;
+    color: white;
+}
+.lightbox-title {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+}
+.lightbox-date {
+    margin: 5px 0 0;
+    font-size: 14px;
+    opacity: 0.75;
+}
+.lightbox-description {
+    margin: 10px auto 0;
+    max-width: 700px;
+    font-size: 15px;
+    line-height: 1.6;
+    opacity: 0.9;
+}
 .lightbox-media img,
 .lightbox-video {
     display: block;
