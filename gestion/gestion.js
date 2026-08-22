@@ -1,6 +1,73 @@
 document.addEventListener(
     "DOMContentLoaded",
     () => {
+                // ====================================================
+        // NAVIGATION PAR ONGLETS
+        // ====================================================
+
+        const tabs =
+            document.querySelectorAll(
+                ".gestion-tab"
+            );
+
+        const tabContents =
+            document.querySelectorAll(
+                ".gestion-tab-content"
+            );
+
+
+        tabs.forEach(
+            (tab) => {
+
+                tab.addEventListener(
+                    "click",
+                    () => {
+
+                        const target =
+                            tab.dataset.tab;
+
+
+                        tabs.forEach(
+                            (item) => {
+
+                                item.classList.remove(
+                                    "active"
+                                );
+                            }
+                        );
+
+
+                        tabContents.forEach(
+                            (content) => {
+
+                                content.classList.remove(
+                                    "active"
+                                );
+                            }
+                        );
+
+
+                        tab.classList.add(
+                            "active"
+                        );
+
+
+                        const targetContent =
+                            document.querySelector(
+                                `[data-content="${target}"]`
+                            );
+
+
+                        if (targetContent) {
+
+                            targetContent.classList.add(
+                                "active"
+                            );
+                        }
+                    }
+                );
+            }
+        );
 
         const form =
             document.getElementById(
