@@ -457,7 +457,7 @@ def build_entry(
             "",
         ),
         "synced_at": datetime.now(
-            timezone.utc
+            timezone.utc)
     }
 
 
