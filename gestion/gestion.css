@@ -75,6 +75,7 @@ body {
     border: 2px solid #F5A623;
     border-radius: 999px;
 
+    background: white;
     color: #F5A623;
 
     text-decoration: none;
@@ -82,17 +83,20 @@ body {
 
     transition:
         background 0.25s ease,
-        color 0.25s ease;
+        color 0.25s ease,
+        transform 0.25s ease;
 }
 
 .back-button:hover {
     background: #F5A623;
     color: white;
+
+    transform: translateY(-2px);
 }
 
 
 /* ============================================================
-   LAYOUT
+   CONTENEUR PRINCIPAL
    ============================================================ */
 
 .gestion-main {
@@ -100,6 +104,11 @@ body {
 
     margin: 50px auto 80px;
 }
+
+
+/* ============================================================
+   ONGLET DE NAVIGATION
+   ============================================================ */
 
 .gestion-tabs {
     width: 100%;
@@ -119,6 +128,9 @@ body {
 
     box-shadow:
         0 6px 20px rgba(0, 0, 0, 0.08);
+
+    position: relative;
+    z-index: 10;
 }
 
 .gestion-tab {
@@ -132,7 +144,6 @@ body {
     border-radius: 14px;
 
     background: transparent;
-
     color: #555;
 
     font-family: "Poppins", sans-serif;
@@ -144,12 +155,15 @@ body {
     transition:
         background 0.25s ease,
         color 0.25s ease,
-        transform 0.25s ease;
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
 }
 
 .gestion-tab:hover {
     background: #FFF8EC;
     color: #C34324;
+
+    transform: translateY(-1px);
 }
 
 .gestion-tab.active {
@@ -161,8 +175,27 @@ body {
         rgba(245, 166, 35, 0.25);
 }
 
+
+/* ============================================================
+   CONTENU DES ONGLES
+   ============================================================ */
+
+/*
+   Par défaut, aucune section n'est visible.
+*/
+
 .gestion-tab-content {
-    display: none;
+    display: none !important;
+
+    width: 100%;
+}
+
+/*
+   Seule la section active est affichée.
+*/
+
+.gestion-tab-content.active {
+    display: grid !important;
 
     grid-template-columns:
         minmax(0, 1.4fr)
@@ -173,9 +206,11 @@ body {
     align-items: start;
 }
 
-.gestion-tab-content.active {
-    display: grid;
-}
+
+/* ============================================================
+   PANNEAUX
+   ============================================================ */
+
 .gestion-panel,
 .preview-panel {
     background: white;
@@ -222,17 +257,18 @@ body {
 }
 
 .form-group label {
+    color: #333;
+
     font-size: 15px;
     font-weight: 600;
-
-    color: #333;
 }
 
 .form-help {
     margin: 0 0 5px;
 
-    font-size: 13px;
     color: #777;
+
+    font-size: 13px;
 }
 
 .form-group input[type="text"],
@@ -248,6 +284,7 @@ body {
     border-radius: 12px;
 
     background: white;
+    color: #333;
 
     font-family: "Poppins", sans-serif;
     font-size: 14px;
@@ -260,9 +297,9 @@ body {
 }
 
 .form-group textarea {
-    resize: vertical;
-
     min-height: 250px;
+
+    resize: vertical;
 
     line-height: 1.6;
 }
@@ -278,7 +315,7 @@ body {
 
 
 /* ============================================================
-   UPLOAD
+   ZONES D'UPLOAD
    ============================================================ */
 
 .upload-box {
@@ -344,20 +381,21 @@ body {
 }
 
 .upload-file-name {
+    max-width: 90%;
+
+    overflow: hidden;
+
     color: #777;
 
     font-size: 12px;
 
-    max-width: 90%;
-
-    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 
 /* ============================================================
-   PREVISUALISATIONS
+   PRÉVISUALISATION IMAGE PRINCIPALE
    ============================================================ */
 
 .image-preview {
@@ -381,10 +419,19 @@ body {
     border-radius: 15px;
 }
 
+
+/* ============================================================
+   PRÉVISUALISATION DES AUTRES PHOTOS
+   ============================================================ */
+
 .images-preview {
     display: grid;
+
     grid-template-columns:
-        repeat(auto-fill, minmax(110px, 1fr));
+        repeat(
+            auto-fill,
+            minmax(110px, 1fr)
+        );
 
     gap: 10px;
 
@@ -400,17 +447,17 @@ body {
 }
 
 .preview-thumbnail img {
+    display: block;
+
     width: 100%;
     height: 100%;
-
-    display: block;
 
     object-fit: cover;
 }
 
 
 /* ============================================================
-   BOUTONS
+   BOUTONS DU FORMULAIRE
    ============================================================ */
 
 .form-actions {
@@ -439,6 +486,7 @@ body {
     transition:
         background 0.25s ease,
         color 0.25s ease,
+        border-color 0.25s ease,
         transform 0.25s ease;
 }
 
@@ -451,6 +499,7 @@ body {
 
 .button-primary:hover {
     background: #C34324;
+
     border-color: #C34324;
 
     transform: translateY(-2px);
@@ -466,6 +515,17 @@ body {
 .button-secondary:hover {
     background: #F5A623;
     color: white;
+
+    transform: translateY(-2px);
+}
+
+.button-primary:disabled,
+.button-secondary:disabled {
+    opacity: 0.55;
+
+    cursor: not-allowed;
+
+    transform: none;
 }
 
 
@@ -487,7 +547,8 @@ body {
     background: white;
 
     box-shadow:
-        0 6px 20px rgba(0, 0, 0, 0.08);
+        0 6px 20px
+        rgba(0, 0, 0, 0.08);
 }
 
 .news-preview-image {
@@ -505,11 +566,13 @@ body {
     color: #999;
 
     font-size: 13px;
+
+    background-size: cover;
+    background-position: center;
 }
 
 .news-preview-image.has-image {
-    background-size: cover;
-    background-position: center;
+    color: transparent;
 }
 
 .news-preview-content {
@@ -541,107 +604,6 @@ body {
 
     font-size: 13px;
     line-height: 1.6;
-}
-
-
-/* ============================================================
-   RESPONSIVE
-   ============================================================ */
-
-@media (max-width: 850px) {
-
-    .gestion-header-inner {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .gestion-main {
-        grid-template-columns: 1fr;
-    }
-
-    .preview-panel {
-        position: static;
-    }
-}/* ============================================================
-   ONGLETS DE GESTION
-   ============================================================ */
-
-.gestion-tabs {
-    width: 100%;
-
-    margin-bottom: 30px;
-
-    display: flex;
-    flex-wrap: wrap;
-
-    gap: 10px;
-
-    padding: 8px;
-
-    background: white;
-
-    border-radius: 20px;
-
-    box-shadow:
-        0 6px 20px rgba(0, 0, 0, 0.08);
-}
-
-.gestion-tab {
-    flex: 1 1 auto;
-
-    min-height: 48px;
-
-    padding: 10px 18px;
-
-    border: none;
-    border-radius: 14px;
-
-    background: transparent;
-
-    color: #555;
-
-    font-family: "Poppins", sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition:
-        background 0.25s ease,
-        color 0.25s ease,
-        transform 0.25s ease;
-}
-
-.gestion-tab:hover {
-    background: #FFF8EC;
-
-    color: #C34324;
-}
-
-.gestion-tab.active {
-    background: #F5A623;
-
-    color: white;
-
-    box-shadow:
-        0 4px 12px
-        rgba(245, 166, 35, 0.25);
-}
-
-.gestion-tab-content {
-    display: none;
-
-    grid-template-columns:
-        minmax(0, 1.4fr)
-        minmax(320px, 0.8fr);
-
-    gap: 30px;
-
-    align-items: start;
-}
-
-.gestion-tab-content.active {
-    display: grid;
 }
 
 
@@ -710,14 +672,6 @@ body {
     line-height: 1.7;
 }
 
-.button-primary:disabled {
-    opacity: 0.55;
-
-    cursor: not-allowed;
-
-    transform: none;
-}
-
 
 /* ============================================================
    RESPONSIVE
@@ -725,15 +679,32 @@ body {
 
 @media (max-width: 850px) {
 
-    .gestion-tabs {
+    .gestion-header-inner {
         flex-direction: column;
+
+        align-items: flex-start;
     }
 
     .gestion-tab {
+        flex: 1 1 100%;
+
         width: 100%;
     }
 
     .gestion-tab-content.active {
         grid-template-columns: 1fr;
+    }
+
+    .preview-panel {
+        position: static;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .button-primary,
+    .button-secondary {
+        width: 100%;
     }
 }
