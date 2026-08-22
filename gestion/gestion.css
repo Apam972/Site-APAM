@@ -1,0 +1,499 @@
+/* ============================================================
+   GLOBAL
+   ============================================================ */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+
+    font-family: "Poppins", sans-serif;
+
+    background: #FFF8EC;
+    color: #333;
+}
+
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.gestion-header {
+    background: white;
+
+    border-bottom: 1px solid
+        rgba(0, 0, 0, 0.08);
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.gestion-header-inner {
+    width: min(1200px, 92%);
+
+    margin: 0 auto;
+
+    padding: 30px 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 30px;
+}
+
+.gestion-eyebrow,
+.panel-eyebrow {
+    margin: 0 0 5px;
+
+    color: #C34324;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.gestion-header h1 {
+    margin: 0;
+
+    color: #F5A623;
+
+    font-size: 32px;
+    font-weight: 600;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 10px 18px;
+
+    border: 2px solid #F5A623;
+    border-radius: 999px;
+
+    color: #F5A623;
+
+    text-decoration: none;
+    font-weight: 600;
+
+    transition:
+        background 0.25s ease,
+        color 0.25s ease;
+}
+
+.back-button:hover {
+    background: #F5A623;
+    color: white;
+}
+
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+
+.gestion-main {
+    width: min(1200px, 92%);
+
+    margin: 50px auto 80px;
+
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1.4fr)
+        minmax(320px, 0.8fr);
+
+    gap: 30px;
+
+    align-items: start;
+}
+
+.gestion-panel,
+.preview-panel {
+    background: white;
+
+    border-radius: 30px;
+
+    padding: 35px;
+
+    box-shadow:
+        10px 10px 20px rgba(0, 0, 0, 0.12),
+        -5px -5px 15px rgba(255, 255, 255, 0.8);
+}
+
+.panel-heading {
+    margin-bottom: 30px;
+}
+
+.panel-heading h2 {
+    margin: 0;
+
+    color: #F5A623;
+
+    font-size: 26px;
+    font-weight: 600;
+}
+
+
+/* ============================================================
+   FORMULAIRE
+   ============================================================ */
+
+.news-form {
+    display: flex;
+    flex-direction: column;
+
+    gap: 26px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 15px;
+    font-weight: 600;
+
+    color: #333;
+}
+
+.form-help {
+    margin: 0 0 5px;
+
+    font-size: 13px;
+    color: #777;
+}
+
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group textarea {
+    width: 100%;
+
+    padding: 13px 15px;
+
+    border: 1px solid
+        rgba(0, 0, 0, 0.15);
+
+    border-radius: 12px;
+
+    background: white;
+
+    font-family: "Poppins", sans-serif;
+    font-size: 14px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.form-group textarea {
+    resize: vertical;
+
+    min-height: 250px;
+
+    line-height: 1.6;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #F5A623;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(245, 166, 35, 0.15);
+}
+
+
+/* ============================================================
+   UPLOAD
+   ============================================================ */
+
+.upload-box {
+    min-height: 120px;
+
+    padding: 25px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    border: 2px dashed
+        rgba(245, 166, 35, 0.6);
+
+    border-radius: 18px;
+
+    background: #FFF8EC;
+
+    cursor: pointer;
+
+    text-align: center;
+
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.25s ease;
+}
+
+.upload-box:hover {
+    background: #FFF3D8;
+
+    border-color: #F5A623;
+
+    transform: translateY(-2px);
+}
+
+.upload-icon {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #F5A623;
+    color: white;
+
+    font-size: 24px;
+    font-weight: 400;
+}
+
+.upload-title {
+    color: #C34324;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.upload-file-name {
+    color: #777;
+
+    font-size: 12px;
+
+    max-width: 90%;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* ============================================================
+   PREVISUALISATIONS
+   ============================================================ */
+
+.image-preview {
+    display: none;
+
+    margin-top: 10px;
+}
+
+.image-preview.active {
+    display: block;
+}
+
+.image-preview img {
+    display: block;
+
+    width: 100%;
+    max-height: 300px;
+
+    object-fit: cover;
+
+    border-radius: 15px;
+}
+
+.images-preview {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fill, minmax(110px, 1fr));
+
+    gap: 10px;
+
+    margin-top: 10px;
+}
+
+.preview-thumbnail {
+    aspect-ratio: 1 / 1;
+
+    overflow: hidden;
+
+    border-radius: 12px;
+}
+
+.preview-thumbnail img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+
+/* ============================================================
+   BOUTONS
+   ============================================================ */
+
+.form-actions {
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 12px;
+
+    padding-top: 5px;
+}
+
+.button-primary,
+.button-secondary {
+    padding: 11px 20px;
+
+    border-radius: 999px;
+
+    font-family: "Poppins", sans-serif;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        color 0.25s ease,
+        transform 0.25s ease;
+}
+
+.button-primary {
+    border: 2px solid #F5A623;
+
+    background: #F5A623;
+    color: white;
+}
+
+.button-primary:hover {
+    background: #C34324;
+    border-color: #C34324;
+
+    transform: translateY(-2px);
+}
+
+.button-secondary {
+    border: 2px solid #F5A623;
+
+    background: white;
+    color: #F5A623;
+}
+
+.button-secondary:hover {
+    background: #F5A623;
+    color: white;
+}
+
+
+/* ============================================================
+   APERÇU
+   ============================================================ */
+
+.preview-panel {
+    position: sticky;
+
+    top: 30px;
+}
+
+.news-preview {
+    overflow: hidden;
+
+    border-radius: 20px;
+
+    background: white;
+
+    box-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.news-preview-image {
+    width: 100%;
+
+    aspect-ratio: 16 / 10;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #F1F1F1;
+
+    color: #999;
+
+    font-size: 13px;
+}
+
+.news-preview-image.has-image {
+    background-size: cover;
+    background-position: center;
+}
+
+.news-preview-content {
+    padding: 22px;
+}
+
+.news-preview-date {
+    margin: 0 0 5px;
+
+    color: #C34324;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.news-preview-content h3 {
+    margin: 0 0 10px;
+
+    color: #F5A623;
+
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.news-preview-content p:last-child {
+    margin: 0;
+
+    color: #555;
+
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 850px) {
+
+    .gestion-header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .gestion-main {
+        grid-template-columns: 1fr;
+    }
+
+    .preview-panel {
+        position: static;
+    }
+}

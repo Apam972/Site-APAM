@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Gestion APAM</title>
+
+    <link
+        rel="stylesheet"
+        href="gestion.css"
+    >
+</head>
+
+<body>
+
+    <header class="gestion-header">
+
+        <div class="gestion-header-inner">
+
+            <div>
+                <p class="gestion-eyebrow">
+                    APAM
+                </p>
+
+                <h1>
+                    Gestion des actualités
+                </h1>
+            </div>
+
+            <a
+                href="../index.html"
+                class="back-button"
+            >
+                ← Retour au site
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <main class="gestion-main">
+
+        <section class="gestion-panel">
+
+            <div class="panel-heading">
+
+                <div>
+                    <p class="panel-eyebrow">
+                        Publication
+                    </p>
+
+                    <h2>
+                        Nouvelle actualité
+                    </h2>
+                </div>
+
+            </div>
+
+
+            <form
+                id="news-form"
+                class="news-form"
+            >
+
+                <!-- TITRE -->
+
+                <div class="form-group">
+
+                    <label for="news-title">
+                        Titre de l'actualité
+                    </label>
+
+                    <input
+                        type="text"
+                        id="news-title"
+                        name="title"
+                        placeholder="Ex. Sortie à la plage avec les jeunes"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- DATE -->
+
+                <div class="form-group">
+
+                    <label for="news-date">
+                        Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="news-date"
+                        name="date"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- IMAGE PRINCIPALE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Image principale
+                    </label>
+
+                    <p class="form-help">
+                        Cette image sera utilisée sur
+                        l'accueil et l'aperçu de l'actualité.
+                    </p>
+
+                    <label
+                        for="news-cover"
+                        class="upload-box"
+                    >
+
+                        <span class="upload-icon">
+                            +
+                        </span>
+
+                        <span class="upload-title">
+                            Choisir l'image principale
+                        </span>
+
+                        <span
+                            class="upload-file-name"
+                            id="cover-file-name"
+                        >
+                            Aucun fichier sélectionné
+                        </span>
+
+                    </label>
+
+                    <input
+                        type="file"
+                        id="news-cover"
+                        name="cover"
+                        accept="image/*"
+                        hidden
+                        required
+                    >
+
+                    <div
+                        class="image-preview"
+                        id="cover-preview"
+                    ></div>
+
+                </div>
+
+
+                <!-- GALERIE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Photos de l'actualité
+                    </label>
+
+                    <p class="form-help">
+                        Ajoute autant de photos que nécessaire
+                        pour illustrer l'article.
+                    </p>
+
+                    <label
+                        for="news-images"
+                        class="upload-box"
+                    >
+
+                        <span class="upload-icon">
+                            +
+                        </span>
+
+                        <span class="upload-title">
+                            Ajouter des photos
+                        </span>
+
+                        <span
+                            class="upload-file-name"
+                            id="images-file-count"
+                        >
+                            Aucune photo sélectionnée
+                        </span>
+
+                    </label>
+
+                    <input
+                        type="file"
+                        id="news-images"
+                        name="images"
+                        accept="image/*"
+                        multiple
+                        hidden
+                    >
+
+                    <div
+                        class="images-preview"
+                        id="images-preview"
+                    ></div>
+
+                </div>
+
+
+                <!-- ARTICLE -->
+
+                <div class="form-group">
+
+                    <label for="news-content">
+                        Article
+                    </label>
+
+                    <textarea
+                        id="news-content"
+                        name="content"
+                        rows="12"
+                        placeholder="Écris ici le contenu de l'actualité..."
+                        required
+                    ></textarea>
+
+                </div>
+
+
+                <!-- ACTIONS -->
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="button-secondary"
+                        id="cancel-button"
+                    >
+                        Annuler
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="button-primary"
+                    >
+                        Publier l'actualité
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <!-- APERÇU -->
+
+        <aside class="preview-panel">
+
+            <div class="panel-heading">
+
+                <div>
+                    <p class="panel-eyebrow">
+                        Aperçu
+                    </p>
+
+                    <h2>
+                        Sur le site
+                    </h2>
+                </div>
+
+            </div>
+
+
+            <article class="news-preview">
+
+                <div
+                    class="news-preview-image"
+                    id="news-preview-image"
+                >
+                    <span>
+                        Image principale
+                    </span>
+                </div>
+
+                <div class="news-preview-content">
+
+                    <p
+                        class="news-preview-date"
+                        id="news-preview-date"
+                    >
+                        Date de l'actualité
+                    </p>
+
+                    <h3 id="news-preview-title">
+                        Titre de l'actualité
+                    </h3>
+
+                    <p id="news-preview-text">
+                        Le début de ton article
+                        apparaîtra ici...
+                    </p>
+
+                </div>
+
+            </article>
+
+        </aside>
+
+    </main>
+
+
+    <script src="gestion.js"></script>
+
+</body>
+
+</html>
