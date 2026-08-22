@@ -645,13 +645,39 @@ body {
     object-fit: cover;
     display: block;
     cursor: pointer;
+      
+    transition:
+        transform 0.4s ease,
+        filter 0.4s ease;
+}
+/* Assombrissement au survol */
+.gallery-item::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0);
+
+    transition:
+        background  0.4s ease;
+
+    pointer-events: none;
+}
+/* Effet au survol */
+.gallery-item:hover img,
+.gallery-item:hover video {
+    transform: scale(1.04);
+    filter: brightness(0.78);
+}
+.gallery-item:hover::after {
+    background: rgba(0, 0, 0, 0.08);
 }
 .gallery-item:hover img {
-    transform: scale(1.5);
+    transform: scale(1.2);
 }
 
 .gallery-item:hover video {
-    transform: scale(1.5);
+    transform: scale(1.2);
 }
 
 .gallery-empty,
