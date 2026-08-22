@@ -3,7 +3,22 @@ document.addEventListener(
     () => {
 
         // ====================================================
-        // NAVIGATION DES ONGLETS
+        // STOCKAGE
+        // ====================================================
+
+        const STORAGE_KEY =
+            "apam_actualites";
+
+
+        let actualites =
+            loadActualites();
+
+
+        let editingId = null;
+
+
+        // ====================================================
+        // NAVIGATION DES ONGlets
         // ====================================================
 
         const tabs =
@@ -31,10 +46,6 @@ document.addEventListener(
             }
 
 
-            // ------------------------------------------------
-            // ONGLET ACTIF
-            // ------------------------------------------------
-
             tabs.forEach(
                 (tab) => {
 
@@ -46,10 +57,6 @@ document.addEventListener(
                 }
             );
 
-
-            // ------------------------------------------------
-            // CONTENU ACTIF
-            // ------------------------------------------------
 
             tabContents.forEach(
                 (content) => {
@@ -85,48 +92,95 @@ document.addEventListener(
 
                     }
                 );
-
             }
         );
 
 
         // ====================================================
-        // ÉLÉMENTS DU FORMULAIRE ACTUALITÉS
+        // ÉLÉMENTS ACTUALITÉS
         // ====================================================
 
-        const form =
+        const newsList =
+            document.getElementById(
+                "news-list"
+            );
+
+
+        const newsEditor =
+            document.getElementById(
+                "news-editor"
+            );
+
+
+        const newsForm =
             document.getElementById(
                 "news-form"
             );
 
 
-        const titleInput =
+        const newNewsButton =
+            document.getElementById(
+                "new-news-button"
+            );
+
+
+        const newNewsEmptyButton =
+            document.getElementById(
+                "new-news-empty-button"
+            );
+
+
+        const cancelEditorButton =
+            document.getElementById(
+                "cancel-editor-button"
+            );
+
+
+        const cancelNewsButton =
+            document.getElementById(
+                "cancel-news-button"
+            );
+
+
+        const editorTitle =
+            document.getElementById(
+                "editor-title"
+            );
+
+
+        const newsIdInput =
+            document.getElementById(
+                "news-id"
+            );
+
+
+        const newsTitleInput =
             document.getElementById(
                 "news-title"
             );
 
 
-        const dateInput =
+        const newsDateInput =
             document.getElementById(
                 "news-date"
             );
 
 
-        const contentInput =
-            document.getElementById(
-                "news-content"
-            );
-
-
-        const coverInput =
+        const newsCoverInput =
             document.getElementById(
                 "news-cover"
             );
 
 
-        const imagesInput =
+        const newsImagesInput =
             document.getElementById(
                 "news-images"
+            );
+
+
+        const newsContentInput =
+            document.getElementById(
+                "news-content"
             );
 
 
@@ -178,36 +232,14 @@ document.addEventListener(
             );
 
 
-        const cancelButton =
-            document.getElementById(
-                "cancel-button"
-            );
-
-
-        // ====================================================
-        // SÉCURITÉ
-        // ====================================================
-
         if (
-            !form ||
-            !titleInput ||
-            !dateInput ||
-            !contentInput ||
-            !coverInput ||
-            !imagesInput ||
-            !coverFileName ||
-            !imagesFileCount ||
-            !coverPreview ||
-            !imagesPreview ||
-            !previewImage ||
-            !previewTitle ||
-            !previewDate ||
-            !previewText ||
-            !cancelButton
+            !newsList ||
+            !newsEditor ||
+            !newsForm
         ) {
+
             console.error(
-                "Impossible d'initialiser "
-                + "le formulaire de gestion APAM."
+                "Interface Actualités introuvable."
             );
 
             return;
@@ -215,55 +247,82 @@ document.addEventListener(
 
 
         // ====================================================
-        // DATE PAR DÉFAUT
+        // UTILITAIRES
         // ====================================================
 
-        const today =
-            new Date();
+        function generateId() {
 
-
-        const year =
-            today.getFullYear();
-
-
-        const month =
-            String(
-                today.getMonth() + 1
-            ).padStart(
-                2,
-                "0"
+            return (
+                Date.now().toString(36)
+                +
+                Math.random()
+                    .toString(36)
+                    .slice(2, 8)
             );
+        }
 
 
-        const day =
-            String(
-                today.getDate()
-            ).padStart(
-                2,
-                "0"
+        function loadActualites() {
+
+            try {
+
+                const raw =
+                    localStorage.getItem(
+                        STORAGE_KEY
+                    );
+
+
+                if (!raw) {
+                    return [];
+                }
+
+
+                const data =
+                    JSON.parse(
+                        raw
+                    );
+
+
+                if (
+                    !Array.isArray(data)
+                ) {
+
+                    return [];
+                }
+
+
+                return data;
+
+            } catch (error) {
+
+                console.error(
+                    "Impossible de charger "
+                    + "les actualités :",
+                    error
+                );
+
+                return [];
+            }
+        }
+
+
+        function saveActualites() {
+
+            localStorage.setItem(
+                STORAGE_KEY,
+                JSON.stringify(
+                    actualites
+                )
             );
+        }
 
-
-        dateInput.value =
-            `${year}-${month}-${day}`;
-
-
-        previewDate.textContent =
-            formatDate(
-                dateInput.value
-            );
-
-
-        // ====================================================
-        // FORMAT DATE
-        // ====================================================
 
         function formatDate(
             dateString
         ) {
 
             if (!dateString) {
-                return "Date de l'actualité";
+                return "";
             }
 
 
@@ -278,6 +337,7 @@ document.addEventListener(
                     date.getTime()
                 )
             ) {
+
                 return dateString;
             }
 
@@ -295,47 +355,537 @@ document.addEventListener(
         }
 
 
+        function escapeHtml(
+            value
+        ) {
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+            div.textContent =
+                value || "";
+
+            return div.innerHTML;
+        }
+
+
+        function getPreviewText(
+            content
+        ) {
+
+            const text =
+                (content || "")
+                    .trim()
+                    .replace(
+                        /\s+/g,
+                        " "
+                    );
+
+
+            if (!text) {
+                return "";
+            }
+
+
+            const maxLength = 160;
+
+
+            return (
+                text.length > maxLength
+                    ? `${text.slice(
+                        0,
+                        maxLength
+                    )}...`
+                    : text
+            );
+        }
+
+
+        // ====================================================
+        // RENDU DE LA LISTE
+        // ====================================================
+
+        function renderNewsList() {
+
+            newsList.innerHTML = "";
+
+
+            if (
+                actualites.length === 0
+            ) {
+
+                const empty =
+                    document.createElement(
+                        "div"
+                    );
+
+                empty.className =
+                    "news-list-empty";
+
+
+                empty.innerHTML = `
+                    <p>
+                        Aucune actualité pour le moment.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="button-primary"
+                        id="new-news-empty-button-rendered"
+                    >
+                        Créer la première actualité
+                    </button>
+                `;
+
+
+                newsList.appendChild(
+                    empty
+                );
+
+
+                const button =
+                    document.getElementById(
+                        "new-news-empty-button-rendered"
+                    );
+
+
+                if (button) {
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+                            openEditor();
+                        }
+                    );
+                }
+
+
+                return;
+            }
+
+
+            const sorted =
+                [...actualites].sort(
+                    (a, b) => {
+
+                        return (
+                            (b.date || "")
+                            .localeCompare(
+                                a.date || ""
+                            )
+                        );
+                    }
+                );
+
+
+            sorted.forEach(
+                (news) => {
+
+                    const card =
+                        document.createElement(
+                            "article"
+                        );
+
+                    card.className =
+                        "news-card";
+
+
+                    const image =
+                        document.createElement(
+                            "div"
+                        );
+
+                    image.className =
+                        "news-card-image";
+
+
+                    if (
+                        news.coverData
+                    ) {
+
+                        image.innerHTML = `
+                            <img
+                                src="${news.coverData}"
+                                alt="${escapeHtml(
+                                    news.title
+                                )}"
+                            >
+                        `;
+                    }
+
+
+                    const info =
+                        document.createElement(
+                            "div"
+                        );
+
+                    info.className =
+                        "news-card-info";
+
+
+                    info.innerHTML = `
+                        <p class="news-card-date">
+                            ${escapeHtml(
+                                formatDate(
+                                    news.date
+                                )
+                            )}
+                        </p>
+
+                        <h3>
+                            ${escapeHtml(
+                                news.title
+                            )}
+                        </h3>
+
+                        <p class="news-card-description">
+                            ${escapeHtml(
+                                getPreviewText(
+                                    news.content
+                                )
+                            )}
+                        </p>
+                    `;
+
+
+                    const actions =
+                        document.createElement(
+                            "div"
+                        );
+
+                    actions.className =
+                        "news-card-actions";
+
+
+                    const editButton =
+                        document.createElement(
+                            "button"
+                        );
+
+                    editButton.type =
+                        "button";
+
+                    editButton.className =
+                        "button-secondary";
+
+                    editButton.textContent =
+                        "Modifier";
+
+
+                    editButton.addEventListener(
+                        "click",
+                        () => {
+
+                            openEditor(
+                                news.id
+                            );
+                        }
+                    );
+
+
+                    const deleteButton =
+                        document.createElement(
+                            "button"
+                        );
+
+                    deleteButton.type =
+                        "button";
+
+                    deleteButton.className =
+                        "button-primary";
+
+                    deleteButton.textContent =
+                        "Supprimer";
+
+
+                    deleteButton.addEventListener(
+                        "click",
+                        () => {
+
+                            deleteNews(
+                                news.id
+                            );
+                        }
+                    );
+
+
+                    actions.appendChild(
+                        editButton
+                    );
+
+                    actions.appendChild(
+                        deleteButton
+                    );
+
+
+                    card.appendChild(
+                        image
+                    );
+
+                    card.appendChild(
+                        info
+                    );
+
+                    card.appendChild(
+                        actions
+                    );
+
+
+                    newsList.appendChild(
+                        card
+                    );
+                }
+            );
+        }
+
+
+        // ====================================================
+        // OUVRIR L'ÉDITEUR
+        // ====================================================
+
+        function openEditor(
+            newsId = null
+        ) {
+
+            editingId =
+                newsId;
+
+
+            newsEditor.hidden =
+                false;
+
+            newsList.hidden =
+                true;
+
+
+            if (newsId) {
+
+                const news =
+                    actualites.find(
+                        (item) =>
+                            item.id === newsId
+                    );
+
+
+                if (!news) {
+                    return;
+                }
+
+
+                editorTitle.textContent =
+                    "Modifier l'actualité";
+
+
+                newsIdInput.value =
+                    news.id;
+
+
+                newsTitleInput.value =
+                    news.title || "";
+
+
+                newsDateInput.value =
+                    news.date || "";
+
+
+                newsContentInput.value =
+                    news.content || "";
+
+
+                coverFileName.textContent =
+                    news.coverName
+                    ||
+                    "Image actuelle";
+
+
+                imagesFileCount.textContent =
+                    news.imageNames?.length
+                        ? `${news.imageNames.length} photo(s)`
+                        : "Aucune photo";
+
+
+                if (news.coverData) {
+
+                    previewImage.style
+                        .backgroundImage =
+                        `url("${news.coverData}")`;
+
+                    previewImage.classList.add(
+                        "has-image"
+                    );
+
+                    previewImage.textContent =
+                        "";
+                }
+
+
+                previewTitle.textContent =
+                    news.title
+                    ||
+                    "Titre de l'actualité";
+
+
+                previewDate.textContent =
+                    formatDate(
+                        news.date
+                    )
+                    ||
+                    "Date de l'actualité";
+
+
+                previewText.textContent =
+                    getPreviewText(
+                        news.content
+                    )
+                    ||
+                    "Le début de ton article apparaîtra ici...";
+
+            } else {
+
+                editorTitle.textContent =
+                    "Nouvelle actualité";
+
+
+                newsIdInput.value =
+                    "";
+
+
+                resetForm();
+
+            }
+
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
+
+
+        // ====================================================
+        // FERMER L'ÉDITEUR
+        // ====================================================
+
+        function closeEditor() {
+
+            newsEditor.hidden =
+                true;
+
+            newsList.hidden =
+                false;
+
+            editingId =
+                null;
+
+            resetForm();
+
+            renderNewsList();
+        }
+
+
+        // ====================================================
+        // RÉINITIALISATION FORMULAIRE
+        // ====================================================
+
+        function resetForm() {
+
+            newsForm.reset();
+
+
+            newsIdInput.value =
+                "";
+
+
+            coverFileName.textContent =
+                "Aucun fichier sélectionné";
+
+
+            imagesFileCount.textContent =
+                "Aucune photo sélectionnée";
+
+
+            coverPreview.innerHTML =
+                "";
+
+            coverPreview.classList.remove(
+                "active"
+            );
+
+
+            imagesPreview.innerHTML =
+                "";
+
+
+            previewImage.style
+                .backgroundImage =
+                "";
+
+            previewImage.classList.remove(
+                "has-image"
+            );
+
+            previewImage.textContent =
+                "Image principale";
+
+
+            previewTitle.textContent =
+                "Titre de l'actualité";
+
+
+            previewDate.textContent =
+                "Date de l'actualité";
+
+
+            previewText.textContent =
+                "Le début de ton article apparaîtra ici...";
+
+
+            const today =
+                new Date();
+
+
+            const year =
+                today.getFullYear();
+
+
+            const month =
+                String(
+                    today.getMonth() + 1
+                ).padStart(
+                    2,
+                    "0"
+                );
+
+
+            const day =
+                String(
+                    today.getDate()
+                ).padStart(
+                    2,
+                    "0"
+                );
+
+
+            newsDateInput.value =
+                `${year}-${month}-${day}`;
+        }
+
+
         // ====================================================
         // IMAGE PRINCIPALE
         // ====================================================
 
-        coverInput.addEventListener(
+        newsCoverInput.addEventListener(
             "change",
             () => {
 
                 const file =
-                    coverInput.files[0];
+                    newsCoverInput.files[0];
 
 
                 if (!file) {
-
-                    coverFileName.textContent =
-                        "Aucun fichier sélectionné";
-
-
-                    coverPreview.innerHTML =
-                        "";
-
-
-                    coverPreview.classList.remove(
-                        "active"
-                    );
-
-
-                    previewImage.style
-                        .backgroundImage =
-                        "";
-
-
-                    previewImage.classList.remove(
-                        "has-image"
-                    );
-
-
-                    previewImage.textContent =
-                        "Image principale";
-
-
                     return;
                 }
 
@@ -351,6 +901,10 @@ document.addEventListener(
                 reader.onload =
                     (event) => {
 
+                        coverPreview.innerHTML =
+                            "";
+
+
                         const image =
                             document.createElement(
                                 "img"
@@ -363,10 +917,6 @@ document.addEventListener(
 
                         image.alt =
                             file.name;
-
-
-                        coverPreview.innerHTML =
-                            "";
 
 
                         coverPreview.appendChild(
@@ -402,17 +952,21 @@ document.addEventListener(
 
 
         // ====================================================
-        // PHOTOS DE LA GALERIE
+        // PHOTOS DE L'ACTUALITÉ
         // ====================================================
 
-        imagesInput.addEventListener(
+        newsImagesInput.addEventListener(
             "change",
             () => {
 
                 const files =
                     Array.from(
-                        imagesInput.files
+                        newsImagesInput.files
                     );
+
+
+                imagesPreview.innerHTML =
+                    "";
 
 
                 if (
@@ -422,21 +976,12 @@ document.addEventListener(
                     imagesFileCount.textContent =
                         "Aucune photo sélectionnée";
 
-
-                    imagesPreview.innerHTML =
-                        "";
-
-
                     return;
                 }
 
 
                 imagesFileCount.textContent =
                     `${files.length} photo(s) sélectionnée(s)`;
-
-
-                imagesPreview.innerHTML =
-                    "";
 
 
                 files.forEach(
@@ -487,7 +1032,6 @@ document.addEventListener(
                         reader.readAsDataURL(
                             file
                         );
-
                     }
                 );
             }
@@ -498,12 +1042,12 @@ document.addEventListener(
         // APERÇU DU TITRE
         // ====================================================
 
-        titleInput.addEventListener(
+        newsTitleInput.addEventListener(
             "input",
             () => {
 
                 previewTitle.textContent =
-                    titleInput.value.trim()
+                    newsTitleInput.value.trim()
                     ||
                     "Titre de l'actualité";
             }
@@ -514,14 +1058,16 @@ document.addEventListener(
         // APERÇU DE LA DATE
         // ====================================================
 
-        dateInput.addEventListener(
+        newsDateInput.addEventListener(
             "change",
             () => {
 
                 previewDate.textContent =
                     formatDate(
-                        dateInput.value
-                    );
+                        newsDateInput.value
+                    )
+                    ||
+                    "Date de l'actualité";
             }
         );
 
@@ -530,217 +1076,369 @@ document.addEventListener(
         // APERÇU DE L'ARTICLE
         // ====================================================
 
-        contentInput.addEventListener(
+        newsContentInput.addEventListener(
             "input",
             () => {
 
-                const text =
-                    contentInput.value.trim();
-
-
-                if (!text) {
-
-                    previewText.textContent =
-                        "Le début de ton article apparaîtra ici...";
-
-                    return;
-                }
-
-
-                const maxLength =
-                    140;
-
-
                 previewText.textContent =
-                    text.length > maxLength
-                        ? `${text.slice(
-                              0,
-                              maxLength
-                          )}...`
-                        : text;
-            }
-        );
-
-
-        // ====================================================
-        // ANNULATION
-        // ====================================================
-
-        cancelButton.addEventListener(
-            "click",
-            () => {
-
-                const confirmed =
-                    window.confirm(
-                        "Effacer les informations saisies ?"
-                    );
-
-
-                if (!confirmed) {
-                    return;
-                }
-
-
-                form.reset();
-
-
-                coverPreview.innerHTML =
-                    "";
-
-
-                coverPreview.classList.remove(
-                    "active"
-                );
-
-
-                imagesPreview.innerHTML =
-                    "";
-
-
-                coverFileName.textContent =
-                    "Aucun fichier sélectionné";
-
-
-                imagesFileCount.textContent =
-                    "Aucune photo sélectionnée";
-
-
-                previewImage.style
-                    .backgroundImage =
-                    "";
-
-
-                previewImage.classList.remove(
-                    "has-image"
-                );
-
-
-                previewImage.textContent =
-                    "Image principale";
-
-
-                previewTitle.textContent =
-                    "Titre de l'actualité";
-
-
-                previewDate.textContent =
-                    "Date de l'actualité";
-
-
-                previewText.textContent =
+                    getPreviewText(
+                        newsContentInput.value
+                    )
+                    ||
                     "Le début de ton article apparaîtra ici...";
-
-
-                const todayReset =
-                    new Date();
-
-
-                const resetYear =
-                    todayReset.getFullYear();
-
-
-                const resetMonth =
-                    String(
-                        todayReset.getMonth() + 1
-                    ).padStart(
-                        2,
-                        "0"
-                    );
-
-
-                const resetDay =
-                    String(
-                        todayReset.getDate()
-                    ).padStart(
-                        2,
-                        "0"
-                    );
-
-
-                dateInput.value =
-                    `${resetYear}-${resetMonth}-${resetDay}`;
-
-
-                previewDate.textContent =
-                    formatDate(
-                        dateInput.value
-                    );
             }
         );
 
 
         // ====================================================
-        // PUBLICATION
+        // CRÉER
         // ====================================================
 
-        form.addEventListener(
+        if (newNewsButton) {
+
+            newNewsButton.addEventListener(
+                "click",
+                () => {
+                    openEditor();
+                }
+            );
+        }
+
+
+        if (newNewsEmptyButton) {
+
+            newNewsEmptyButton.addEventListener(
+                "click",
+                () => {
+                    openEditor();
+                }
+            );
+        }
+
+
+        // ====================================================
+        // RETOUR
+        // ====================================================
+
+        if (cancelEditorButton) {
+
+            cancelEditorButton.addEventListener(
+                "click",
+                () => {
+                    closeEditor();
+                }
+            );
+        }
+
+
+        if (cancelNewsButton) {
+
+            cancelNewsButton.addEventListener(
+                "click",
+                () => {
+
+                    const confirmed =
+                        window.confirm(
+                            "Abandonner les modifications ?"
+                        );
+
+
+                    if (confirmed) {
+                        closeEditor();
+                    }
+                }
+            );
+        }
+
+
+        // ====================================================
+        // ENREGISTREMENT
+        // ====================================================
+
+        newsForm.addEventListener(
             "submit",
-            (event) => {
+            async (event) => {
 
                 event.preventDefault();
 
 
                 const title =
-                    titleInput.value.trim();
+                    newsTitleInput.value.trim();
 
 
                 const date =
-                    dateInput.value;
+                    newsDateInput.value;
 
 
                 const content =
-                    contentInput.value.trim();
-
-
-                const cover =
-                    coverInput.files[0];
-
-
-                const images =
-                    Array.from(
-                        imagesInput.files
-                    );
+                    newsContentInput.value.trim();
 
 
                 if (
                     !title ||
                     !date ||
-                    !content ||
-                    !cover
+                    !content
                 ) {
 
                     window.alert(
-                        "Merci de remplir le titre, la date, l'article et l'image principale."
+                        "Merci de remplir le titre, la date et l'article."
                     );
 
                     return;
                 }
 
 
-                console.log(
-                    "Actualité prête à être publiée :",
-                    {
-                        title,
-                        date,
-                        content,
-                        cover,
-                        images
+                let coverData =
+                    null;
+
+
+                let coverName =
+                    "";
+
+
+                if (
+                    newsCoverInput.files[0]
+                ) {
+
+                    const coverFile =
+                        newsCoverInput.files[0];
+
+
+                    coverName =
+                        coverFile.name;
+
+
+                    coverData =
+                        await fileToDataURL(
+                            coverFile
+                        );
+
+                }
+
+
+                const imageFiles =
+                    Array.from(
+                        newsImagesInput.files
+                    );
+
+
+                const imageData =
+                    [];
+
+
+                for (
+                    const file of imageFiles
+                ) {
+
+                    imageData.push({
+                        name: file.name,
+                        data:
+                            await fileToDataURL(
+                                file
+                            )
+                    });
+
+                }
+
+
+                if (editingId) {
+
+                    const newsIndex =
+                        actualites.findIndex(
+                            (item) =>
+                                item.id === editingId
+                        );
+
+
+                    if (
+                        newsIndex === -1
+                    ) {
+
+                        window.alert(
+                            "Actualité introuvable."
+                        );
+
+                        return;
                     }
-                );
 
 
-                window.alert(
-                    "L'interface fonctionne.\n\n"
-                    + "La connexion à Google Drive "
-                    + "sera ajoutée à l'étape suivante."
-                );
+                    const existing =
+                        actualites[
+                            newsIndex
+                        ];
+
+
+                    actualites[
+                        newsIndex
+                    ] = {
+
+                        ...existing,
+
+                        title,
+
+                        date,
+
+                        content,
+
+                        coverName:
+                            coverName
+                            ||
+                            existing.coverName
+                            ||
+                            "",
+
+                        coverData:
+                            coverData
+                            ||
+                            existing.coverData
+                            ||
+                            null,
+
+                        imageNames:
+                            imageData.map(
+                                (image) =>
+                                    image.name
+                            ),
+
+                        images:
+                            imageData
+                    };
+
+
+                } else {
+
+                    actualites.push({
+
+                        id:
+                            generateId(),
+
+                        title,
+
+                        date,
+
+                        content,
+
+                        coverName,
+
+                        coverData,
+
+                        imageNames:
+                            imageData.map(
+                                (image) =>
+                                    image.name
+                            ),
+
+                        images:
+                            imageData,
+
+                        createdAt:
+                            new Date()
+                                .toISOString()
+                    });
+                }
+
+
+                saveActualites();
+
+                closeEditor();
+
             }
         );
 
 
         // ====================================================
+        // SUPPRESSION
+        // ====================================================
+
+        function deleteNews(
+            newsId
+        ) {
+
+            const news =
+                actualites.find(
+                    (item) =>
+                        item.id === newsId
+                );
+
+
+            if (!news) {
+                return;
+            }
+
+
+            const confirmed =
+                window.confirm(
+                    `Supprimer l'actualité "${news.title}" ?`
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            actualites =
+                actualites.filter(
+                    (item) =>
+                        item.id !== newsId
+                );
+
+
+            saveActualites();
+
+            renderNewsList();
+        }
+
+
+        // ====================================================
+        // FILE → DATA URL
+        // ====================================================
+
+        function fileToDataURL(
+            file
+        ) {
+
+            return new Promise(
+                (resolve, reject) => {
+
+                    const reader =
+                        new FileReader();
+
+
+                    reader.onload =
+                        () => {
+                            resolve(
+                                reader.result
+                            );
+                        };
+
+
+                    reader.onerror =
+                        () => {
+
+                            reject(
+                                new Error(
+                                    "Impossible de lire "
+                                    + file.name
+                                )
+                            );
+                        };
+
+
+                    reader.readAsDataURL(
+                        file
+                    );
+                }
+            );
+        }
+
+
+        // ====================================================
         // INITIALISATION
         // ====================================================
+
+        renderNewsList();
+
 
         const defaultTab =
             document.querySelector(
@@ -753,7 +1451,6 @@ document.addEventListener(
             activateTab(
                 defaultTab
             );
-
         }
 
     }
