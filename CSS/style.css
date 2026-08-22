@@ -697,13 +697,16 @@ body {
    ============================================================ */
 
 .lightbox {
-    display: none;
+        position: fixed !important;
+    inset: 0 !important;
 
-    position: fixed;
-    inset: 0;
+    display: none;
 
     align-items: center;
     justify-content: center;
+
+    width: 100vw;
+    height: 100vh;
 
     padding: 30px;
 
@@ -793,6 +796,133 @@ body {
 .lightbox-file-link:hover {
     opacity: 0.9;
 }
+/* ============================================================
+   LIGHTBOX BUTTONS
+   ============================================================ */
+
+/* Bouton fermer */
+.lightbox-close {
+    position: fixed !important;
+
+    top: 20px;
+    right: 25px;
+
+    z-index: 2100;
+
+    width: 50px;
+    height: 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(0, 0, 0, 0.45);
+    color: white;
+
+    font-size: 32px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        transform 0.25s ease;
+}
+
+.lightbox-close:hover {
+    background: rgba(0, 0, 0, 0.75);
+    transform: scale(1.08);
+}
+
+
+/* Bouton précédent */
+.lightbox-prev {
+    position: fixed !important;
+
+    left: 25px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    z-index: 2100;
+
+    width: 55px;
+    height: 55px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(0, 0, 0, 0.45);
+    color: white;
+
+    font-size: 34px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        transform 0.25s ease;
+}
+
+.lightbox-prev:hover {
+    background: rgba(0, 0, 0, 0.75);
+
+    transform:
+        translateY(-50%)
+        scale(1.08);
+}
+
+
+/* Bouton suivant */
+.lightbox-next {
+    position: fixed !important;
+
+    right: 25px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    z-index: 2100;
+
+    width: 55px;
+    height: 55px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(0, 0, 0, 0.45);
+    color: white;
+
+    font-size: 34px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        transform 0.25s ease;
+}
+
+.lightbox-next:hover {
+    background: rgba(0, 0, 0, 0.75);
+
+    transform:
+        translateY(-50%)
+        scale(1.08);
+}
+
 /* #endregion */
 
 /* #region FOOTER */
