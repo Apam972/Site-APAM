@@ -1,8 +1,8 @@
 document.addEventListener(
     "DOMContentLoaded",
     () => {
-                // ====================================================
-        // NAVIGATION PAR ONGLETS
+                     // ====================================================
+        // NAVIGATION DES ONGLETS
         // ====================================================
 
         const tabs =
@@ -15,7 +15,6 @@ document.addEventListener(
                 ".gestion-tab-content"
             );
 
-
         tabs.forEach(
             (tab) => {
 
@@ -26,40 +25,36 @@ document.addEventListener(
                         const target =
                             tab.dataset.tab;
 
-
+                        // Désactive tous les onglets
                         tabs.forEach(
                             (item) => {
-
                                 item.classList.remove(
                                     "active"
                                 );
                             }
                         );
 
-
+                        // Masque tous les contenus
                         tabContents.forEach(
                             (content) => {
-
                                 content.classList.remove(
                                     "active"
                                 );
                             }
                         );
 
-
+                        // Active l'onglet cliqué
                         tab.classList.add(
                             "active"
                         );
 
-
+                        // Affiche le contenu correspondant
                         const targetContent =
                             document.querySelector(
                                 `[data-content="${target}"]`
                             );
 
-
                         if (targetContent) {
-
                             targetContent.classList.add(
                                 "active"
                             );
@@ -68,6 +63,7 @@ document.addEventListener(
                 );
             }
         );
+        
 
         const form =
             document.getElementById(

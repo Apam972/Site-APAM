@@ -2,6 +2,7 @@
 <html lang="fr">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -15,23 +16,32 @@
         rel="stylesheet"
         href="gestion.css"
     >
+
 </head>
 
+
 <body>
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
 
     <header class="gestion-header">
 
         <div class="gestion-header-inner">
 
             <div>
+
                 <p class="gestion-eyebrow">
                     APAM
                 </p>
 
                 <h1>
-                    Gestion des actualités
+                    Gestion
                 </h1>
+
             </div>
+
 
             <a
                 href="../index.html"
@@ -45,318 +55,536 @@
     </header>
 
 
+    <!-- =====================================================
+         CONTENU PRINCIPAL
+    ====================================================== -->
+
     <main class="gestion-main">
-<nav
-<section
-    class="gestion-tab-content active"
-    data-content="actualites"
->
-    class="gestion-tabs"
-    aria-label="Sections de gestion"
->
-
-    <button
-        type="button"
-        class="gestion-tab active"
-        data-tab="actualites"
-    >
-        📰 Actualités
-    </button>
-
-    <button
-        type="button"
-        class="gestion-tab"
-        data-tab="actions"
-    >
-        🤝 APAM en action
-    </button>
-
-    <button
-        type="button"
-        class="gestion-tab"
-        data-tab="inscriptions"
-    >
-        📝 Inscriptions
-    </button>
-
-    <button
-        type="button"
-        class="gestion-tab"
-        data-tab="adhesion"
-    >
-        👥 Adhésion
-    </button>
-
-    <button
-        type="button"
-        class="gestion-tab"
-        data-tab="volontariat"
-    >
-        🙋 Volontariat
-    </button>
-
-</nav>
-        <section class="gestion-panel">
-
-            <div class="panel-heading">
-
-                <div>
-                    <p class="panel-eyebrow">
-                        Publication
-                    </p>
-
-                    <h2>
-                        Nouvelle actualité
-                    </h2>
-                </div>
-
-            </div>
 
 
-            <form
-                id="news-form"
-                class="news-form"
+        <!-- =================================================
+             ONGlets
+        ================================================== -->
+
+        <nav
+            class="gestion-tabs"
+            aria-label="Sections de gestion"
+        >
+
+            <button
+                type="button"
+                class="gestion-tab active"
+                data-tab="actualites"
             >
+                📰 Actualités
+            </button>
 
-                <!-- TITRE -->
 
-                <div class="form-group">
+            <button
+                type="button"
+                class="gestion-tab"
+                data-tab="actions"
+            >
+                🤝 APAM en action
+            </button>
 
-                    <label for="news-title">
-                        Titre de l'actualité
-                    </label>
 
-                    <input
-                        type="text"
-                        id="news-title"
-                        name="title"
-                        placeholder="Ex. Sortie à la plage avec les jeunes"
-                        required
-                    >
+            <button
+                type="button"
+                class="gestion-tab"
+                data-tab="inscriptions"
+            >
+                📝 Inscriptions
+            </button>
+
+
+            <button
+                type="button"
+                class="gestion-tab"
+                data-tab="adhesion"
+            >
+                👥 Adhésion
+            </button>
+
+
+            <button
+                type="button"
+                class="gestion-tab"
+                data-tab="volontariat"
+            >
+                🙋 Volontariat
+            </button>
+
+        </nav>
+
+
+
+        <!-- =================================================
+             ACTUALITÉS
+        ================================================== -->
+
+        <section
+            class="gestion-tab-content active"
+            data-content="actualites"
+        >
+
+
+            <section class="gestion-panel">
+
+                <div class="panel-heading">
+
+                    <div>
+
+                        <p class="panel-eyebrow">
+                            Publication
+                        </p>
+
+                        <h2>
+                            Nouvelle actualité
+                        </h2>
+
+                    </div>
 
                 </div>
 
 
-                <!-- DATE -->
-
-                <div class="form-group">
-
-                    <label for="news-date">
-                        Date
-                    </label>
-
-                    <input
-                        type="date"
-                        id="news-date"
-                        name="date"
-                        required
-                    >
-
-                </div>
+                <form
+                    id="news-form"
+                    class="news-form"
+                >
 
 
-                <!-- IMAGE PRINCIPALE -->
+                    <!-- TITRE -->
 
-                <div class="form-group">
+                    <div class="form-group">
 
-                    <label>
-                        Image principale
-                    </label>
+                        <label for="news-title">
+                            Titre de l'actualité
+                        </label>
 
-                    <p class="form-help">
-                        Cette image sera utilisée sur
-                        l'accueil et l'aperçu de l'actualité.
-                    </p>
-
-                    <label
-                        for="news-cover"
-                        class="upload-box"
-                    >
-
-                        <span class="upload-icon">
-                            +
-                        </span>
-
-                        <span class="upload-title">
-                            Choisir l'image principale
-                        </span>
-
-                        <span
-                            class="upload-file-name"
-                            id="cover-file-name"
+                        <input
+                            type="text"
+                            id="news-title"
+                            name="title"
+                            placeholder="Ex. Sortie à la plage avec les jeunes"
+                            required
                         >
-                            Aucun fichier sélectionné
-                        </span>
 
-                    </label>
+                    </div>
 
-                    <input
-                        type="file"
-                        id="news-cover"
-                        name="cover"
-                        accept="image/*"
-                        hidden
-                        required
-                    >
+
+
+                    <!-- DATE -->
+
+                    <div class="form-group">
+
+                        <label for="news-date">
+                            Date
+                        </label>
+
+                        <input
+                            type="date"
+                            id="news-date"
+                            name="date"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- IMAGE PRINCIPALE -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Image principale
+                        </label>
+
+                        <p class="form-help">
+                            Cette image sera utilisée sur
+                            l'accueil et l'aperçu de l'actualité.
+                        </p>
+
+
+                        <label
+                            for="news-cover"
+                            class="upload-box"
+                        >
+
+                            <span class="upload-icon">
+                                +
+                            </span>
+
+
+                            <span class="upload-title">
+                                Choisir l'image principale
+                            </span>
+
+
+                            <span
+                                class="upload-file-name"
+                                id="cover-file-name"
+                            >
+                                Aucun fichier sélectionné
+                            </span>
+
+                        </label>
+
+
+                        <input
+                            type="file"
+                            id="news-cover"
+                            name="cover"
+                            accept="image/*"
+                            hidden
+                            required
+                        >
+
+
+                        <div
+                            class="image-preview"
+                            id="cover-preview"
+                        ></div>
+
+                    </div>
+
+
+
+                    <!-- PHOTOS -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Photos de l'actualité
+                        </label>
+
+
+                        <p class="form-help">
+                            Ajoute autant de photos que nécessaire
+                            pour illustrer l'article.
+                        </p>
+
+
+                        <label
+                            for="news-images"
+                            class="upload-box"
+                        >
+
+                            <span class="upload-icon">
+                                +
+                            </span>
+
+
+                            <span class="upload-title">
+                                Ajouter des photos
+                            </span>
+
+
+                            <span
+                                class="upload-file-name"
+                                id="images-file-count"
+                            >
+                                Aucune photo sélectionnée
+                            </span>
+
+                        </label>
+
+
+                        <input
+                            type="file"
+                            id="news-images"
+                            name="images"
+                            accept="image/*"
+                            multiple
+                            hidden
+                        >
+
+
+                        <div
+                            class="images-preview"
+                            id="images-preview"
+                        ></div>
+
+                    </div>
+
+
+
+                    <!-- ARTICLE -->
+
+                    <div class="form-group">
+
+                        <label for="news-content">
+                            Article
+                        </label>
+
+
+                        <textarea
+                            id="news-content"
+                            name="content"
+                            rows="12"
+                            placeholder="Écris ici le contenu de l'actualité..."
+                            required
+                        ></textarea>
+
+                    </div>
+
+
+
+                    <!-- ACTIONS -->
+
+                    <div class="form-actions">
+
+                        <button
+                            type="button"
+                            class="button-secondary"
+                            id="cancel-button"
+                        >
+                            Annuler
+                        </button>
+
+
+                        <button
+                            type="submit"
+                            class="button-primary"
+                        >
+                            Publier l'actualité
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+
+            <!-- APERÇU -->
+
+            <aside class="preview-panel">
+
+                <div class="panel-heading">
+
+                    <div>
+
+                        <p class="panel-eyebrow">
+                            Aperçu
+                        </p>
+
+                        <h2>
+                            Sur le site
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <article class="news-preview">
 
                     <div
-                        class="image-preview"
-                        id="cover-preview"
-                    ></div>
-
-                </div>
-
-
-                <!-- GALERIE -->
-
-                <div class="form-group">
-
-                    <label>
-                        Photos de l'actualité
-                    </label>
-
-                    <p class="form-help">
-                        Ajoute autant de photos que nécessaire
-                        pour illustrer l'article.
-                    </p>
-
-                    <label
-                        for="news-images"
-                        class="upload-box"
+                        class="news-preview-image"
+                        id="news-preview-image"
                     >
 
-                        <span class="upload-icon">
-                            +
+                        <span>
+                            Image principale
                         </span>
 
-                        <span class="upload-title">
-                            Ajouter des photos
-                        </span>
+                    </div>
 
-                        <span
-                            class="upload-file-name"
-                            id="images-file-count"
+
+                    <div class="news-preview-content">
+
+                        <p
+                            class="news-preview-date"
+                            id="news-preview-date"
                         >
-                            Aucune photo sélectionnée
-                        </span>
-
-                    </label>
-
-                    <input
-                        type="file"
-                        id="news-images"
-                        name="images"
-                        accept="image/*"
-                        multiple
-                        hidden
-                    >
-
-                    <div
-                        class="images-preview"
-                        id="images-preview"
-                    ></div>
-
-                </div>
+                            Date de l'actualité
+                        </p>
 
 
-                <!-- ARTICLE -->
-
-                <div class="form-group">
-
-                    <label for="news-content">
-                        Article
-                    </label>
-
-                    <textarea
-                        id="news-content"
-                        name="content"
-                        rows="12"
-                        placeholder="Écris ici le contenu de l'actualité..."
-                        required
-                    ></textarea>
-
-                </div>
+                        <h3 id="news-preview-title">
+                            Titre de l'actualité
+                        </h3>
 
 
-                <!-- ACTIONS -->
+                        <p id="news-preview-text">
+                            Le début de ton article
+                            apparaîtra ici...
+                        </p>
 
-                <div class="form-actions">
+                    </div>
 
-                    <button
-                        type="button"
-                        class="button-secondary"
-                        id="cancel-button"
-                    >
-                        Annuler
-                    </button>
+                </article>
 
-                    <button
-                        type="submit"
-                        class="button-primary"
-                    >
-                        Publier l'actualité
-                    </button>
-
-                </div>
-
-            </form>
+            </aside>
 
         </section>
 
 
-        <!-- APERÇU -->
 
-        <aside class="preview-panel">
+        <!-- =================================================
+             APAM EN ACTION
+        ================================================== -->
 
-            <div class="panel-heading">
+        <section
+            class="gestion-tab-content"
+            data-content="actions"
+        >
 
-                <div>
-                    <p class="panel-eyebrow">
-                        Aperçu
-                    </p>
+            <div class="empty-management-panel">
 
-                    <h2>
-                        Sur le site
-                    </h2>
-                </div>
+                <span class="management-icon">
+                    🤝
+                </span>
+
+
+                <h2>
+                    APAM en action
+                </h2>
+
+
+                <p>
+                    Cette section servira à présenter et gérer
+                    les actions réalisées par l'association.
+                </p>
+
+
+                <button
+                    type="button"
+                    class="button-primary"
+                    disabled
+                >
+                    Bientôt disponible
+                </button>
 
             </div>
 
+        </section>
 
-            <article class="news-preview">
 
-                <div
-                    class="news-preview-image"
-                    id="news-preview-image"
+
+        <!-- =================================================
+             INSCRIPTIONS
+        ================================================== -->
+
+        <section
+            class="gestion-tab-content"
+            data-content="inscriptions"
+        >
+
+            <div class="empty-management-panel">
+
+                <span class="management-icon">
+                    📝
+                </span>
+
+
+                <h2>
+                    Inscriptions aux activités
+                </h2>
+
+
+                <p>
+                    Ici seront gérées les activités,
+                    les inscriptions et les participants.
+                </p>
+
+
+                <button
+                    type="button"
+                    class="button-primary"
+                    disabled
                 >
-                    <span>
-                        Image principale
-                    </span>
-                </div>
+                    Bientôt disponible
+                </button>
 
-                <div class="news-preview-content">
+            </div>
 
-                    <p
-                        class="news-preview-date"
-                        id="news-preview-date"
-                    >
-                        Date de l'actualité
-                    </p>
+        </section>
 
-                    <h3 id="news-preview-title">
-                        Titre de l'actualité
-                    </h3>
 
-                    <p id="news-preview-text">
-                        Le début de ton article
-                        apparaîtra ici...
-                    </p>
 
-                </div>
+        <!-- =================================================
+             ADHÉSION
+        ================================================== -->
 
-            </article>
+        <section
+            class="gestion-tab-content"
+            data-content="adhesion"
+        >
 
-        </aside>
+            <div class="empty-management-panel">
+
+                <span class="management-icon">
+                    👥
+                </span>
+
+
+                <h2>
+                    Adhésion à l'APAM
+                </h2>
+
+
+                <p>
+                    Cette section permettra de gérer
+                    les demandes d'adhésion à l'association.
+                </p>
+
+
+                <button
+                    type="button"
+                    class="button-primary"
+                    disabled
+                >
+                    Bientôt disponible
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             VOLONTARIAT
+        ================================================== -->
+
+        <section
+            class="gestion-tab-content"
+            data-content="volontariat"
+        >
+
+            <div class="empty-management-panel">
+
+                <span class="management-icon">
+                    🙋
+                </span>
+
+
+                <h2>
+                    Volontariat
+                </h2>
+
+
+                <p>
+                    Cette section permettra de gérer
+                    les candidatures des bénévoles.
+                </p>
+
+
+                <button
+                    type="button"
+                    class="button-primary"
+                    disabled
+                >
+                    Bientôt disponible
+                </button>
+
+            </div>
+
+        </section>
 
     </main>
 
