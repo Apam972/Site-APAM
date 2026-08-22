@@ -1,7 +1,8 @@
 document.addEventListener(
     "DOMContentLoaded",
     () => {
-                     // ====================================================
+
+        // ====================================================
         // NAVIGATION DES ONGLETS
         // ====================================================
 
@@ -15,130 +16,202 @@ document.addEventListener(
                 ".gestion-tab-content"
             );
 
+
+        function activateTab(
+            selectedTab
+        ) {
+
+            const target =
+                selectedTab.getAttribute(
+                    "data-tab"
+                );
+
+            if (!target) {
+                return;
+            }
+
+
+            // ------------------------------------------------
+            // ONGLET ACTIF
+            // ------------------------------------------------
+
+            tabs.forEach(
+                (tab) => {
+
+                    tab.classList.toggle(
+                        "active",
+                        tab === selectedTab
+                    );
+
+                }
+            );
+
+
+            // ------------------------------------------------
+            // CONTENU ACTIF
+            // ------------------------------------------------
+
+            tabContents.forEach(
+                (content) => {
+
+                    const isTarget =
+                        content.getAttribute(
+                            "data-content"
+                        ) === target;
+
+
+                    content.classList.toggle(
+                        "active",
+                        isTarget
+                    );
+
+                }
+            );
+        }
+
+
         tabs.forEach(
             (tab) => {
 
                 tab.addEventListener(
                     "click",
-                    () => {
+                    (event) => {
 
-                        const target =
-                            tab.dataset.tab;
+                        event.preventDefault();
 
-                        // Désactive tous les onglets
-                        tabs.forEach(
-                            (item) => {
-                                item.classList.remove(
-                                    "active"
-                                );
-                            }
+                        activateTab(
+                            tab
                         );
 
-                        // Masque tous les contenus
-                        tabContents.forEach(
-                            (content) => {
-                                content.classList.remove(
-                                    "active"
-                                );
-                            }
-                        );
-
-                        // Active l'onglet cliqué
-                        tab.classList.add(
-                            "active"
-                        );
-
-                        // Affiche le contenu correspondant
-                        const targetContent =
-                            document.querySelector(
-                                `[data-content="${target}"]`
-                            );
-
-                        if (targetContent) {
-                            targetContent.classList.add(
-                                "active"
-                            );
-                        }
                     }
                 );
+
             }
         );
-        
+
+
+        // ====================================================
+        // ÉLÉMENTS DU FORMULAIRE ACTUALITÉS
+        // ====================================================
 
         const form =
             document.getElementById(
                 "news-form"
             );
 
+
         const titleInput =
             document.getElementById(
                 "news-title"
             );
+
 
         const dateInput =
             document.getElementById(
                 "news-date"
             );
 
+
         const contentInput =
             document.getElementById(
                 "news-content"
             );
+
 
         const coverInput =
             document.getElementById(
                 "news-cover"
             );
 
+
         const imagesInput =
             document.getElementById(
                 "news-images"
             );
+
 
         const coverFileName =
             document.getElementById(
                 "cover-file-name"
             );
 
+
         const imagesFileCount =
             document.getElementById(
                 "images-file-count"
             );
+
 
         const coverPreview =
             document.getElementById(
                 "cover-preview"
             );
 
+
         const imagesPreview =
             document.getElementById(
                 "images-preview"
             );
+
 
         const previewImage =
             document.getElementById(
                 "news-preview-image"
             );
 
+
         const previewTitle =
             document.getElementById(
                 "news-preview-title"
             );
+
 
         const previewDate =
             document.getElementById(
                 "news-preview-date"
             );
 
+
         const previewText =
             document.getElementById(
                 "news-preview-text"
             );
 
+
         const cancelButton =
             document.getElementById(
                 "cancel-button"
             );
+
+
+        // ====================================================
+        // SÉCURITÉ
+        // ====================================================
+
+        if (
+            !form ||
+            !titleInput ||
+            !dateInput ||
+            !contentInput ||
+            !coverInput ||
+            !imagesInput ||
+            !coverFileName ||
+            !imagesFileCount ||
+            !coverPreview ||
+            !imagesPreview ||
+            !previewImage ||
+            !previewTitle ||
+            !previewDate ||
+            !previewText ||
+            !cancelButton
+        ) {
+            console.error(
+                "Impossible d'initialiser "
+                + "le formulaire de gestion APAM."
+            );
+
+            return;
+        }
 
 
         // ====================================================
@@ -148,21 +221,37 @@ document.addEventListener(
         const today =
             new Date();
 
+
         const year =
             today.getFullYear();
+
 
         const month =
             String(
                 today.getMonth() + 1
-            ).padStart(2, "0");
+            ).padStart(
+                2,
+                "0"
+            );
+
 
         const day =
             String(
                 today.getDate()
-            ).padStart(2, "0");
+            ).padStart(
+                2,
+                "0"
+            );
+
 
         dateInput.value =
             `${year}-${month}-${day}`;
+
+
+        previewDate.textContent =
+            formatDate(
+                dateInput.value
+            );
 
 
         // ====================================================
@@ -177,10 +266,12 @@ document.addEventListener(
                 return "Date de l'actualité";
             }
 
+
             const date =
                 new Date(
                     `${dateString}T00:00:00`
                 );
+
 
             if (
                 Number.isNaN(
@@ -190,6 +281,7 @@ document.addEventListener(
                 return dateString;
             }
 
+
             return new Intl.DateTimeFormat(
                 "fr-FR",
                 {
@@ -197,12 +289,14 @@ document.addEventListener(
                     month: "long",
                     year: "numeric"
                 }
-            ).format(date);
+            ).format(
+                date
+            );
         }
 
 
         // ====================================================
-        // PRÉVISUALISATION IMAGE PRINCIPALE
+        // IMAGE PRINCIPALE
         // ====================================================
 
         coverInput.addEventListener(
@@ -212,25 +306,35 @@ document.addEventListener(
                 const file =
                     coverInput.files[0];
 
+
                 if (!file) {
 
                     coverFileName.textContent =
                         "Aucun fichier sélectionné";
 
+
                     coverPreview.innerHTML =
                         "";
+
 
                     coverPreview.classList.remove(
                         "active"
                     );
 
+
                     previewImage.style
                         .backgroundImage =
                         "";
 
+
                     previewImage.classList.remove(
                         "has-image"
                     );
+
+
+                    previewImage.textContent =
+                        "Image principale";
+
 
                     return;
                 }
@@ -252,15 +356,23 @@ document.addEventListener(
                                 "img"
                             );
 
+
                         image.src =
                             event.target.result;
+
+
+                        image.alt =
+                            file.name;
+
 
                         coverPreview.innerHTML =
                             "";
 
+
                         coverPreview.appendChild(
                             image
                         );
+
 
                         coverPreview.classList.add(
                             "active"
@@ -271,9 +383,11 @@ document.addEventListener(
                             .backgroundImage =
                             `url("${event.target.result}")`;
 
+
                         previewImage.classList.add(
                             "has-image"
                         );
+
 
                         previewImage.textContent =
                             "";
@@ -301,13 +415,17 @@ document.addEventListener(
                     );
 
 
-                if (files.length === 0) {
+                if (
+                    files.length === 0
+                ) {
 
                     imagesFileCount.textContent =
                         "Aucune photo sélectionnée";
 
+
                     imagesPreview.innerHTML =
                         "";
+
 
                     return;
                 }
@@ -336,6 +454,7 @@ document.addEventListener(
                                         "div"
                                     );
 
+
                                 wrapper.className =
                                     "preview-thumbnail";
 
@@ -345,8 +464,10 @@ document.addEventListener(
                                         "img"
                                     );
 
+
                                 image.src =
                                     event.target.result;
+
 
                                 image.alt =
                                     file.name;
@@ -355,6 +476,7 @@ document.addEventListener(
                                 wrapper.appendChild(
                                     image
                                 );
+
 
                                 imagesPreview.appendChild(
                                     wrapper
@@ -365,6 +487,7 @@ document.addEventListener(
                         reader.readAsDataURL(
                             file
                         );
+
                     }
                 );
             }
@@ -372,7 +495,7 @@ document.addEventListener(
 
 
         // ====================================================
-        // APERÇU TITRE
+        // APERÇU DU TITRE
         // ====================================================
 
         titleInput.addEventListener(
@@ -388,7 +511,7 @@ document.addEventListener(
 
 
         // ====================================================
-        // APERÇU DATE
+        // APERÇU DE LA DATE
         // ====================================================
 
         dateInput.addEventListener(
@@ -404,7 +527,7 @@ document.addEventListener(
 
 
         // ====================================================
-        // APERÇU ARTICLE
+        // APERÇU DE L'ARTICLE
         // ====================================================
 
         contentInput.addEventListener(
@@ -453,45 +576,95 @@ document.addEventListener(
                     );
 
 
-                if (confirmed) {
-                    form.reset();
-
-                    coverPreview.innerHTML =
-                        "";
-
-                    coverPreview.classList.remove(
-                        "active"
-                    );
-
-                    imagesPreview.innerHTML =
-                        "";
-
-                    coverFileName.textContent =
-                        "Aucun fichier sélectionné";
-
-                    imagesFileCount.textContent =
-                        "Aucune photo sélectionnée";
-
-                    previewImage.style
-                        .backgroundImage =
-                        "";
-
-                    previewImage.classList.remove(
-                        "has-image"
-                    );
-
-                    previewImage.textContent =
-                        "Image principale";
-
-                    previewTitle.textContent =
-                        "Titre de l'actualité";
-
-                    previewDate.textContent =
-                        "Date de l'actualité";
-
-                    previewText.textContent =
-                        "Le début de ton article apparaîtra ici...";
+                if (!confirmed) {
+                    return;
                 }
+
+
+                form.reset();
+
+
+                coverPreview.innerHTML =
+                    "";
+
+
+                coverPreview.classList.remove(
+                    "active"
+                );
+
+
+                imagesPreview.innerHTML =
+                    "";
+
+
+                coverFileName.textContent =
+                    "Aucun fichier sélectionné";
+
+
+                imagesFileCount.textContent =
+                    "Aucune photo sélectionnée";
+
+
+                previewImage.style
+                    .backgroundImage =
+                    "";
+
+
+                previewImage.classList.remove(
+                    "has-image"
+                );
+
+
+                previewImage.textContent =
+                    "Image principale";
+
+
+                previewTitle.textContent =
+                    "Titre de l'actualité";
+
+
+                previewDate.textContent =
+                    "Date de l'actualité";
+
+
+                previewText.textContent =
+                    "Le début de ton article apparaîtra ici...";
+
+
+                const todayReset =
+                    new Date();
+
+
+                const resetYear =
+                    todayReset.getFullYear();
+
+
+                const resetMonth =
+                    String(
+                        todayReset.getMonth() + 1
+                    ).padStart(
+                        2,
+                        "0"
+                    );
+
+
+                const resetDay =
+                    String(
+                        todayReset.getDate()
+                    ).padStart(
+                        2,
+                        "0"
+                    );
+
+
+                dateInput.value =
+                    `${resetYear}-${resetMonth}-${resetDay}`;
+
+
+                previewDate.textContent =
+                    formatDate(
+                        dateInput.value
+                    );
             }
         );
 
@@ -510,14 +683,18 @@ document.addEventListener(
                 const title =
                     titleInput.value.trim();
 
+
                 const date =
                     dateInput.value;
+
 
                 const content =
                     contentInput.value.trim();
 
+
                 const cover =
                     coverInput.files[0];
+
 
                 const images =
                     Array.from(
@@ -559,6 +736,25 @@ document.addEventListener(
                 );
             }
         );
+
+
+        // ====================================================
+        // INITIALISATION
+        // ====================================================
+
+        const defaultTab =
+            document.querySelector(
+                ".gestion-tab.active"
+            );
+
+
+        if (defaultTab) {
+
+            activateTab(
+                defaultTab
+            );
+
+        }
 
     }
 );
