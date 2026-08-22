@@ -231,6 +231,13 @@ def get_drive_files(service) -> list[dict]:
 
         for file in response.get("files", []):
 
+            print(
+                f"Drive détecté : "
+                f"{file.get('name')} | "
+                f"{file.get('mimeType')} | "
+                f"{file.get('id')}"
+            )
+
             if file.get("mimeType") in ALLOWED_MIME_TYPES:
                 files.append(file)
 
