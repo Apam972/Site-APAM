@@ -20,7 +20,7 @@ jobs:
       id-token: write
 
     env:
-      DRIVE_FOLDER_ID: "1Ejv4YuxKEvEAP1bPR1uWSVri-u5YvJKr"
+      DRIVE_FOLDER_ID: "1Jg-DKd5eZIYngWlcjQoSX-OvwHQF5DhK"
       ARCHIVE_FOLDER_ID: "1RCuEJSndjKJrWL7TilYqbhtk5gxg9czy"
 
       MAIL_COMMUNICATION: "admin@apam972.com"
