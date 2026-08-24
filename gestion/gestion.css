@@ -6,6 +6,10 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     margin: 0;
 
@@ -21,6 +25,8 @@ body {
    ============================================================ */
 
 .gestion-header {
+    width: 100%;
+
     background: white;
 
     border-bottom: 1px solid
@@ -44,8 +50,7 @@ body {
     gap: 30px;
 }
 
-.gestion-eyebrow,
-.panel-eyebrow {
+.gestion-eyebrow {
     margin: 0 0 5px;
 
     color: #C34324;
@@ -68,7 +73,9 @@ body {
 
 .back-button {
     display: inline-flex;
+
     align-items: center;
+    justify-content: center;
 
     padding: 10px 18px;
 
@@ -79,6 +86,8 @@ body {
     color: #F5A623;
 
     text-decoration: none;
+
+    font-size: 14px;
     font-weight: 600;
 
     transition:
@@ -89,6 +98,7 @@ body {
 
 .back-button:hover {
     background: #F5A623;
+
     color: white;
 
     transform: translateY(-2px);
@@ -100,6 +110,8 @@ body {
    ============================================================ */
 
 .gestion-main {
+    display: block;
+
     width: min(1200px, 92%);
 
     margin: 50px auto 80px;
@@ -107,20 +119,20 @@ body {
 
 
 /* ============================================================
-   ONGLET DE NAVIGATION
+   NAVIGATION PAR ONGLET
    ============================================================ */
 
 .gestion-tabs {
     width: 100%;
 
-    margin-bottom: 30px;
+    margin: 0 0 30px;
+
+    padding: 8px;
 
     display: flex;
     flex-wrap: wrap;
 
     gap: 10px;
-
-    padding: 8px;
 
     background: white;
 
@@ -130,6 +142,7 @@ body {
         0 6px 20px rgba(0, 0, 0, 0.08);
 
     position: relative;
+
     z-index: 10;
 }
 
@@ -147,6 +160,7 @@ body {
     color: #555;
 
     font-family: "Poppins", sans-serif;
+
     font-size: 14px;
     font-weight: 600;
 
@@ -161,6 +175,7 @@ body {
 
 .gestion-tab:hover {
     background: #FFF8EC;
+
     color: #C34324;
 
     transform: translateY(-1px);
@@ -168,6 +183,7 @@ body {
 
 .gestion-tab.active {
     background: #F5A623;
+
     color: white;
 
     box-shadow:
@@ -177,12 +193,8 @@ body {
 
 
 /* ============================================================
-   CONTENU DES ONGLES
+   CONTENU DES ONGLET
    ============================================================ */
-
-/*
-   Par défaut, aucune section n'est visible.
-*/
 
 .gestion-tab-content {
     display: none !important;
@@ -190,12 +202,10 @@ body {
     width: 100%;
 }
 
-/*
-   Seule la section active est affichée.
-*/
-
 .gestion-tab-content.active {
     display: grid !important;
+
+    width: 100%;
 
     grid-template-columns:
         minmax(0, 1.4fr)
@@ -213,6 +223,8 @@ body {
 
 .gestion-panel,
 .preview-panel {
+    width: 100%;
+
     background: white;
 
     border-radius: 30px;
@@ -220,12 +232,27 @@ body {
     padding: 35px;
 
     box-shadow:
-        10px 10px 20px rgba(0, 0, 0, 0.12),
-        -5px -5px 15px rgba(255, 255, 255, 0.8);
+        10px 10px 20px
+        rgba(0, 0, 0, 0.12),
+
+        -5px -5px 15px
+        rgba(255, 255, 255, 0.8);
 }
 
 .panel-heading {
     margin-bottom: 30px;
+}
+
+.panel-eyebrow {
+    margin: 0 0 5px;
+
+    color: #C34324;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .panel-heading h2 {
@@ -235,6 +262,251 @@ body {
 
     font-size: 26px;
     font-weight: 600;
+
+    line-height: 1.2;
+}
+
+
+/* ============================================================
+   GESTION DES ACTUALITÉS
+   ============================================================ */
+
+.actualites-management {
+    width: 100%;
+
+    grid-column: 1 / -1;
+}
+
+
+/* ============================================================
+   EN-TÊTE ACTUALITÉS
+   ============================================================ */
+
+.actualites-header {
+    width: 100%;
+
+    margin-bottom: 30px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+.actualites-header h2 {
+    margin: 0;
+
+    color: #F5A623;
+
+    font-size: 28px;
+    font-weight: 600;
+
+    line-height: 1.2;
+}
+
+
+/* ============================================================
+   LISTE DES ACTUALITÉS
+   ============================================================ */
+
+.news-list {
+    width: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+}
+
+.news-list-empty {
+    width: 100%;
+
+    min-height: 260px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 40px;
+
+    border-radius: 25px;
+
+    background: white;
+
+    text-align: center;
+
+    box-shadow:
+        10px 10px 20px
+        rgba(0, 0, 0, 0.12),
+
+        -5px -5px 15px
+        rgba(255, 255, 255, 0.8);
+}
+
+.news-list-empty p {
+    margin: 0 0 20px;
+
+    color: #777;
+
+    font-size: 14px;
+}
+
+
+/* ============================================================
+   CARTE D'ACTUALITÉ
+   ============================================================ */
+
+.news-card {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        180px
+        minmax(0, 1fr)
+        auto;
+
+    gap: 20px;
+
+    align-items: center;
+
+    padding: 18px;
+
+    background: white;
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 6px 18px
+        rgba(0, 0, 0, 0.08);
+
+    overflow: hidden;
+}
+
+
+/* ============================================================
+   IMAGE DE LA CARTE
+   ============================================================ */
+
+.news-card-image {
+    width: 180px;
+    height: 120px;
+
+    overflow: hidden;
+
+    flex-shrink: 0;
+
+    border-radius: 15px;
+
+    background: #F1F1F1;
+}
+
+.news-card-image img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+/* ============================================================
+   INFORMATIONS DE LA CARTE
+   ============================================================ */
+
+.news-card-info {
+    min-width: 0;
+}
+
+.news-card-info h3 {
+    margin: 0 0 6px;
+
+    color: #F5A623;
+
+    font-size: 18px;
+    font-weight: 600;
+
+    line-height: 1.3;
+
+    overflow-wrap: anywhere;
+}
+
+.news-card-date {
+    margin: 0 0 8px;
+
+    color: #C34324;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.news-card-description {
+    margin: 0;
+
+    color: #666;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+}
+
+
+/* ============================================================
+   BOUTONS DE LA CARTE
+   ============================================================ */
+
+.news-card-actions {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    flex-shrink: 0;
+}
+
+.news-card-actions button {
+    min-width: 110px;
+}
+
+
+/* ============================================================
+   ÉDITEUR D'ACTUALITÉ
+   ============================================================ */
+
+.news-editor {
+    width: 100%;
+}
+
+.news-editor[hidden] {
+    display: none;
+}
+
+.news-editor-layout {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.4fr)
+        minmax(320px, 0.8fr);
+
+    gap: 30px;
+
+    align-items: start;
+}
+
+.news-editor .preview-panel {
+    position: sticky;
+
+    top: 30px;
 }
 
 
@@ -243,20 +515,26 @@ body {
    ============================================================ */
 
 .news-form {
+    width: 100%;
+
     display: flex;
+
     flex-direction: column;
 
     gap: 26px;
 }
 
 .form-group {
+    width: 100%;
+
     display: flex;
+
     flex-direction: column;
 
     gap: 8px;
 }
 
-.form-group label {
+.form-group > label {
     color: #333;
 
     font-size: 15px;
@@ -269,6 +547,8 @@ body {
     color: #777;
 
     font-size: 13px;
+
+    line-height: 1.5;
 }
 
 .form-group input[type="text"],
@@ -287,6 +567,7 @@ body {
     color: #333;
 
     font-family: "Poppins", sans-serif;
+
     font-size: 14px;
 
     outline: none;
@@ -319,11 +600,14 @@ body {
    ============================================================ */
 
 .upload-box {
+    width: 100%;
+
     min-height: 120px;
 
     padding: 25px;
 
     display: flex;
+
     flex-direction: column;
 
     align-items: center;
@@ -361,6 +645,7 @@ body {
     height: 38px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -390,6 +675,7 @@ body {
     font-size: 12px;
 
     text-overflow: ellipsis;
+
     white-space: nowrap;
 }
 
@@ -400,6 +686,8 @@ body {
 
 .image-preview {
     display: none;
+
+    width: 100%;
 
     margin-top: 10px;
 }
@@ -412,6 +700,7 @@ body {
     display: block;
 
     width: 100%;
+
     max-height: 300px;
 
     object-fit: cover;
@@ -425,6 +714,8 @@ body {
    ============================================================ */
 
 .images-preview {
+    width: 100%;
+
     display: grid;
 
     grid-template-columns:
@@ -457,7 +748,7 @@ body {
 
 
 /* ============================================================
-   BOUTONS DU FORMULAIRE
+   BOUTONS
    ============================================================ */
 
 .form-actions {
@@ -472,6 +763,11 @@ body {
 
 .button-primary,
 .button-secondary {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
     padding: 11px 20px;
 
     border-radius: 999px;
@@ -487,7 +783,8 @@ body {
         background 0.25s ease,
         color 0.25s ease,
         border-color 0.25s ease,
-        transform 0.25s ease;
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
 }
 
 .button-primary {
@@ -514,6 +811,7 @@ body {
 
 .button-secondary:hover {
     background: #F5A623;
+
     color: white;
 
     transform: translateY(-2px);
@@ -534,12 +832,16 @@ body {
    ============================================================ */
 
 .preview-panel {
+    width: 100%;
+
     position: sticky;
 
     top: 30px;
 }
 
 .news-preview {
+    width: 100%;
+
     overflow: hidden;
 
     border-radius: 20px;
@@ -568,6 +870,7 @@ body {
     font-size: 13px;
 
     background-size: cover;
+
     background-position: center;
 }
 
@@ -595,6 +898,8 @@ body {
 
     font-size: 20px;
     font-weight: 600;
+
+    line-height: 1.3;
 }
 
 .news-preview-content p:last-child {
@@ -603,6 +908,7 @@ body {
     color: #555;
 
     font-size: 13px;
+
     line-height: 1.6;
 }
 
@@ -614,9 +920,12 @@ body {
 .empty-management-panel {
     grid-column: 1 / -1;
 
+    width: 100%;
+
     min-height: 420px;
 
     display: flex;
+
     flex-direction: column;
 
     align-items: center;
@@ -631,8 +940,11 @@ body {
     text-align: center;
 
     box-shadow:
-        10px 10px 20px rgba(0, 0, 0, 0.12),
-        -5px -5px 15px rgba(255, 255, 255, 0.8);
+        10px 10px 20px
+        rgba(0, 0, 0, 0.12),
+
+        -5px -5px 15px
+        rgba(255, 255, 255, 0.8);
 }
 
 .management-icon {
@@ -640,6 +952,7 @@ body {
     height: 80px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -669,6 +982,7 @@ body {
     color: #666;
 
     font-size: 14px;
+
     line-height: 1.7;
 }
 
@@ -677,7 +991,39 @@ body {
    RESPONSIVE
    ============================================================ */
 
-@media (max-width: 850px) {
+@media (max-width: 900px) {
+
+    .gestion-tab-content.active {
+        grid-template-columns: 1fr;
+    }
+
+    .news-editor-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .preview-panel,
+    .news-editor .preview-panel {
+        position: static;
+    }
+
+    .news-card {
+        grid-template-columns: 1fr;
+    }
+
+    .news-card-image {
+        width: 100%;
+        height: 220px;
+    }
+
+    .news-card-actions {
+        flex-direction: row;
+
+        flex-wrap: wrap;
+    }
+}
+
+
+@media (max-width: 700px) {
 
     .gestion-header-inner {
         flex-direction: column;
@@ -685,18 +1031,31 @@ body {
         align-items: flex-start;
     }
 
+    .gestion-header h1 {
+        font-size: 28px;
+    }
+
+    .gestion-tabs {
+        flex-direction: column;
+
+        gap: 6px;
+    }
+
     .gestion-tab {
-        flex: 1 1 100%;
+        flex: 1 1 auto;
 
         width: 100%;
     }
 
-    .gestion-tab-content.active {
-        grid-template-columns: 1fr;
+    .gestion-panel,
+    .preview-panel {
+        padding: 25px;
     }
 
-    .preview-panel {
-        position: static;
+    .actualites-header {
+        flex-direction: column;
+
+        align-items: flex-start;
     }
 
     .form-actions {
