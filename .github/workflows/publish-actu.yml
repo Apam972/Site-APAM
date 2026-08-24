@@ -5,6 +5,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
 
@@ -14,13 +15,27 @@ jobs:
 
     steps:
 
+      # ============================================================
+      # RÉCUPÉRATION DU DÉPÔT
+      # ============================================================
+
       - name: Récupérer le dépôt
         uses: actions/checkout@v4
+
+
+      # ============================================================
+      # PYTHON
+      # ============================================================
 
       - name: Installer Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+
+      # ============================================================
+      # DÉPENDANCES
+      # ============================================================
 
       - name: Installer les dépendances
         run: |
@@ -30,21 +45,54 @@ jobs:
             google-auth-httplib2 \
             google-auth-oauthlib
 
+
+      # ============================================================
+      # AUTHENTIFICATION GOOGLE CLOUD
+      # ============================================================
+
+      - name: Authentification Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: apam-site-506020
+          workload_identity_provider: projects/388224398802/locations/global/workloadIdentityPools/github-apam/providers/github-actions
+          service_account: apam-site-sync@apam-site-506020.iam.gserviceaccount.com
+
+
+      # ============================================================
+      # GÉNÉRATION DU CATALOGUE
+      # ============================================================
+
       - name: Générer actualites.json
         env:
           DRIVE_FOLDER_ID: "1erhOOCLWg9l1mn4HLbDaZJT7_DamIE0G"
         run: |
           python scripts/publish_actu.py
 
+
+      # ============================================================
+      # VÉRIFICATION
+      # ============================================================
+
       - name: Vérifier les changements
         run: |
           git status
+          git diff -- data/actualites.json
+
+
+      # ============================================================
+      # PUBLICATION
+      # ============================================================
 
       - name: Publier les changements
         run: |
           git config user.name "APAM Bot"
           git config user.email "mail.auto@apam972.com"
+
           git add data/actualites.json
           git add assets/actu
-          git commit -m "Mise à jour des actualités" || echo "Aucun changement"
+
+          git commit -m "Mise à jour des actualités" \
+            || echo "Aucun changement à publier"
+
           git push
