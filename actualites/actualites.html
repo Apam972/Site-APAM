@@ -12,6 +12,21 @@
 
     <title>Actualités | APAM</title>
 
+
+    <!-- =====================================================
+         POLICE
+    ====================================================== -->
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         CSS ACTUALITÉS
+    ====================================================== -->
+
     <link
         rel="stylesheet"
         href="../CSS/actualites.css"
@@ -21,6 +36,7 @@
 
 
 <body>
+
 
     <!-- =====================================================
          HEADER
@@ -40,8 +56,8 @@
                 </span>
 
                 <span class="brand-subtitle">
-                    Association des Professionnels
-                    de l'Animation de Martinique
+                    Association Pour l'Animation
+                    de Martinique
                 </span>
 
             </a>
@@ -60,10 +76,15 @@
 
 
     <!-- =====================================================
-         CONTENU
+         CONTENU PRINCIPAL
     ====================================================== -->
 
     <main class="page">
+
+
+        <!-- =================================================
+             TITRE
+        ================================================== -->
 
         <section class="page-heading">
 
@@ -84,7 +105,7 @@
 
 
         <!-- =================================================
-             ÉTAT DE CHARGEMENT
+             CHARGEMENT
         ================================================== -->
 
         <section
@@ -114,7 +135,7 @@
 
 
         <!-- =================================================
-             MESSAGE VIDE
+             AUCUNE ACTUALITÉ
         ================================================== -->
 
         <section
@@ -172,6 +193,89 @@
 
 
     <!-- =====================================================
+         POPUP ACTUALITÉ
+    ====================================================== -->
+
+    <div
+        id="article-modal"
+        class="article-modal"
+        aria-hidden="true"
+    >
+
+        <!-- Fond sombre -->
+
+        <div
+            id="article-modal-overlay"
+            class="article-modal-overlay"
+        ></div>
+
+
+        <!-- Fenêtre -->
+
+        <article
+            class="article-modal-content"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="article-modal-title"
+        >
+
+
+            <!-- =============================================
+                 BOUTON FERMER
+            ============================================== -->
+
+            <button
+                type="button"
+                id="article-modal-close"
+                class="article-modal-close"
+                aria-label="Fermer l'article"
+            >
+                ×
+            </button>
+
+
+            <!-- =============================================
+                 IMAGE PRINCIPALE
+            ============================================== -->
+
+            <div
+                id="article-modal-image"
+                class="article-modal-image"
+            ></div>
+
+
+            <!-- =============================================
+                 CONTENU ARTICLE
+            ============================================== -->
+
+            <div class="article-modal-body">
+
+
+                <p
+                    id="article-modal-date"
+                    class="article-modal-date"
+                ></p>
+
+
+                <h2
+                    id="article-modal-title"
+                ></h2>
+
+
+                <div
+                    id="article-modal-text"
+                    class="article-modal-text"
+                ></div>
+
+
+            </div>
+
+        </article>
+
+    </div>
+
+
+    <!-- =====================================================
          FOOTER
     ====================================================== -->
 
@@ -183,6 +287,10 @@
 
     </footer>
 
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
 
     <script src="actualites.js"></script>
 
