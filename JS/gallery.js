@@ -330,7 +330,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         // ----------------------------------------------------
 
         const source =
-            `assets/image-apam/${media.file}`;
+            `../assets/image-apam/${media.file}`;
 
 
         const title =
