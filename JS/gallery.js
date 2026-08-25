@@ -745,7 +745,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         );
 
                     imageElement.src =
-                        `assets/image-apam/${media.file}`;
+                        `../assets/image-apam/${media.file}`;
 
                     imageElement.alt =
                         media.title ||
@@ -783,7 +783,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         );
 
                     videoElement.src =
-                        `assets/image-apam/${media.file}`;
+                        `../assets/image-apam/${media.file}`;
 
                     videoElement.muted =
                         true;
@@ -845,7 +845,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         );
 
                     audioElement.src =
-                        `assets/image-apam/${media.file}`;
+                        `../assets/image-apam/${media.file}`;
 
                     audioElement.controls =
                         true;
@@ -878,7 +878,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         );
 
                     link.href =
-                        `assets/image-apam/${media.file}`;
+                        `../assets/image-apam/${media.file}`;
 
                     link.target =
                         "_blank";
@@ -909,7 +909,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         );
 
                     link.href =
-                        `assets/image-apam/${media.file}`;
+                        `../assets/image-apam/${media.file}`;
 
                     link.target =
                         "_blank";
