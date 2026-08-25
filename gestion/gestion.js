@@ -9,62 +9,17 @@ document.addEventListener(
         const APPS_SCRIPT_URL =
             "https://script.google.com/macros/s/AKfycbyVUZV9xFjNK8cVSwMc56m_fgw_QIaubfVzwYJd6UN8cJhYwK2a1-esKnincISjJofshQ/exec";
 
-        const STORAGE_KEY =
-            "apam_actualites";
-
-        const CACHE_VERSION_KEY =
-            "apam_actualites_cache_version";
-
-        const CACHE_VERSION =
-            "2";
+        const ACTUALITES_JSON_URL =
+            "../data/actualites.json";
 
 
         // ============================================================
-        // ANCIEN CACHE
-        // ============================================================
-        // On supprimait auparavant les images Base64 dans localStorage.
-        // Ce bloc nettoie une ancienne version du cache si nécessaire.
-
-        try {
-
-            const currentVersion =
-                localStorage.getItem(
-                    CACHE_VERSION_KEY
-                );
-
-            if (
-                currentVersion !==
-                CACHE_VERSION
-            ) {
-
-                localStorage.removeItem(
-                    STORAGE_KEY
-                );
-
-                localStorage.setItem(
-                    CACHE_VERSION_KEY,
-                    CACHE_VERSION
-                );
-            }
-
-        } catch (error) {
-
-            console.warn(
-                "Impossible de nettoyer le cache local :",
-                error
-            );
-        }
-
-
-        // ============================================================
-        // DONNÉES EN MÉMOIRE
+        // DONNÉES
         // ============================================================
 
-        let actualites =
-            loadActualites();
+        let actualites = [];
 
-        let editingId =
-            null;
+        let editingId = null;
 
 
         // ============================================================
@@ -288,110 +243,6 @@ document.addEventListener(
         }
 
 
-        // ============================================================
-        // CHARGEMENT DU CACHE LOCAL
-        // ============================================================
-
-        function loadActualites() {
-
-            try {
-
-                const raw =
-                    localStorage.getItem(
-                        STORAGE_KEY
-                    );
-
-
-                if (!raw) {
-                    return [];
-                }
-
-
-                const data =
-                    JSON.parse(
-                        raw
-                    );
-
-
-                if (
-                    !Array.isArray(data)
-                ) {
-                    return [];
-                }
-
-
-                return data;
-
-            } catch (error) {
-
-                console.error(
-                    "Impossible de charger "
-                    + "les actualités locales :",
-                    error
-                );
-
-                return [];
-            }
-        }
-
-
-        // ============================================================
-        // SAUVEGARDE DU CACHE LOCAL
-        // ============================================================
-        // IMPORTANT :
-        // On ne stocke JAMAIS les images Base64 ici.
-        // Seulement les métadonnées.
-
-        function saveActualites() {
-
-            try {
-
-                const lightweightData =
-                    actualites.map(
-                        (news) => ({
-
-                            id:
-                                news.id || "",
-
-                            title:
-                                news.title || "",
-
-                            date:
-                                news.date || "",
-
-                            content:
-                                news.content || "",
-
-                            coverName:
-                                news.coverName || "",
-
-                            imageNames:
-                                Array.isArray(
-                                    news.imageNames
-                                )
-                                    ? news.imageNames
-                                    : []
-                        })
-                    );
-
-
-                localStorage.setItem(
-                    STORAGE_KEY,
-                    JSON.stringify(
-                        lightweightData
-                    )
-                );
-
-            } catch (error) {
-
-                console.warn(
-                    "Cache local non enregistré :",
-                    error
-                );
-            }
-        }
-
-
         function formatDate(
             dateString
         ) {
@@ -439,8 +290,10 @@ document.addEventListener(
                     "div"
                 );
 
+
             div.textContent =
                 value || "";
+
 
             return div.innerHTML;
         }
@@ -480,10 +333,96 @@ document.addEventListener(
 
 
         // ============================================================
+        // CHARGEMENT DEPUIS actualites.json
+        // ============================================================
+
+        async function loadActualitesFromServer() {
+
+            try {
+
+                console.log(
+                    "Chargement des actualités..."
+                );
+
+
+                const response =
+                    await fetch(
+                        `${ACTUALITES_JSON_URL}?ts=${Date.now()}`,
+                        {
+                            cache: "no-store"
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        `Impossible de charger actualites.json (${response.status})`
+                    );
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                if (
+                    !Array.isArray(data)
+                ) {
+
+                    throw new Error(
+                        "actualites.json ne contient pas une liste."
+                    );
+                }
+
+
+                actualites =
+                    data.map(
+                        (news) => ({
+                            ...news
+                        })
+                    );
+
+
+                console.log(
+                    `${actualites.length} actualité(s) chargée(s).`
+                );
+
+
+                renderNewsList();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Erreur de chargement :",
+                    error
+                );
+
+
+                actualites = [];
+
+
+                renderNewsList(
+                    true
+                );
+
+
+                window.alert(
+                    "Impossible de charger les actualités depuis le serveur.\n\n" +
+                    error.message
+                );
+            }
+        }
+
+
+        // ============================================================
         // RENDU DE LA LISTE
         // ============================================================
 
-        function renderNewsList() {
+        function renderNewsList(
+            loadError = false
+        ) {
 
             newsList.innerHTML =
                 "";
@@ -505,7 +444,11 @@ document.addEventListener(
 
                 empty.innerHTML = `
                     <p>
-                        Aucune actualité pour le moment.
+                        ${
+                            loadError
+                                ? "Impossible de charger les actualités."
+                                : "Aucune actualité pour le moment."
+                        }
                     </p>
 
                     <button
@@ -513,7 +456,11 @@ document.addEventListener(
                         class="button-primary"
                         id="new-news-empty-button-rendered"
                     >
-                        Créer la première actualité
+                        ${
+                            loadError
+                                ? "Réessayer"
+                                : "Créer la première actualité"
+                        }
                     </button>
                 `;
 
@@ -535,7 +482,14 @@ document.addEventListener(
                         "click",
                         () => {
 
-                            openEditor();
+                            if (loadError) {
+
+                                loadActualitesFromServer();
+
+                            } else {
+
+                                openEditor();
+                            }
                         }
                     );
                 }
@@ -567,6 +521,7 @@ document.addEventListener(
                             "article"
                         );
 
+
                     card.className =
                         "news-card";
 
@@ -580,12 +535,13 @@ document.addEventListener(
                             "div"
                         );
 
+
                     image.className =
                         "news-card-image";
 
 
                     if (
-                        news.coverData
+                        news.cover
                     ) {
 
                         const imageElement =
@@ -595,11 +551,16 @@ document.addEventListener(
 
 
                         imageElement.src =
-                            news.coverData;
+                            `../${news.cover}`;
 
 
                         imageElement.alt =
-                            news.title || "";
+                            news.title ||
+                            "Actualité APAM";
+
+
+                        imageElement.loading =
+                            "lazy";
 
 
                         image.appendChild(
@@ -616,6 +577,7 @@ document.addEventListener(
                         document.createElement(
                             "div"
                         );
+
 
                     info.className =
                         "news-card-info";
@@ -655,6 +617,7 @@ document.addEventListener(
                             "div"
                         );
 
+
                     actions.className =
                         "news-card-actions";
 
@@ -664,11 +627,14 @@ document.addEventListener(
                             "button"
                         );
 
+
                     editButton.type =
                         "button";
 
+
                     editButton.className =
                         "button-secondary";
+
 
                     editButton.textContent =
                         "Modifier";
@@ -690,11 +656,14 @@ document.addEventListener(
                             "button"
                         );
 
+
                     deleteButton.type =
                         "button";
 
+
                     deleteButton.className =
                         "button-primary";
+
 
                     deleteButton.textContent =
                         "Supprimer";
@@ -715,6 +684,7 @@ document.addEventListener(
                         editButton
                     );
 
+
                     actions.appendChild(
                         deleteButton
                     );
@@ -724,9 +694,11 @@ document.addEventListener(
                         image
                     );
 
+
                     card.appendChild(
                         info
                     );
+
 
                     card.appendChild(
                         actions
@@ -756,6 +728,7 @@ document.addEventListener(
             newsEditor.hidden =
                 false;
 
+
             newsList.hidden =
                 true;
 
@@ -784,7 +757,7 @@ document.addEventListener(
 
 
                 newsIdInput.value =
-                    news.id;
+                    news.id || "";
 
 
                 newsTitleInput.value =
@@ -800,23 +773,24 @@ document.addEventListener(
 
 
                 coverFileName.textContent =
-                    news.coverName ||
                     "Image actuelle";
 
 
                 imagesFileCount.textContent =
-                    news.imageNames?.length
-                        ? `${news.imageNames.length} photo(s)`
+                    Array.isArray(
+                        news.images
+                    )
+                        ? `${news.images.length} photo(s)`
                         : "Aucune photo";
 
 
                 if (
-                    news.coverData
+                    news.cover
                 ) {
 
                     previewImage.style
                         .backgroundImage =
-                        `url("${news.coverData}")`;
+                        `url("../${news.cover}")`;
 
 
                     previewImage.classList.add(
@@ -860,6 +834,7 @@ document.addEventListener(
                     ) ||
                     "Le début de ton article apparaîtra ici...";
 
+
             } else {
 
                 editorTitle.textContent =
@@ -890,13 +865,17 @@ document.addEventListener(
             newsEditor.hidden =
                 true;
 
+
             newsList.hidden =
                 false;
+
 
             editingId =
                 null;
 
+
             resetForm();
+
 
             renderNewsList();
         }
@@ -926,6 +905,7 @@ document.addEventListener(
             coverPreview.innerHTML =
                 "";
 
+
             coverPreview.classList.remove(
                 "active"
             );
@@ -939,9 +919,11 @@ document.addEventListener(
                 .backgroundImage =
                 "";
 
+
             previewImage.classList.remove(
                 "has-image"
             );
+
 
             previewImage.textContent =
                 "Image principale";
@@ -1069,7 +1051,7 @@ document.addEventListener(
 
 
         // ============================================================
-        // PHOTOS DE L'ACTUALITÉ
+        // PHOTOS
         // ============================================================
 
         newsImagesInput.addEventListener(
@@ -1092,6 +1074,7 @@ document.addEventListener(
 
                     imagesFileCount.textContent =
                         "Aucune photo sélectionnée";
+
 
                     return;
                 }
@@ -1273,7 +1256,7 @@ document.addEventListener(
 
 
         // ============================================================
-        // ENREGISTREMENT VERS GOOGLE DRIVE
+        // ENREGISTREMENT → GOOGLE DRIVE
         // ============================================================
 
         newsForm.addEventListener(
@@ -1305,10 +1288,6 @@ document.addEventListener(
                     );
 
 
-                // ----------------------------------------------------
-                // VALIDATION
-                // ----------------------------------------------------
-
                 if (
                     !title ||
                     !date ||
@@ -1336,10 +1315,6 @@ document.addEventListener(
                 }
 
 
-                // ----------------------------------------------------
-                // BOUTON
-                // ----------------------------------------------------
-
                 const submitButton =
                     newsForm.querySelector(
                         'button[type="submit"]'
@@ -1357,10 +1332,6 @@ document.addEventListener(
                             "Enregistrement...";
                     }
 
-
-                    // ------------------------------------------------
-                    // COVER
-                    // ------------------------------------------------
 
                     let coverData =
                         null;
@@ -1383,13 +1354,6 @@ document.addEventListener(
                     }
 
 
-                    // ------------------------------------------------
-                    // PHOTOS
-                    // ------------------------------------------------
-                    // IMPORTANT :
-                    // Apps Script attend un tableau de chaînes
-                    // Base64, pas des objets {name,data}.
-
                     const imagesData =
                         [];
 
@@ -1409,10 +1373,6 @@ document.addEventListener(
                         );
                     }
 
-
-                    // ------------------------------------------------
-                    // PAYLOAD
-                    // ------------------------------------------------
 
                     const payload = {
 
@@ -1434,10 +1394,6 @@ document.addEventListener(
                         "Envoi vers Apps Script..."
                     );
 
-
-                    // ------------------------------------------------
-                    // ENVOI
-                    // ------------------------------------------------
 
                     const response =
                         await fetch(
@@ -1481,8 +1437,7 @@ document.addEventListener(
                     } catch (parseError) {
 
                         throw new Error(
-                            "Réponse invalide du serveur Apps Script : "
-                            + responseText
+                            "Réponse invalide du serveur Apps Script."
                         );
                     }
 
@@ -1499,12 +1454,18 @@ document.addEventListener(
 
 
                     // ------------------------------------------------
-                    // MISE À JOUR CACHE LÉGER
+                    // ACTUALISATION IMMÉDIATE DE LA LISTE
                     // ------------------------------------------------
+                    // L'actualité vient d'être écrite dans Drive.
+                    // Le JSON public sera mis à jour au prochain sync.
 
-                    const lightweightNews = {
+                    const temporaryNews = {
 
                         id:
+                            result.folder ||
+                            generateId(),
+
+                        slug:
                             result.folder ||
                             generateId(),
 
@@ -1513,6 +1474,15 @@ document.addEventListener(
                         date,
 
                         content,
+
+                        cover:
+                            "",
+
+                        images:
+                            [],
+
+                        coverData:
+                            coverData,
 
                         coverName:
                             coverName,
@@ -1547,43 +1517,48 @@ document.addEventListener(
                                     newsIndex
                                 ],
 
-                                ...lightweightNews,
+                                title,
 
-                                // Image uniquement
-                                // pour la session actuelle.
+                                date,
+
+                                content,
+
                                 coverData:
                                     coverData ||
                                     actualites[
                                         newsIndex
                                     ].coverData ||
-                                    null
+                                    null,
+
+                                coverName:
+                                    coverName ||
+                                    actualites[
+                                        newsIndex
+                                    ].coverName ||
+                                    "",
+
+                                imageNames:
+                                    imageFiles.map(
+                                        (file) =>
+                                            file.name
+                                    )
                             };
                         }
 
                     } else {
 
                         actualites.push(
-                            {
-                                ...lightweightNews,
-
-                                // uniquement en mémoire,
-                                // jamais dans localStorage
-                                coverData:
-                                    coverData
-                            }
+                            temporaryNews
                         );
                     }
 
 
-                    // ------------------------------------------------
-                    // CACHE MÉTADONNÉES
-                    // ------------------------------------------------
-
-                    saveActualites();
+                    renderNewsList();
 
 
                     window.alert(
-                        "✅ Actualité enregistrée dans Google Drive."
+                        "✅ Actualité enregistrée dans Google Drive.\n\n" +
+                        "Elle sera disponible sur les autres appareils après la prochaine synchronisation du site."
                     );
 
 
@@ -1599,10 +1574,10 @@ document.addEventListener(
 
 
                     window.alert(
-                        "❌ Impossible d'enregistrer l'actualité.\n\n"
-                        +
+                        "❌ Impossible d'enregistrer l'actualité.\n\n" +
                         error.message
                     );
+
 
                 } finally {
 
@@ -1650,14 +1625,15 @@ document.addEventListener(
             }
 
 
-            // --------------------------------------------------------
-            // IMPORTANT
-            // Pour le moment, ceci supprime uniquement du cache
-            // de l'interface.
-            //
-            // La vraie suppression Drive sera ajoutée avec
-            // l'endpoint Apps Script de suppression.
-            // --------------------------------------------------------
+            /*
+             * ATTENTION :
+             * Pour l'instant, cette suppression ne supprime
+             * PAS encore le dossier Google Drive.
+             *
+             * On branchera l'endpoint Apps Script de suppression
+             * dans la prochaine étape.
+             */
+
 
             actualites =
                 actualites.filter(
@@ -1665,8 +1641,6 @@ document.addEventListener(
                         item.id !== newsId
                 );
 
-
-            saveActualites();
 
             renderNewsList();
         }
@@ -1723,9 +1697,6 @@ document.addEventListener(
         // INITIALISATION
         // ============================================================
 
-        renderNewsList();
-
-
         const defaultTab =
             document.querySelector(
                 ".gestion-tab.active"
@@ -1738,6 +1709,13 @@ document.addEventListener(
                 defaultTab
             );
         }
+
+
+        // ------------------------------------------------------------
+        // SOURCE DE VÉRITÉ
+        // ------------------------------------------------------------
+
+        loadActualitesFromServer();
 
     }
 );
