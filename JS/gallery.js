@@ -677,7 +677,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const response =
             await fetch(
-                "./data/images.json"
+                "../data/images.json"
             );
 
 
