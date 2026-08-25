@@ -11,30 +11,30 @@ document.addEventListener(
 
 
         // ============================================================
-        // ÉLÉMENTS PRINCIPAUX
+        // ÉLÉMENTS
         // ============================================================
+
+        const newsLoading =
+            document.getElementById(
+                "news-loading"
+            );
 
         const newsList =
             document.getElementById(
                 "news-list"
             );
 
-        const loading =
-            document.getElementById(
-                "news-loading"
-            );
-
-        const empty =
+        const newsEmpty =
             document.getElementById(
                 "news-empty"
             );
 
-        const error =
+        const newsError =
             document.getElementById(
                 "news-error"
             );
 
-        const errorMessage =
+        const newsErrorMessage =
             document.getElementById(
                 "news-error-message"
             );
@@ -45,9 +45,9 @@ document.addEventListener(
             );
 
 
-        // ============================================================
-        // ÉLÉMENTS POPUP
-        // ============================================================
+        // ------------------------------------------------------------
+        // MODAL
+        // ------------------------------------------------------------
 
         const articleModal =
             document.getElementById(
@@ -86,19 +86,27 @@ document.addEventListener(
 
 
         // ============================================================
-        // VÉRIFICATION DE L'INTERFACE
+        // VÉRIFICATION
         // ============================================================
 
         if (
+            !newsLoading ||
             !newsList ||
-            !loading ||
-            !empty ||
-            !error ||
-            !errorMessage
+            !newsEmpty ||
+            !newsError ||
+            !newsErrorMessage ||
+            !retryButton ||
+            !articleModal ||
+            !articleModalOverlay ||
+            !articleModalClose ||
+            !articleModalImage ||
+            !articleModalDate ||
+            !articleModalTitle ||
+            !articleModalText
         ) {
 
             console.error(
-                "Interface Actualités introuvable."
+                "Actualités : éléments HTML manquants."
             );
 
             return;
@@ -106,35 +114,21 @@ document.addEventListener(
 
 
         // ============================================================
-        // UTILITAIRES
+        // DONNÉES
         // ============================================================
 
-        function escapeHtml(
-            value
-        ) {
-
-            const element =
-                document.createElement(
-                    "div"
-                );
+        let actualites = [];
 
 
-            element.textContent =
-                value ?? "";
-
-
-            return element.innerHTML;
-        }
-
+        // ============================================================
+        // UTILITAIRES
+        // ============================================================
 
         function formatDate(
             dateString
         ) {
 
-            if (
-                !dateString
-            ) {
-
+            if (!dateString) {
                 return "";
             }
 
@@ -158,14 +152,9 @@ document.addEventListener(
             return new Intl.DateTimeFormat(
                 "fr-FR",
                 {
-                    day:
-                        "numeric",
-
-                    month:
-                        "long",
-
-                    year:
-                        "numeric"
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric"
                 }
             ).format(
                 date
@@ -174,139 +163,118 @@ document.addEventListener(
 
 
         function getPreviewText(
-            content
+            content,
+            maxLength = 160
         ) {
 
             const text =
                 String(
                     content || ""
                 )
-                    .replace(
-                        /\s+/g,
-                        " "
-                    )
-                    .trim();
+                .replace(
+                    /\s+/g,
+                    " "
+                )
+                .trim();
 
 
-            if (
-                !text
-            ) {
-
+            if (!text) {
                 return "";
             }
 
 
-            const maxLength =
-                160;
-
-
             if (
-                text.length >
-                maxLength
+                text.length <= maxLength
             ) {
 
-                return (
-                    text
-                        .slice(
-                            0,
-                            maxLength
-                        )
-                        .trim()
-                    + "..."
-                );
+                return text;
             }
 
 
-            return text;
+            return (
+                text
+                    .slice(
+                        0,
+                        maxLength
+                    )
+                    .trimEnd()
+                + "..."
+            );
         }
 
 
-        function convertArticleTextToHtml(
-            content
+        function resolveSitePath(
+            filePath
         ) {
 
-            const text =
-                String(
-                    content || ""
-                );
-
-
-            if (
-                !text.trim()
-            ) {
-
-                return `
-                    <p>
-                        Aucun contenu disponible.
-                    </p>
-                `;
+            if (!filePath) {
+                return "";
             }
 
 
-            /*
-             * On considère chaque ligne non vide
-             * comme un paragraphe.
-             */
-
-            return text
-                .split(/\r?\n+/)
-                .map(
-                    paragraph => {
-
-                        const clean =
-                            paragraph.trim();
-
-
-                        if (
-                            !clean
-                        ) {
-
-                            return "";
-                        }
-
-
-                        return `
-                            <p>
-                                ${escapeHtml(
-                                    clean
-                                )}
-                            </p>
-                        `;
-                    }
+            if (
+                /^https?:\/\//i.test(
+                    filePath
                 )
-                .join("");
+            ) {
+
+                return filePath;
+            }
+
+
+            if (
+                filePath.startsWith(
+                    "/"
+                )
+            ) {
+
+                return filePath;
+            }
+
+
+            return `../${filePath}`;
         }
 
 
         // ============================================================
-        // GESTION DES ÉTATS
+        // ÉTATS
         // ============================================================
-
-        function hideAllStates() {
-
-            loading.classList.add(
-                "hidden"
-            );
-
-            empty.classList.add(
-                "hidden"
-            );
-
-            error.classList.add(
-                "hidden"
-            );
-        }
-
 
         function showLoading() {
 
-            hideAllStates();
+            newsLoading.classList.remove(
+                "hidden"
+            );
 
             newsList.classList.add(
                 "hidden"
             );
 
-            loading.classList.remove(
+            newsEmpty.classList.add(
+                "hidden"
+            );
+
+            newsError.classList.add(
+                "hidden"
+            );
+        }
+
+
+        function showNews() {
+
+            newsLoading.classList.add(
+                "hidden"
+            );
+
+            newsList.classList.remove(
+                "hidden"
+            );
+
+            newsEmpty.classList.add(
+                "hidden"
+            );
+
+            newsError.classList.add(
                 "hidden"
             );
         }
@@ -314,13 +282,19 @@ document.addEventListener(
 
         function showEmpty() {
 
-            hideAllStates();
+            newsLoading.classList.add(
+                "hidden"
+            );
 
             newsList.classList.add(
                 "hidden"
             );
 
-            empty.classList.remove(
+            newsEmpty.classList.remove(
+                "hidden"
+            );
+
+            newsError.classList.add(
                 "hidden"
             );
         }
@@ -330,245 +304,26 @@ document.addEventListener(
             message
         ) {
 
-            hideAllStates();
+            newsLoading.classList.add(
+                "hidden"
+            );
 
             newsList.classList.add(
                 "hidden"
             );
 
-            error.classList.remove(
+            newsEmpty.classList.add(
                 "hidden"
             );
 
-            errorMessage.textContent =
+            newsError.classList.remove(
+                "hidden"
+            );
+
+            newsErrorMessage.textContent =
                 message ||
                 "Une erreur est survenue.";
         }
-
-
-        function showNewsList() {
-
-            hideAllStates();
-
-            newsList.classList.remove(
-                "hidden"
-            );
-        }
-
-
-        // ============================================================
-        // POPUP : OUVERTURE
-        // ============================================================
-
-        function openArticleModal(
-            article
-        ) {
-
-            if (
-                !articleModal
-            ) {
-
-                console.error(
-                    "Popup article introuvable."
-                );
-
-                return;
-            }
-
-
-            // --------------------------------------------------------
-            // DATE
-            // --------------------------------------------------------
-
-            if (
-                articleModalDate
-            ) {
-
-                articleModalDate.textContent =
-                    formatDate(
-                        article.date
-                    );
-            }
-
-
-            // --------------------------------------------------------
-            // TITRE
-            // --------------------------------------------------------
-
-            if (
-                articleModalTitle
-            ) {
-
-                articleModalTitle.textContent =
-                    article.title ||
-                    "Actualité APAM";
-            }
-
-
-            // --------------------------------------------------------
-            // IMAGE
-            // --------------------------------------------------------
-
-            if (
-                articleModalImage
-            ) {
-
-                articleModalImage.innerHTML =
-                    "";
-
-
-                if (
-                    article.cover
-                ) {
-
-                    const image =
-                        document.createElement(
-                            "img"
-                        );
-
-
-                    /*
-                     * article.cover est enregistré
-                     * depuis la racine du site.
-                     *
-                     * Exemple :
-                     * assets/actu/test/image/cover.jpg
-                     */
-
-                    image.src =
-                        `../${article.cover}`;
-
-
-                    image.alt =
-                        article.title ||
-                        "Image de l'actualité";
-
-
-                    image.loading =
-                        "lazy";
-
-
-                    image.addEventListener(
-                        "error",
-                        () => {
-
-                            articleModalImage.innerHTML =
-                                "";
-                        }
-                    );
-
-
-                    articleModalImage.appendChild(
-                        image
-                    );
-                }
-            }
-
-
-            // --------------------------------------------------------
-            // CONTENU COMPLET
-            // --------------------------------------------------------
-
-            if (
-                articleModalText
-            ) {
-
-                articleModalText.innerHTML =
-                    convertArticleTextToHtml(
-                        article.content
-                    );
-            }
-
-
-            // --------------------------------------------------------
-            // OUVERTURE
-            // --------------------------------------------------------
-
-            articleModal.classList.add(
-                "active"
-            );
-
-
-            articleModal.setAttribute(
-                "aria-hidden",
-                "false"
-            );
-
-
-            document.body.style.overflow =
-                "hidden";
-        }
-
-
-        // ============================================================
-        // POPUP : FERMETURE
-        // ============================================================
-
-        function closeArticleModal() {
-
-            if (
-                !articleModal
-            ) {
-
-                return;
-            }
-
-
-            articleModal.classList.remove(
-                "active"
-            );
-
-
-            articleModal.setAttribute(
-                "aria-hidden",
-                "true"
-            );
-
-
-            document.body.style.overflow =
-                "";
-        }
-
-
-        // ============================================================
-        // ÉVÉNEMENTS POPUP
-        // ============================================================
-
-        if (
-            articleModalClose
-        ) {
-
-            articleModalClose.addEventListener(
-                "click",
-                closeArticleModal
-            );
-        }
-
-
-        if (
-            articleModalOverlay
-        ) {
-
-            articleModalOverlay.addEventListener(
-                "click",
-                closeArticleModal
-            );
-        }
-
-
-        document.addEventListener(
-            "keydown",
-            event => {
-
-                if (
-                    event.key ===
-                    "Escape"
-                ) {
-
-                    closeArticleModal();
-                }
-            }
-        );
 
 
         // ============================================================
@@ -576,7 +331,8 @@ document.addEventListener(
         // ============================================================
 
         function createNewsCard(
-            article
+            news,
+            index
         ) {
 
             const card =
@@ -589,28 +345,19 @@ document.addEventListener(
                 "news-card";
 
 
-            card.setAttribute(
-                "tabindex",
-                "0"
-            );
-
-
-            // --------------------------------------------------------
-            // LIEN / ZONE CLIQUABLE
-            // --------------------------------------------------------
-
-            const cardLink =
-                document.createElement(
-                    "div"
+            card.dataset.index =
+                String(
+                    index
                 );
 
 
-            cardLink.className =
-                "news-card-link";
+            card.tabIndex =
+                0;
 
 
-            card.appendChild(
-                cardLink
+            card.setAttribute(
+                "role",
+                "button"
             );
 
 
@@ -618,19 +365,17 @@ document.addEventListener(
             // IMAGE
             // --------------------------------------------------------
 
-            const imageContainer =
+            const imageWrapper =
                 document.createElement(
                     "div"
                 );
 
 
-            imageContainer.className =
+            imageWrapper.className =
                 "news-card-image";
 
 
-            if (
-                article.cover
-            ) {
+            if (news.cover) {
 
                 const image =
                     document.createElement(
@@ -639,37 +384,24 @@ document.addEventListener(
 
 
                 image.src =
-                    `../${article.cover}`;
+                    resolveSitePath(
+                        news.cover
+                    );
 
 
                 image.alt =
-                    article.title ||
-                    "Image de l'actualité";
+                    news.title ||
+                    "Actualité APAM";
 
 
                 image.loading =
                     "lazy";
 
 
-                image.addEventListener(
-                    "error",
-                    () => {
-
-                        imageContainer.innerHTML =
-                            "";
-                    }
-                );
-
-
-                imageContainer.appendChild(
+                imageWrapper.appendChild(
                     image
                 );
             }
-
-
-            cardLink.appendChild(
-                imageContainer
-            );
 
 
             // --------------------------------------------------------
@@ -686,8 +418,6 @@ document.addEventListener(
                 "news-card-content";
 
 
-            // Date
-
             const date =
                 document.createElement(
                     "p"
@@ -700,16 +430,9 @@ document.addEventListener(
 
             date.textContent =
                 formatDate(
-                    article.date
+                    news.date
                 );
 
-
-            content.appendChild(
-                date
-            );
-
-
-            // Titre
 
             const title =
                 document.createElement(
@@ -717,17 +440,14 @@ document.addEventListener(
                 );
 
 
+            title.className =
+                "news-card-title";
+
+
             title.textContent =
-                article.title ||
-                "Actualité APAM";
+                news.title ||
+                "Actualité";
 
-
-            content.appendChild(
-                title
-            );
-
-
-            // Extrait
 
             const description =
                 document.createElement(
@@ -741,78 +461,55 @@ document.addEventListener(
 
             description.textContent =
                 getPreviewText(
-                    article.content
+                    news.content
                 );
 
 
-            content.appendChild(
-                description
-            );
-
-
-            // Texte "Lire l'article"
-
-            const readMore =
+            const read =
                 document.createElement(
                     "span"
                 );
 
 
-            readMore.className =
+            read.className =
                 "news-card-read";
 
 
-            readMore.textContent =
-                "Lire l'article →";
+            read.innerHTML =
+                `
+                    Lire l'article
+                    <span
+                        class="news-card-read-arrow"
+                        aria-hidden="true"
+                    >
+                        →
+                    </span>
+                `;
 
 
             content.appendChild(
-                readMore
+                date
+            );
+
+            content.appendChild(
+                title
+            );
+
+            content.appendChild(
+                description
+            );
+
+            content.appendChild(
+                read
             );
 
 
-            cardLink.appendChild(
+            card.appendChild(
+                imageWrapper
+            );
+
+            card.appendChild(
                 content
-            );
-
-
-            // --------------------------------------------------------
-            // CLIC
-            // --------------------------------------------------------
-
-            card.addEventListener(
-                "click",
-                () => {
-
-                    openArticleModal(
-                        article
-                    );
-                }
-            );
-
-
-            // --------------------------------------------------------
-            // CLAVIER
-            // --------------------------------------------------------
-
-            card.addEventListener(
-                "keydown",
-                event => {
-
-                    if (
-                        event.key ===
-                        "Enter" ||
-                        event.key ===
-                        " "
-                    ) {
-
-                        event.preventDefault();
-
-                        openArticleModal(
-                            article
-                        );
-                    }
-                }
             );
 
 
@@ -821,23 +518,17 @@ document.addEventListener(
 
 
         // ============================================================
-        // AFFICHAGE DES ACTUALITÉS
+        // AFFICHAGE
         // ============================================================
 
-        function renderNews(
-            news
-        ) {
+        function renderActualites() {
 
             newsList.innerHTML =
                 "";
 
 
-            // --------------------------------------------------------
-            // AUCUNE ACTUALITÉ
-            // --------------------------------------------------------
-
             if (
-                news.length === 0
+                actualites.length === 0
             ) {
 
                 showEmpty();
@@ -846,83 +537,374 @@ document.addEventListener(
             }
 
 
-            // --------------------------------------------------------
-            // TRI PAR DATE
-            // --------------------------------------------------------
+            const sorted =
+                actualites
+                    .map(
+                        (
+                            news,
+                            index
+                        ) => ({
+                            news,
+                            index
+                        })
+                    )
+                    .sort(
+                        (a, b) => {
 
-            const sortedNews =
-                [...news].sort(
-                    (
-                        first,
-                        second
-                    ) => {
-
-                        return (
-                            String(
-                                second.date || ""
-                            ).localeCompare(
+                            return (
                                 String(
-                                    first.date || ""
+                                    b.news.date || ""
+                                ).localeCompare(
+                                    String(
+                                        a.news.date || ""
+                                    )
                                 )
-                            )
-                        );
-                    }
+                            );
+                        }
+                    );
+
+
+            sorted.forEach(
+                ({
+                    news,
+                    index
+                }) => {
+
+                    newsList.appendChild(
+                        createNewsCard(
+                            news,
+                            index
+                        )
+                    );
+                }
+            );
+
+
+            showNews();
+        }
+
+
+        // ============================================================
+        // OUVERTURE ARTICLE
+        // ============================================================
+
+        function openArticleModal(
+            news
+        ) {
+
+            if (!news) {
+                return;
+            }
+
+
+            console.log(
+                "Ouverture de l'actualité :",
+                news.title
+            );
+
+
+            // --------------------------------------------------------
+            // IMAGE
+            // --------------------------------------------------------
+
+            if (news.cover) {
+
+                articleModalImage.style
+                    .backgroundImage =
+                    `url("${resolveSitePath(
+                        news.cover
+                    )}")`;
+
+            } else {
+
+                articleModalImage.style
+                    .backgroundImage =
+                    "none";
+            }
+
+
+            // --------------------------------------------------------
+            // DATE
+            // --------------------------------------------------------
+
+            articleModalDate.textContent =
+                formatDate(
+                    news.date
                 );
 
 
             // --------------------------------------------------------
-            // CRÉATION DES CARTES
+            // TITRE
             // --------------------------------------------------------
 
-            sortedNews.forEach(
-                article => {
+            articleModalTitle.textContent =
+                news.title ||
+                "Actualité";
 
-                    const card =
-                        createNewsCard(
-                            article
+
+            // --------------------------------------------------------
+            // TEXTE
+            // --------------------------------------------------------
+
+            articleModalText.innerHTML =
+                "";
+
+
+            const paragraphs =
+                String(
+                    news.content || ""
+                )
+                .split(
+                    /\r?\n/
+                );
+
+
+            paragraphs.forEach(
+                (paragraph) => {
+
+                    const text =
+                        paragraph.trim();
+
+
+                    if (!text) {
+                        return;
+                    }
+
+
+                    const p =
+                        document.createElement(
+                            "p"
                         );
 
 
-                    newsList.appendChild(
-                        card
+                    p.textContent =
+                        text;
+
+
+                    articleModalText.appendChild(
+                        p
                     );
                 }
             );
 
 
             // --------------------------------------------------------
-            // VÉRIFICATION
+            // OUVERTURE
             // --------------------------------------------------------
 
-            if (
-                newsList.children.length === 0
-            ) {
+            articleModal.classList.add(
+                "is-open"
+            );
 
-                showEmpty();
 
-                return;
+            articleModal.setAttribute(
+                "aria-hidden",
+                "false"
+            );
+
+
+            document.body.classList.add(
+                "modal-open"
+            );
+
+
+            const modalContent =
+                articleModal.querySelector(
+                    ".article-modal-content"
+                );
+
+
+            if (modalContent) {
+
+                modalContent.scrollTop =
+                    0;
             }
 
 
-            showNewsList();
+            window.setTimeout(
+                () => {
+
+                    articleModalClose.focus();
+
+                },
+                50
+            );
         }
 
 
         // ============================================================
-        // CHARGEMENT DU JSON
+        // FERMETURE
         // ============================================================
 
-        async function loadNews() {
+        function closeArticleModal() {
 
-            console.log(
-                "Chargement des actualités..."
+            articleModal.classList.remove(
+                "is-open"
             );
 
+
+            articleModal.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+
+
+            document.body.classList.remove(
+                "modal-open"
+            );
+        }
+
+
+        // ============================================================
+        // CLIC SUR LES CARTES
+        // ============================================================
+
+        newsList.addEventListener(
+            "click",
+            (event) => {
+
+                const card =
+                    event.target.closest(
+                        ".news-card"
+                    );
+
+
+                if (!card) {
+                    return;
+                }
+
+
+                const index =
+                    Number(
+                        card.dataset.index
+                    );
+
+
+                if (
+                    Number.isNaN(
+                        index
+                    )
+                ) {
+
+                    return;
+                }
+
+
+                const news =
+                    actualites[index];
+
+
+                openArticleModal(
+                    news
+                );
+            }
+        );
+
+
+        // ============================================================
+        // CLAVIER
+        // ============================================================
+
+        newsList.addEventListener(
+            "keydown",
+            (event) => {
+
+                if (
+                    event.key !== "Enter"
+                    &&
+                    event.key !== " "
+                ) {
+
+                    return;
+                }
+
+
+                const card =
+                    event.target.closest(
+                        ".news-card"
+                    );
+
+
+                if (!card) {
+                    return;
+                }
+
+
+                event.preventDefault();
+
+
+                const index =
+                    Number(
+                        card.dataset.index
+                    );
+
+
+                if (
+                    Number.isNaN(
+                        index
+                    )
+                ) {
+
+                    return;
+                }
+
+
+                openArticleModal(
+                    actualites[index]
+                );
+            }
+        );
+
+
+        // ============================================================
+        // FERMETURE
+        // ============================================================
+
+        articleModalClose.addEventListener(
+            "click",
+            closeArticleModal
+        );
+
+
+        articleModalOverlay.addEventListener(
+            "click",
+            closeArticleModal
+        );
+
+
+        document.addEventListener(
+            "keydown",
+            (event) => {
+
+                if (
+                    event.key === "Escape"
+                    &&
+                    articleModal.classList.contains(
+                        "is-open"
+                    )
+                ) {
+
+                    closeArticleModal();
+                }
+            }
+        );
+
+
+        // ============================================================
+        // CHARGEMENT JSON
+        // ============================================================
+
+        async function loadActualites() {
 
             showLoading();
 
 
             try {
+
+                console.log(
+                    "Chargement des actualités..."
+                );
+
 
                 const response =
                     await fetch(
@@ -934,15 +916,7 @@ document.addEventListener(
                     );
 
 
-                console.log(
-                    "Réponse actualites.json :",
-                    response.status
-                );
-
-
-                if (
-                    !response.ok
-                ) {
+                if (!response.ok) {
 
                     throw new Error(
                         `Erreur HTTP ${response.status}`
@@ -950,74 +924,70 @@ document.addEventListener(
                 }
 
 
-                const news =
+                const data =
                     await response.json();
 
 
-                console.log(
-                    `${Array.isArray(news) ? news.length : 0} actualité(s) chargée(s).`
-                );
-
-
-                // ----------------------------------------------------
-                // VALIDATION
-                // ----------------------------------------------------
-
                 if (
-                    !Array.isArray(news)
+                    !Array.isArray(
+                        data
+                    )
                 ) {
 
                     throw new Error(
-                        "actualites.json ne contient pas un tableau JSON valide."
+                        "actualites.json ne contient pas une liste."
                     );
                 }
 
 
-                renderNews(
-                    news
+                actualites =
+                    data;
+
+
+                console.log(
+                    "Réponse actualites.json :",
+                    response.status
                 );
 
 
-            } catch (
-                loadError
-            ) {
+                console.log(
+                    `${actualites.length} actualité(s) chargée(s).`
+                );
+
+
+                renderActualites();
+
+
+            } catch (error) {
 
                 console.error(
                     "Impossible de charger les actualités :",
-                    loadError
+                    error
                 );
 
 
                 showError(
-                    loadError.message
+                    error.message
                 );
             }
         }
 
 
         // ============================================================
-        // BOUTON RÉESSAYER
+        // BOUTON RETRY
         // ============================================================
 
-        if (
-            retryButton
-        ) {
-
-            retryButton.addEventListener(
-                "click",
-                () => {
-
-                    loadNews();
-                }
-            );
-        }
+        retryButton.addEventListener(
+            "click",
+            loadActualites
+        );
 
 
         // ============================================================
         // INITIALISATION
         // ============================================================
 
-        loadNews();
+        loadActualites();
 
     }
 );
