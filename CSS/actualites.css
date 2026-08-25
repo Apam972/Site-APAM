@@ -965,7 +965,7 @@ a {
 
 .article-modal {
 
-    position:
+     position:
         fixed;
 
     inset:
@@ -1000,13 +1000,13 @@ a {
         0.35s ease,
 
         visibility
-        0.35s ease;
+        0s linear 0.35s;
 }
 
 
 .article-modal.is-open {
 
-    opacity:
+     opacity:
         1;
 
     visibility:
@@ -1014,6 +1014,13 @@ a {
 
     pointer-events:
         auto;
+
+    transition:
+        opacity
+        0.35s ease,
+
+        visibility
+        0s linear 0s;
 }
 
 
@@ -1023,7 +1030,7 @@ a {
 
 .article-modal-overlay {
 
-    position:
+     position:
         absolute;
 
     inset:
@@ -1038,10 +1045,23 @@ a {
         );
 
     backdrop-filter:
-        blur(8px);
+        blur(10px);
 
     -webkit-backdrop-filter:
-        blur(8px);
+        blur(10px);
+
+    opacity:
+        0;
+
+    transition:
+        opacity
+        0.4s ease;
+}
+.article-modal.is-open
+.article-modal-overlay {
+
+    opacity:
+        1;
 }
 
 
@@ -1051,6 +1071,7 @@ a {
 
 .article-modal-content {
 
+   
     position:
         relative;
 
@@ -1087,15 +1108,19 @@ a {
         );
 
     transform:
-        translateY(45px)
-        scale(0.90);
+        translateY(100px)
+        scale(0.78)
+        rotateX(8deg);
+
+    transform-origin:
+        center center;
 
     opacity:
         0;
 
     transition:
         transform
-        0.55s
+        0.60s
         cubic-bezier(
             .16,
             1,
@@ -1104,7 +1129,7 @@ a {
         ),
 
         opacity
-        0.35s ease;
+        0.40s ease;
 }
 
 
@@ -1113,7 +1138,8 @@ a {
 
     transform:
         translateY(0)
-        scale(1);
+        scale(1)
+        rotateX(0deg);
 
     opacity:
         1;
@@ -1229,10 +1255,14 @@ a {
         center;
 
     background-size:
-        cover;
+       contain;
 
     background-repeat:
         no-repeat;
+        
+    border-bottom:
+     1px solid
+    rgba(0, 0, 0, 0.06);
 }
 
 
