@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Actualités | APAM</title>
+
+    <link
+        rel="stylesheet"
+        href="../CSS/actualites.css"
+    >
+
+</head>
+
+
+<body>
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="site-header">
+
+        <div class="header-container">
+
+            <a
+                href="../index.html"
+                class="site-brand"
+            >
+
+                <span class="brand-name">
+                    APAM
+                </span>
+
+                <span class="brand-subtitle">
+                    Association des Professionnels
+                    de l'Animation de Martinique
+                </span>
+
+            </a>
+
+
+            <a
+                href="../index.html"
+                class="back-button"
+            >
+                ← Retour au site
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         CONTENU
+    ====================================================== -->
+
+    <main class="page">
+
+        <section class="page-heading">
+
+            <p class="eyebrow">
+                APAM
+            </p>
+
+            <h1>
+                Actualités
+            </h1>
+
+            <p class="page-intro">
+                Retrouvez les dernières actualités,
+                actions et événements de l'APAM.
+            </p>
+
+        </section>
+
+
+        <!-- =================================================
+             ÉTAT DE CHARGEMENT
+        ================================================== -->
+
+        <section
+            id="news-loading"
+            class="news-status"
+        >
+
+            <div class="loader"></div>
+
+            <p>
+                Chargement des actualités...
+            </p>
+
+        </section>
+
+
+        <!-- =================================================
+             LISTE DES ACTUALITÉS
+        ================================================== -->
+
+        <section
+            id="news-list"
+            class="news-grid"
+            aria-label="Liste des actualités"
+        >
+        </section>
+
+
+        <!-- =================================================
+             MESSAGE VIDE
+        ================================================== -->
+
+        <section
+            id="news-empty"
+            class="news-status hidden"
+        >
+
+            <div class="empty-icon">
+                📰
+            </div>
+
+            <h2>
+                Aucune actualité
+            </h2>
+
+            <p>
+                Il n'y a pas encore d'actualité publiée.
+            </p>
+
+        </section>
+
+
+        <!-- =================================================
+             ERREUR
+        ================================================== -->
+
+        <section
+            id="news-error"
+            class="news-status news-error hidden"
+        >
+
+            <div class="empty-icon">
+                ⚠️
+            </div>
+
+            <h2>
+                Impossible de charger les actualités
+            </h2>
+
+            <p id="news-error-message">
+                Une erreur est survenue.
+            </p>
+
+            <button
+                type="button"
+                id="retry-button"
+                class="button-primary"
+            >
+                Réessayer
+            </button>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="site-footer">
+
+        <p>
+            © APAM – Tous droits réservés
+        </p>
+
+    </footer>
+
+
+    <script src="actu.js"></script>
+
+</body>
+
+</html>
