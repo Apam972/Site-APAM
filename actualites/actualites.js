@@ -45,9 +45,9 @@ document.addEventListener(
             );
 
 
-        // ------------------------------------------------------------
+        // ============================================================
         // MODAL
-        // ------------------------------------------------------------
+        // ============================================================
 
         const articleModal =
             document.getElementById(
@@ -202,6 +202,17 @@ document.addEventListener(
             );
         }
 
+
+        /*
+         * Les chemins présents dans actualites.json
+         * sont relatifs à la racine du site.
+         *
+         * La page actuelle est :
+         *
+         * /actualites/actualites.html
+         *
+         * donc il faut remonter d'un niveau.
+         */
 
         function resolveSitePath(
             filePath
@@ -361,6 +372,14 @@ document.addEventListener(
             );
 
 
+            card.setAttribute(
+                "aria-label",
+                `Lire l'actualité : ${
+                    news.title || ""
+                }`
+            );
+
+
             // --------------------------------------------------------
             // IMAGE
             // --------------------------------------------------------
@@ -475,16 +494,15 @@ document.addEventListener(
                 "news-card-read";
 
 
-            read.innerHTML =
-                `
-                    Lire l'article
-                    <span
-                        class="news-card-read-arrow"
-                        aria-hidden="true"
-                    >
-                        →
-                    </span>
-                `;
+            read.innerHTML = `
+                Lire l'article
+                <span
+                    class="news-card-read-arrow"
+                    aria-hidden="true"
+                >
+                    →
+                </span>
+            `;
 
 
             content.appendChild(
@@ -537,6 +555,10 @@ document.addEventListener(
             }
 
 
+            /*
+             * Plus récente → plus ancienne
+             */
+
             const sorted =
                 actualites
                     .map(
@@ -585,7 +607,7 @@ document.addEventListener(
 
 
         // ============================================================
-        // OUVERTURE ARTICLE
+        // OUVRIR UNE ACTUALITÉ
         // ============================================================
 
         function openArticleModal(
@@ -604,7 +626,7 @@ document.addEventListener(
 
 
             // --------------------------------------------------------
-            // IMAGE
+            // IMAGE DE COUVERTURE
             // --------------------------------------------------------
 
             if (news.cover) {
@@ -689,13 +711,8 @@ document.addEventListener(
 
 
             // --------------------------------------------------------
-            // OUVERTURE
+            // PRÉPARATION DU MODAL
             // --------------------------------------------------------
-
-            articleModal.classList.add(
-                "is-open"
-            );
-
 
             articleModal.setAttribute(
                 "aria-hidden",
@@ -705,6 +722,16 @@ document.addEventListener(
 
             document.body.classList.add(
                 "modal-open"
+            );
+
+
+            /*
+             * On s'assure que le modal est dans son état initial
+             * avant de lancer la transition.
+             */
+
+            articleModal.classList.remove(
+                "is-open"
             );
 
 
@@ -721,19 +748,49 @@ document.addEventListener(
             }
 
 
+            /*
+             * Double requestAnimationFrame :
+             *
+             * 1. Le navigateur peint l'état initial.
+             * 2. Ensuite seulement on ajoute "is-open".
+             *
+             * Cela force l'animation CSS à être visible.
+             */
+
+            requestAnimationFrame(
+                () => {
+
+                    requestAnimationFrame(
+                        () => {
+
+                            articleModal.classList.add(
+                                "is-open"
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+
+            // --------------------------------------------------------
+            // FOCUS
+            // --------------------------------------------------------
+
             window.setTimeout(
                 () => {
 
                     articleModalClose.focus();
 
                 },
-                50
+                100
             );
         }
 
 
         // ============================================================
-        // FERMETURE
+        // FERMER UNE ACTUALITÉ
         // ============================================================
 
         function closeArticleModal() {
@@ -752,12 +809,50 @@ document.addEventListener(
             document.body.classList.remove(
                 "modal-open"
             );
+
+
+            /*
+             * On laisse l'animation de fermeture se terminer
+             * avant de vider le contenu.
+             */
+
+            window.setTimeout(
+                () => {
+
+                    if (
+                        !articleModal.classList.contains(
+                            "is-open"
+                        )
+                    ) {
+
+                        articleModalImage.style
+                            .backgroundImage =
+                            "none";
+
+                        articleModalDate.textContent =
+                            "";
+
+                        articleModalTitle.textContent =
+                            "";
+
+                        articleModalText.innerHTML =
+                            "";
+                    }
+
+                },
+                450
+            );
         }
 
 
         // ============================================================
         // CLIC SUR LES CARTES
         // ============================================================
+
+        /*
+         * Délégation d'événement :
+         * on écoute le conteneur plutôt que chaque carte.
+         */
 
         newsList.addEventListener(
             "click",
@@ -790,12 +885,8 @@ document.addEventListener(
                 }
 
 
-                const news =
-                    actualites[index];
-
-
                 openArticleModal(
-                    news
+                    actualites[index]
                 );
             }
         );
@@ -916,7 +1007,9 @@ document.addEventListener(
                     );
 
 
-                if (!response.ok) {
+                if (
+                    !response.ok
+                ) {
 
                     throw new Error(
                         `Erreur HTTP ${response.status}`
