@@ -1,1 +1,22 @@
-[]
+[
+    {
+        "id": "test",
+        "slug": "test",
+        "title": "test",
+        "date": "2026-08-25",
+        "content": "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test",
+        "cover": "assets/actu/test/image/cover.jpg",
+        "images": [
+            "assets/actu/test/image/photo-01.png"
+        ]
+    },
+    {
+        "id": "test-2",
+        "slug": "test-2",
+        "title": "test 2",
+        "date": "2026-08-24",
+        "content": "test 3",
+        "cover": "assets/actu/test-2/image/cover.jpg",
+        "images": []
+    }
+]
