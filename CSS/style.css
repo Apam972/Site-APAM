@@ -530,11 +530,18 @@ body {
 }
 
 .highlights-grid {
-    width: 95%;
-    max-width: 1900px;
-    margin: 0 auto;
+   
+    width:
+        calc(100% - 30px);
 
-    display: grid;
+    max-width:
+        none;
+
+    margin:
+        0 auto;
+
+    display:
+        grid;
 
     grid-template-columns:
         repeat(
@@ -545,7 +552,8 @@ body {
             )
         );
 
-    gap: 28px;
+    gap:
+        20px;
 }
 
 
