@@ -530,8 +530,8 @@ body {
 }
 
 .highlights-grid {
-    width: 92%;
-    max-width: 1250px;
+    width: 100%;
+    max-width: 1400px;
     margin: 0 auto;
 
     display: grid;
