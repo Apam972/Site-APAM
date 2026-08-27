@@ -7,7 +7,7 @@ document.addEventListener(
         // ============================================================
 
         const APPS_SCRIPT_URL =
-            "https://script.google.com/macros/s/AKfycbyVUZV9xFjNK8cVSwMc56m_fgw_QIaubfVzwYJd6UN8cJhYwK2a1-esKnincISjJofshQ/exec";
+            "https://script.google.com/macros/s/AKfycbzlpbH3UXe0kLi5DN-E9ggHICay_c0mtkqEW5tsmWh71O1Vmtjgpcp_M_mlaPuakDQbYg/exec";
 
         const ACTUALITES_JSON_URL =
             "../data/actualites.json";
