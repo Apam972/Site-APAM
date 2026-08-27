@@ -524,40 +524,234 @@
              APAM EN ACTION
         ================================================== -->
 
-        <section
-            class="gestion-tab-content"
-            data-content="actions"
-        >
+       <!-- =================================================
+     APAM EN ACTION
+================================================== -->
 
-            <div class="empty-management-panel">
+<section
+    class="gestion-tab-content"
+    data-content="actions"
+>
 
-                <span class="management-icon">
-                    🤝
-                </span>
+    <div class="actions-management">
 
+
+        <!-- =================================================
+             EN-TÊTE
+        ================================================== -->
+
+        <div class="actions-header">
+
+            <div>
+
+                <p class="panel-eyebrow">
+                    Gestion
+                </p>
 
                 <h2>
                     APAM en action
                 </h2>
 
-
-                <p>
-                    Cette section servira à présenter et gérer
-                    les actions réalisées par l'association.
+                <p class="actions-intro">
+                    Gérez les photos et vidéos utilisées
+                    dans la galerie de l'APAM.
                 </p>
 
+            </div>
+
+
+            <!-- AJOUT MÉDIA -->
+
+            <button
+                type="button"
+                class="button-primary"
+                id="new-media-button"
+            >
+                + Ajouter un média
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             GALERIE DES MÉDIAS
+        ================================================== -->
+
+        <div
+            class="media-gallery"
+            id="media-gallery"
+        >
+
+
+            <!--
+                Les médias seront générés
+                dynamiquement par gestion.js.
+            -->
+
+
+            <!-- État vide -->
+
+            <div
+                class="media-gallery-empty"
+                id="media-gallery-empty"
+            >
+
+                <div class="media-empty-icon">
+                    🖼️
+                </div>
+
+                <h3>
+                    Aucun média
+                </h3>
+
+                <p>
+                    Aucun média n'est disponible pour le moment.
+                </p>
 
                 <button
                     type="button"
                     class="button-primary"
-                    disabled
+                    id="media-empty-add-button"
                 >
-                    Bientôt disponible
+                    Ajouter un média
                 </button>
 
             </div>
 
-        </section>
+        </div>
+
+
+        <!-- =================================================
+             ÉDITEUR DE MÉDIA
+        ================================================== -->
+
+        <div
+            class="media-editor"
+            id="media-editor"
+            hidden
+        >
+
+            <div class="actions-header">
+
+                <div>
+
+                    <p class="panel-eyebrow">
+                        Média
+                    </p>
+
+                    <h2 id="media-editor-title">
+                        Ajouter un média
+                    </h2>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="button-secondary"
+                    id="cancel-media-editor-button"
+                >
+                    ← Retour aux médias
+                </button>
+
+            </div>
+
+
+            <!-- =================================================
+                 FORMULAIRE MÉDIA
+            ================================================== -->
+
+            <form
+                id="media-form"
+                class="media-form"
+            >
+
+                <input
+                    type="hidden"
+                    id="media-drive-id"
+                >
+
+
+                <!-- NOM / TITRE -->
+
+                <div class="form-group">
+
+                    <label for="media-title">
+                        Titre
+                    </label>
+
+                    <input
+                        type="text"
+                        id="media-title"
+                        placeholder="Ex. Journée à la plage"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- DATE -->
+
+                <div class="form-group">
+
+                    <label for="media-date">
+                        Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="media-date"
+                    >
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="form-group">
+
+                    <label for="media-description">
+                        Description
+                    </label>
+
+                    <textarea
+                        id="media-description"
+                        rows="5"
+                        placeholder="Description du média..."
+                    ></textarea>
+
+                </div>
+
+
+                <!-- ACTIONS -->
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="button-secondary"
+                        id="cancel-media-button"
+                    >
+                        Annuler
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="button-primary"
+                    >
+                        Enregistrer
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
 
 
         <!-- =================================================
