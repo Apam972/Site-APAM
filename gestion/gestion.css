@@ -6,10 +6,6 @@
     box-sizing: border-box;
 }
 
-html {
-    scroll-behavior: smooth;
-}
-
 body {
     margin: 0;
 
@@ -25,16 +21,16 @@ body {
    ============================================================ */
 
 .gestion-header {
-    width: 100%;
-
     background: white;
 
     border-bottom: 1px solid
         rgba(0, 0, 0, 0.08);
 
     box-shadow:
-        0 2px 8px rgba(0, 0, 0, 0.04);
+        0 2px 8px
+        rgba(0, 0, 0, 0.04);
 }
+
 
 .gestion-header-inner {
     width: min(1200px, 92%);
@@ -44,73 +40,81 @@ body {
     padding: 30px 0;
 
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
 
     gap: 30px;
 }
 
-.gestion-eyebrow {
+
+.gestion-eyebrow,
+.panel-eyebrow {
+
     margin: 0 0 5px;
 
     color: #C34324;
 
     font-size: 13px;
+
     font-weight: 600;
 
     text-transform: uppercase;
+
     letter-spacing: 1px;
 }
 
+
 .gestion-header h1 {
+
     margin: 0;
 
     color: #F5A623;
 
     font-size: 32px;
+
     font-weight: 600;
 }
 
+
 .back-button {
+
     display: inline-flex;
 
     align-items: center;
-    justify-content: center;
 
     padding: 10px 18px;
 
     border: 2px solid #F5A623;
+
     border-radius: 999px;
 
-    background: white;
     color: #F5A623;
 
     text-decoration: none;
 
-    font-size: 14px;
     font-weight: 600;
 
     transition:
         background 0.25s ease,
-        color 0.25s ease,
-        transform 0.25s ease;
+        color 0.25s ease;
 }
 
+
 .back-button:hover {
+
     background: #F5A623;
 
     color: white;
-
-    transform: translateY(-2px);
 }
 
 
 /* ============================================================
-   CONTENEUR PRINCIPAL
+   LAYOUT
    ============================================================ */
 
 .gestion-main {
-    display: block;
 
     width: min(1200px, 92%);
 
@@ -119,34 +123,35 @@ body {
 
 
 /* ============================================================
-   NAVIGATION PAR ONGLET
+   ONGLETS
    ============================================================ */
 
 .gestion-tabs {
+
     width: 100%;
 
-    margin: 0 0 30px;
-
-    padding: 8px;
+    margin-bottom: 30px;
 
     display: flex;
+
     flex-wrap: wrap;
 
     gap: 10px;
+
+    padding: 8px;
 
     background: white;
 
     border-radius: 20px;
 
     box-shadow:
-        0 6px 20px rgba(0, 0, 0, 0.08);
-
-    position: relative;
-
-    z-index: 10;
+        0 6px 20px
+        rgba(0, 0, 0, 0.08);
 }
 
+
 .gestion-tab {
+
     flex: 1 1 160px;
 
     min-height: 48px;
@@ -154,14 +159,19 @@ body {
     padding: 10px 18px;
 
     border: none;
+
     border-radius: 14px;
 
     background: transparent;
+
     color: #555;
 
-    font-family: "Poppins", sans-serif;
+    font-family:
+        "Poppins",
+        sans-serif;
 
     font-size: 14px;
+
     font-weight: 600;
 
     cursor: pointer;
@@ -169,19 +179,20 @@ body {
     transition:
         background 0.25s ease,
         color 0.25s ease,
-        transform 0.25s ease,
-        box-shadow 0.25s ease;
+        transform 0.25s ease;
 }
 
+
 .gestion-tab:hover {
+
     background: #FFF8EC;
 
     color: #C34324;
-
-    transform: translateY(-1px);
 }
 
+
 .gestion-tab.active {
+
     background: #F5A623;
 
     color: white;
@@ -192,20 +203,9 @@ body {
 }
 
 
-/* ============================================================
-   CONTENU DES ONGLET
-   ============================================================ */
-
 .gestion-tab-content {
-    display: none !important;
 
-    width: 100%;
-}
-
-.gestion-tab-content.active {
-    display: grid !important;
-
-    width: 100%;
+    display: none;
 
     grid-template-columns:
         minmax(0, 1.4fr)
@@ -217,13 +217,18 @@ body {
 }
 
 
+.gestion-tab-content.active {
+
+    display: grid;
+}
+
+
 /* ============================================================
-   PANNEAUX
+   PANNEAUX COMMUNS
    ============================================================ */
 
 .gestion-panel,
 .preview-panel {
-    width: 100%;
 
     background: white;
 
@@ -239,274 +244,22 @@ body {
         rgba(255, 255, 255, 0.8);
 }
 
+
 .panel-heading {
+
     margin-bottom: 30px;
 }
 
-.panel-eyebrow {
-    margin: 0 0 5px;
-
-    color: #C34324;
-
-    font-size: 13px;
-    font-weight: 600;
-
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
 
 .panel-heading h2 {
+
     margin: 0;
 
     color: #F5A623;
 
     font-size: 26px;
+
     font-weight: 600;
-
-    line-height: 1.2;
-}
-
-
-/* ============================================================
-   GESTION DES ACTUALITÉS
-   ============================================================ */
-
-.actualites-management {
-    width: 100%;
-
-    grid-column: 1 / -1;
-}
-
-
-/* ============================================================
-   EN-TÊTE ACTUALITÉS
-   ============================================================ */
-
-.actualites-header {
-    width: 100%;
-
-    margin-bottom: 30px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 20px;
-}
-
-.actualites-header h2 {
-    margin: 0;
-
-    color: #F5A623;
-
-    font-size: 28px;
-    font-weight: 600;
-
-    line-height: 1.2;
-}
-
-
-/* ============================================================
-   LISTE DES ACTUALITÉS
-   ============================================================ */
-
-.news-list {
-    width: 100%;
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 15px;
-}
-
-.news-list-empty {
-    width: 100%;
-
-    min-height: 260px;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-    justify-content: center;
-
-    padding: 40px;
-
-    border-radius: 25px;
-
-    background: white;
-
-    text-align: center;
-
-    box-shadow:
-        10px 10px 20px
-        rgba(0, 0, 0, 0.12),
-
-        -5px -5px 15px
-        rgba(255, 255, 255, 0.8);
-}
-
-.news-list-empty p {
-    margin: 0 0 20px;
-
-    color: #777;
-
-    font-size: 14px;
-}
-
-
-/* ============================================================
-   CARTE D'ACTUALITÉ
-   ============================================================ */
-
-.news-card {
-    width: 100%;
-
-    display: grid;
-
-    grid-template-columns:
-        180px
-        minmax(0, 1fr)
-        auto;
-
-    gap: 20px;
-
-    align-items: center;
-
-    padding: 18px;
-
-    background: white;
-
-    border-radius: 20px;
-
-    box-shadow:
-        0 6px 18px
-        rgba(0, 0, 0, 0.08);
-
-    overflow: hidden;
-}
-
-
-/* ============================================================
-   IMAGE DE LA CARTE
-   ============================================================ */
-
-.news-card-image {
-    width: 180px;
-    height: 120px;
-
-    overflow: hidden;
-
-    flex-shrink: 0;
-
-    border-radius: 15px;
-
-    background: #F1F1F1;
-}
-
-.news-card-image img {
-    display: block;
-
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-}
-
-
-/* ============================================================
-   INFORMATIONS DE LA CARTE
-   ============================================================ */
-
-.news-card-info {
-    min-width: 0;
-}
-
-.news-card-info h3 {
-    margin: 0 0 6px;
-
-    color: #F5A623;
-
-    font-size: 18px;
-    font-weight: 600;
-
-    line-height: 1.3;
-
-    overflow-wrap: anywhere;
-}
-
-.news-card-date {
-    margin: 0 0 8px;
-
-    color: #C34324;
-
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.news-card-description {
-    margin: 0;
-
-    color: #666;
-
-    font-size: 13px;
-
-    line-height: 1.5;
-}
-
-
-/* ============================================================
-   BOUTONS DE LA CARTE
-   ============================================================ */
-
-.news-card-actions {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 8px;
-
-    flex-shrink: 0;
-}
-
-.news-card-actions button {
-    min-width: 110px;
-}
-
-
-/* ============================================================
-   ÉDITEUR D'ACTUALITÉ
-   ============================================================ */
-
-.news-editor {
-    width: 100%;
-}
-
-.news-editor[hidden] {
-    display: none;
-}
-
-.news-editor-layout {
-    width: 100%;
-
-    display: grid;
-
-    grid-template-columns:
-        minmax(0, 1.4fr)
-        minmax(320px, 0.8fr);
-
-    gap: 30px;
-
-    align-items: start;
-}
-
-.news-editor .preview-panel {
-    position: sticky;
-
-    top: 30px;
 }
 
 
@@ -515,7 +268,6 @@ body {
    ============================================================ */
 
 .news-form {
-    width: 100%;
 
     display: flex;
 
@@ -524,8 +276,8 @@ body {
     gap: 26px;
 }
 
+
 .form-group {
-    width: 100%;
 
     display: flex;
 
@@ -534,26 +286,31 @@ body {
     gap: 8px;
 }
 
-.form-group > label {
-    color: #333;
+
+.form-group label {
 
     font-size: 15px;
+
     font-weight: 600;
+
+    color: #333;
 }
 
-.form-help {
-    margin: 0 0 5px;
 
-    color: #777;
+.form-help {
+
+    margin: 0 0 5px;
 
     font-size: 13px;
 
-    line-height: 1.5;
+    color: #777;
 }
+
 
 .form-group input[type="text"],
 .form-group input[type="date"],
 .form-group textarea {
+
     width: 100%;
 
     padding: 13px 15px;
@@ -564,9 +321,10 @@ body {
     border-radius: 12px;
 
     background: white;
-    color: #333;
 
-    font-family: "Poppins", sans-serif;
+    font-family:
+        "Poppins",
+        sans-serif;
 
     font-size: 14px;
 
@@ -577,16 +335,20 @@ body {
         box-shadow 0.2s ease;
 }
 
+
 .form-group textarea {
-    min-height: 250px;
 
     resize: vertical;
+
+    min-height: 250px;
 
     line-height: 1.6;
 }
 
+
 .form-group input:focus,
 .form-group textarea:focus {
+
     border-color: #F5A623;
 
     box-shadow:
@@ -596,11 +358,10 @@ body {
 
 
 /* ============================================================
-   ZONES D'UPLOAD
+   UPLOAD
    ============================================================ */
 
 .upload-box {
-    width: 100%;
 
     min-height: 120px;
 
@@ -611,6 +372,7 @@ body {
     flex-direction: column;
 
     align-items: center;
+
     justify-content: center;
 
     gap: 7px;
@@ -632,7 +394,9 @@ body {
         transform 0.25s ease;
 }
 
+
 .upload-box:hover {
+
     background: #FFF3D8;
 
     border-color: #F5A623;
@@ -640,39 +404,50 @@ body {
     transform: translateY(-2px);
 }
 
+
 .upload-icon {
+
     width: 38px;
+
     height: 38px;
 
     display: flex;
 
     align-items: center;
+
     justify-content: center;
 
     border-radius: 50%;
 
     background: #F5A623;
+
     color: white;
 
     font-size: 24px;
+
     font-weight: 400;
 }
 
+
 .upload-title {
+
     color: #C34324;
 
     font-size: 14px;
+
     font-weight: 600;
 }
 
-.upload-file-name {
-    max-width: 90%;
 
-    overflow: hidden;
+.upload-file-name {
 
     color: #777;
 
     font-size: 12px;
+
+    max-width: 90%;
+
+    overflow: hidden;
 
     text-overflow: ellipsis;
 
@@ -681,22 +456,25 @@ body {
 
 
 /* ============================================================
-   PRÉVISUALISATION IMAGE PRINCIPALE
+   PRÉVISUALISATIONS
    ============================================================ */
 
 .image-preview {
-    display: none;
 
-    width: 100%;
+    display: none;
 
     margin-top: 10px;
 }
 
+
 .image-preview.active {
+
     display: block;
 }
 
+
 .image-preview img {
+
     display: block;
 
     width: 100%;
@@ -709,19 +487,17 @@ body {
 }
 
 
-/* ============================================================
-   PRÉVISUALISATION DES AUTRES PHOTOS
-   ============================================================ */
-
 .images-preview {
-    width: 100%;
 
     display: grid;
 
     grid-template-columns:
         repeat(
             auto-fill,
-            minmax(110px, 1fr)
+            minmax(
+                110px,
+                1fr
+            )
         );
 
     gap: 10px;
@@ -729,7 +505,9 @@ body {
     margin-top: 10px;
 }
 
+
 .preview-thumbnail {
+
     aspect-ratio: 1 / 1;
 
     overflow: hidden;
@@ -737,11 +515,14 @@ body {
     border-radius: 12px;
 }
 
+
 .preview-thumbnail img {
-    display: block;
 
     width: 100%;
+
     height: 100%;
+
+    display: block;
 
     object-fit: cover;
 }
@@ -752,6 +533,7 @@ body {
    ============================================================ */
 
 .form-actions {
+
     display: flex;
 
     justify-content: flex-end;
@@ -761,20 +543,20 @@ body {
     padding-top: 5px;
 }
 
+
 .button-primary,
 .button-secondary {
-    display: inline-flex;
-
-    align-items: center;
-    justify-content: center;
 
     padding: 11px 20px;
 
     border-radius: 999px;
 
-    font-family: "Poppins", sans-serif;
+    font-family:
+        "Poppins",
+        sans-serif;
 
     font-size: 14px;
+
     font-weight: 600;
 
     cursor: pointer;
@@ -782,19 +564,22 @@ body {
     transition:
         background 0.25s ease,
         color 0.25s ease,
-        border-color 0.25s ease,
-        transform 0.25s ease,
-        box-shadow 0.25s ease;
+        transform 0.25s ease;
 }
 
+
 .button-primary {
+
     border: 2px solid #F5A623;
 
     background: #F5A623;
+
     color: white;
 }
 
+
 .button-primary:hover {
+
     background: #C34324;
 
     border-color: #C34324;
@@ -802,23 +587,27 @@ body {
     transform: translateY(-2px);
 }
 
+
 .button-secondary {
+
     border: 2px solid #F5A623;
 
     background: white;
+
     color: #F5A623;
 }
 
+
 .button-secondary:hover {
+
     background: #F5A623;
 
     color: white;
-
-    transform: translateY(-2px);
 }
 
-.button-primary:disabled,
-.button-secondary:disabled {
+
+.button-primary:disabled {
+
     opacity: 0.55;
 
     cursor: not-allowed;
@@ -828,19 +617,18 @@ body {
 
 
 /* ============================================================
-   APERÇU
+   APERÇU ACTUALITÉ
    ============================================================ */
 
 .preview-panel {
-    width: 100%;
 
     position: sticky;
 
     top: 30px;
 }
 
+
 .news-preview {
-    width: 100%;
 
     overflow: hidden;
 
@@ -853,7 +641,9 @@ body {
         rgba(0, 0, 0, 0.08);
 }
 
+
 .news-preview-image {
+
     width: 100%;
 
     aspect-ratio: 16 / 10;
@@ -861,6 +651,7 @@ body {
     display: flex;
 
     align-items: center;
+
     justify-content: center;
 
     background: #F1F1F1;
@@ -868,41 +659,49 @@ body {
     color: #999;
 
     font-size: 13px;
+}
+
+
+.news-preview-image.has-image {
 
     background-size: cover;
 
     background-position: center;
 }
 
-.news-preview-image.has-image {
-    color: transparent;
-}
 
 .news-preview-content {
+
     padding: 22px;
 }
 
+
 .news-preview-date {
+
     margin: 0 0 5px;
 
     color: #C34324;
 
     font-size: 12px;
+
     font-weight: 600;
 }
 
+
 .news-preview-content h3 {
+
     margin: 0 0 10px;
 
     color: #F5A623;
 
     font-size: 20px;
-    font-weight: 600;
 
-    line-height: 1.3;
+    font-weight: 600;
 }
 
+
 .news-preview-content p:last-child {
+
     margin: 0;
 
     color: #555;
@@ -914,13 +713,234 @@ body {
 
 
 /* ============================================================
-   SECTIONS PAS ENCORE DISPONIBLES
-   ============================================================ */
+   GESTION DES ACTUALITÉS
+============================================================ */
 
-.empty-management-panel {
-    grid-column: 1 / -1;
+.actualites-management {
 
     width: 100%;
+}
+
+
+.actualites-header {
+
+    margin-bottom: 30px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+
+.actualites-header h2 {
+
+    margin: 0;
+
+    color: #F5A623;
+
+    font-size: 28px;
+
+    font-weight: 600;
+}
+
+
+.news-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+}
+
+
+.news-list-empty {
+
+    min-height: 260px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 40px;
+
+    border-radius: 25px;
+
+    background: white;
+
+    text-align: center;
+
+    box-shadow:
+        10px 10px 20px
+        rgba(0, 0, 0, 0.12),
+
+        -5px -5px 15px
+        rgba(255, 255, 255, 0.8);
+}
+
+
+.news-list-empty p {
+
+    margin: 0 0 20px;
+
+    color: #777;
+}
+
+
+.news-card {
+
+    display: grid;
+
+    grid-template-columns:
+        180px
+        minmax(0, 1fr)
+        auto;
+
+    gap: 20px;
+
+    align-items: center;
+
+    padding: 18px;
+
+    background: white;
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 6px 18px
+        rgba(0, 0, 0, 0.08);
+}
+
+
+.news-card-image {
+
+    width: 180px;
+
+    height: 120px;
+
+    overflow: hidden;
+
+    border-radius: 15px;
+
+    background: #F1F1F1;
+}
+
+
+.news-card-image img {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+
+.news-card-info h3 {
+
+    margin: 0 0 6px;
+
+    color: #F5A623;
+
+    font-size: 18px;
+}
+
+
+.news-card-date {
+
+    margin: 0 0 8px;
+
+    color: #C34324;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+
+.news-card-description {
+
+    margin: 0;
+
+    color: #666;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+}
+
+
+.news-card-actions {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+
+.news-card-actions button {
+
+    min-width: 110px;
+}
+
+
+/* ============================================================
+   ÉDITEUR D'ACTUALITÉ
+============================================================ */
+
+.news-editor {
+
+    width: 100%;
+}
+
+
+.news-editor[hidden] {
+
+    display: none;
+}
+
+
+.news-editor-layout {
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.4fr)
+        minmax(320px, 0.8fr);
+
+    gap: 30px;
+
+    align-items: start;
+}
+
+
+.news-editor .preview-panel {
+
+    position: sticky;
+
+    top: 30px;
+}
+
+
+/* ============================================================
+   SECTIONS PAS ENCORE DISPONIBLES
+============================================================ */
+
+.empty-management-panel {
+
+    grid-column: 1 / -1;
 
     min-height: 420px;
 
@@ -929,6 +949,7 @@ body {
     flex-direction: column;
 
     align-items: center;
+
     justify-content: center;
 
     padding: 40px;
@@ -947,13 +968,17 @@ body {
         rgba(255, 255, 255, 0.8);
 }
 
+
 .management-icon {
+
     width: 80px;
+
     height: 80px;
 
     display: flex;
 
     align-items: center;
+
     justify-content: center;
 
     margin-bottom: 20px;
@@ -965,16 +990,21 @@ body {
     font-size: 34px;
 }
 
+
 .empty-management-panel h2 {
+
     margin: 0 0 10px;
 
     color: #F5A623;
 
     font-size: 26px;
+
     font-weight: 600;
 }
 
+
 .empty-management-panel p {
+
     max-width: 550px;
 
     margin: 0 0 25px;
@@ -988,82 +1018,633 @@ body {
 
 
 /* ============================================================
+   GESTION DES MÉDIAS — APAM EN ACTION
+============================================================ */
+
+.actions-management {
+
+    grid-column: 1 / -1;
+
+    width: 100%;
+
+    padding: 35px;
+
+    background: white;
+
+    border-radius: 30px;
+
+    box-shadow:
+        10px 10px 20px
+        rgba(0, 0, 0, 0.12),
+
+        -5px -5px 15px
+        rgba(255, 255, 255, 0.8);
+}
+
+
+/* ============================================================
+   EN-TÊTE MÉDIAS
+============================================================ */
+
+.actions-header {
+
+    width: 100%;
+
+    margin-bottom: 30px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 25px;
+}
+
+
+.actions-header h2 {
+
+    margin: 0;
+
+    color: #F5A623;
+
+    font-size: 28px;
+
+    font-weight: 600;
+}
+
+
+.actions-intro {
+
+    margin: 8px 0 0;
+
+    color: #666;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+}
+
+
+/* ============================================================
+   GALERIE DES MÉDIAS
+============================================================ */
+
+.media-gallery {
+
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(
+                210px,
+                1fr
+            )
+        );
+
+    gap: 20px;
+}
+
+
+/* ============================================================
+   CARTE MÉDIA
+============================================================ */
+
+.media-card {
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    background: white;
+
+    border: 1px solid
+        rgba(
+            0,
+            0,
+            0,
+            0.08
+        );
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 6px 18px
+        rgba(
+            0,
+            0,
+            0,
+            0.08
+        );
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+.media-card:hover {
+
+    transform:
+        translateY(-4px);
+
+    box-shadow:
+        0 12px 25px
+        rgba(
+            0,
+            0,
+            0,
+            0.12
+        );
+}
+
+
+/* ============================================================
+   APERÇU MÉDIA
+============================================================ */
+
+.media-card-preview {
+
+    position: relative;
+
+    width: 100%;
+
+    aspect-ratio: 4 / 3;
+
+    overflow: hidden;
+
+    background: #F1F1F1;
+}
+
+
+.media-card-preview img,
+.media-card-preview video {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+
+.media-card-preview video {
+
+    pointer-events: none;
+}
+
+
+/* ============================================================
+   BADGE TYPE
+============================================================ */
+
+.media-type-badge {
+
+    position: absolute;
+
+    top: 10px;
+
+    left: 10px;
+
+    padding: 5px 9px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(
+            195,
+            67,
+            36,
+            0.92
+        );
+
+    color: white;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.6px;
+}
+
+
+/* ============================================================
+   INFORMATIONS MÉDIA
+============================================================ */
+
+.media-card-info {
+
+    padding:
+        15px 16px 10px;
+}
+
+
+.media-card-title {
+
+    margin: 0 0 5px;
+
+    color: #F5A623;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    line-height: 1.3;
+
+    word-break: break-word;
+}
+
+
+.media-card-date {
+
+    margin: 0;
+
+    color: #C34324;
+
+    font-size: 11px;
+
+    font-weight: 600;
+}
+
+
+.media-card-description {
+
+    margin: 8px 0 0;
+
+    color: #666;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+
+    display: -webkit-box;
+
+    -webkit-line-clamp: 3;
+
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+}
+
+
+/* ============================================================
+   ACTIONS CARTE MÉDIA
+============================================================ */
+
+.media-card-actions {
+
+    display: flex;
+
+    gap: 8px;
+
+    padding:
+        10px 16px 16px;
+}
+
+
+.media-card-actions button {
+
+    flex: 1;
+
+    padding:
+        8px 10px;
+
+    font-size: 12px;
+}
+
+
+/* ============================================================
+   ÉTAT VIDE
+============================================================ */
+
+.media-gallery-empty {
+
+    grid-column: 1 / -1;
+
+    min-height: 320px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 40px;
+
+    border:
+        2px dashed
+        rgba(
+            245,
+            166,
+            35,
+            0.5
+        );
+
+    border-radius: 25px;
+
+    background: #FFF8EC;
+
+    text-align: center;
+}
+
+
+.media-empty-icon {
+
+    width: 70px;
+
+    height: 70px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-bottom: 18px;
+
+    border-radius: 50%;
+
+    background: white;
+
+    font-size: 30px;
+
+    box-shadow:
+        0 5px 15px
+        rgba(
+            0,
+            0,
+            0,
+            0.08
+        );
+}
+
+
+.media-gallery-empty h3 {
+
+    margin: 0 0 8px;
+
+    color: #F5A623;
+
+    font-size: 22px;
+
+    font-weight: 600;
+}
+
+
+.media-gallery-empty p {
+
+    margin: 0 0 20px;
+
+    color: #777;
+
+    font-size: 13px;
+}
+
+
+/* ============================================================
+   ÉDITEUR MÉDIA
+============================================================ */
+
+.media-editor {
+
+    width: 100%;
+
+    margin-top: 30px;
+
+    padding-top: 30px;
+
+    border-top:
+        1px solid
+        rgba(
+            0,
+            0,
+            0,
+            0.08
+        );
+}
+
+
+.media-editor[hidden] {
+
+    display: none;
+}
+
+
+.media-form {
+
+    max-width: 850px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 24px;
+}
+
+
+.media-form .form-group textarea {
+
+    min-height: 160px;
+}
+
+
+/* ============================================================
+   MÉDIA NON DISPONIBLE
+============================================================ */
+
+.media-card-preview-empty {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #999;
+
+    font-size: 12px;
+
+    text-align: center;
+}
+
+
+/* ============================================================
    RESPONSIVE
-   ============================================================ */
+============================================================ */
 
 @media (max-width: 900px) {
 
+    .gestion-header-inner {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+
     .gestion-tab-content.active {
+
         grid-template-columns: 1fr;
     }
 
-    .news-editor-layout {
-        grid-template-columns: 1fr;
-    }
 
-    .preview-panel,
-    .news-editor .preview-panel {
+    .preview-panel {
+
         position: static;
     }
 
-    .news-card {
-        grid-template-columns: 1fr;
+
+    .form-actions {
+
+        flex-direction: column;
     }
 
-    .news-card-image {
+
+    .button-primary,
+    .button-secondary {
+
         width: 100%;
+    }
+
+
+    .news-card {
+
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .news-card-image {
+
+        width: 100%;
+
         height: 220px;
     }
 
+
     .news-card-actions {
+
         flex-direction: row;
 
         flex-wrap: wrap;
     }
-}
 
 
-@media (max-width: 700px) {
+    .news-editor-layout {
 
-    .gestion-header-inner {
-        flex-direction: column;
-
-        align-items: flex-start;
+        grid-template-columns:
+            1fr;
     }
 
-    .gestion-header h1 {
-        font-size: 28px;
+
+    .news-editor .preview-panel {
+
+        position: static;
     }
 
-    .gestion-tabs {
-        flex-direction: column;
 
-        gap: 6px;
-    }
+    .actions-management {
 
-    .gestion-tab {
-        flex: 1 1 auto;
-
-        width: 100%;
-    }
-
-    .gestion-panel,
-    .preview-panel {
         padding: 25px;
     }
 
-    .actualites-header {
+
+    .actions-header {
+
         flex-direction: column;
 
         align-items: flex-start;
     }
 
-    .form-actions {
+
+    .actions-header > button {
+
+        width: 100%;
+    }
+
+
+    .media-gallery {
+
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(
+                    0,
+                    1fr
+                )
+            );
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .gestion-main {
+
+        width: 94%;
+
+        margin-top: 30px;
+    }
+
+
+    .gestion-header-inner {
+
+        width: 94%;
+    }
+
+
+    .gestion-tabs {
+
         flex-direction: column;
     }
 
-    .button-primary,
-    .button-secondary {
+
+    .gestion-tab {
+
         width: 100%;
     }
+
+
+    .gestion-panel,
+    .preview-panel,
+    .actions-management {
+
+        padding: 22px;
+
+        border-radius: 24px;
+    }
+
+
+    .media-gallery {
+
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .media-card-actions {
+
+        flex-direction: column;
+    }
+
+
+    .media-card-actions button {
+
+        width: 100%;
+    }
+
 }
