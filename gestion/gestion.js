@@ -1760,6 +1760,10 @@ document.addEventListener(
             document.getElementById(
                 "media-description"
             );
+            const mediaFileInput =
+             document.getElementById(
+                 "media-file"
+            );
 
 
         // ============================================================
@@ -1772,6 +1776,64 @@ document.addEventListener(
         let medias = [];
 
         let editingMediaId = null;
+
+        async function callMediaApi(
+    payload
+) {
+
+    const response =
+        await fetch(
+            APPS_SCRIPT_URL,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "text/plain;charset=utf-8"
+                },
+
+                body:
+                    JSON.stringify(
+                        payload
+                    )
+            }
+        );
+
+
+    const responseText =
+        await response.text();
+
+
+    let result;
+
+    try {
+
+        result =
+            JSON.parse(
+                responseText
+            );
+
+    } catch (error) {
+
+        throw new Error(
+            "Réponse invalide du serveur Apps Script."
+        );
+    }
+
+
+    if (
+        !result.success
+    ) {
+
+        throw new Error(
+            result.message ||
+            "Le serveur a refusé l'opération."
+        );
+    }
+
+
+    return result;
+}
 
 
         // ============================================================
@@ -2389,7 +2451,13 @@ document.addEventListener(
 
             editingMediaId =
                 mediaId;
+if (
+    mediaFileInput
+) {
 
+    mediaFileInput.value =
+        "";
+}
 
             if (
                 mediaEditor
@@ -2509,43 +2577,88 @@ document.addEventListener(
         // DEMANDE DE SUPPRESSION
         // ============================================================
 
-        function requestMediaDeletion(
-            media
-        ) {
+       async function requestMediaDeletion(
+    media
+) {
 
-            if (!media) {
+    if (!media) {
 
-                return;
-            }
-
-
-            const confirmed =
-                window.confirm(
-                    `Supprimer le média "${media.title || media.file}" ?\n\n` +
-                    "La suppression réelle de Google Drive n'est pas encore connectée."
-                );
+        return;
+    }
 
 
-            if (!confirmed) {
+    if (!media.drive_id) {
 
-                return;
-            }
+        window.alert(
+            "Impossible de supprimer ce média : drive_id manquant."
+        );
+
+        return;
+    }
 
 
-            /*
-             * IMPORTANT :
-             *
-             * On ne supprime PAS encore le média de Drive
-             * et on ne modifie PAS images.json.
-             *
-             * Il nous faut l'endpoint Apps Script dédié aux médias.
-             */
+    const confirmed =
+        window.confirm(
+            `Supprimer le média "${media.title || media.file}" ?\n\n` +
+            "Le fichier sera placé dans la corbeille Google Drive."
+        );
 
-            window.alert(
-                "La galerie est prête pour cette fonctionnalité.\n\n" +
-                "La suppression Google Drive sera branchée avec le workflow média."
+
+    if (!confirmed) {
+
+        return;
+    }
+
+
+    try {
+
+        const result =
+            await callMediaApi(
+                {
+                    action:
+                        "delete_media",
+
+                    drive_id:
+                        media.drive_id
+                }
             );
-        }
+
+
+        // Retrait immédiat de l'interface
+
+        medias =
+            medias.filter(
+                (
+                    item
+                ) =>
+                    item._id !==
+                    media._id
+            );
+
+
+        renderMediaGallery();
+
+
+        window.alert(
+            `✅ ${result.message || "Média supprimé."}\n\n` +
+            "Le catalogue du site sera mis à jour lors de la prochaine synchronisation."
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Erreur de suppression média :",
+            error
+        );
+
+
+        window.alert(
+            "❌ Impossible de supprimer le média.\n\n" +
+            error.message
+        );
+    }
+}
 
 
         // ============================================================
@@ -2675,32 +2788,276 @@ document.addEventListener(
         // ENREGISTREMENT MÉDIA
         // ============================================================
 
-        if (
-            mediaForm
-        ) {
+       if (
+    mediaForm
+) {
 
-            mediaForm.addEventListener(
-                "submit",
-                (event) => {
+    mediaForm.addEventListener(
+        "submit",
+        async (event) => {
 
-                    event.preventDefault();
+            event.preventDefault();
 
 
-                    /*
-                     * Nous ne faisons volontairement
-                     * aucune écriture serveur ici.
-                     *
-                     * Le prochain bloc sera relié à
-                     * Google Drive + Apps Script + workflow.
-                     */
+            const title =
+                mediaTitleInput.value.trim();
+
+
+            const date =
+                mediaDateInput.value;
+
+
+            const description =
+                mediaDescriptionInput.value.trim();
+
+
+            const file =
+                mediaFileInput
+                    ? mediaFileInput.files[0]
+                    : null;
+
+
+            // ========================================================
+            // MODIFICATION
+            // ========================================================
+
+            if (
+                editingMediaId
+            ) {
+
+                const media =
+                    medias.find(
+                        (
+                            item
+                        ) =>
+                            item._id ===
+                            editingMediaId
+                    );
+
+
+                if (!media) {
 
                     window.alert(
-                        "Le formulaire média est prêt.\n\n" +
-                        "La sauvegarde sera connectée à Google Drive dans l'étape suivante."
+                        "Média introuvable."
                     );
+
+                    return;
                 }
-            );
+
+
+                const submitButton =
+                    mediaForm.querySelector(
+                        'button[type="submit"]'
+                    );
+
+
+                try {
+
+                    if (
+                        submitButton
+                    ) {
+
+                        submitButton.disabled =
+                            true;
+
+                        submitButton.textContent =
+                            "Enregistrement...";
+                    }
+
+
+                    await callMediaApi(
+                        {
+                            action:
+                                "update_media",
+
+                            drive_id:
+                                media.drive_id,
+
+                            title,
+
+                            date,
+
+                            description
+                        }
+                    );
+
+
+                    // Mise à jour immédiate de l'interface
+
+                    media.title =
+                        title;
+
+                    media.date =
+                        date;
+
+                    media.description =
+                        description;
+
+
+                    renderMediaGallery();
+
+
+                    closeMediaEditor();
+
+
+                    window.alert(
+                        "✅ Média modifié.\n\n" +
+                        "La modification sera prise en compte dans le catalogue après la prochaine synchronisation."
+                    );
+
+
+                } catch (error) {
+
+                    console.error(
+                        "Erreur de modification média :",
+                        error
+                    );
+
+
+                    window.alert(
+                        "❌ Impossible de modifier le média.\n\n" +
+                        error.message
+                    );
+
+
+                } finally {
+
+                    if (
+                        submitButton
+                    ) {
+
+                        submitButton.disabled =
+                            false;
+
+                        submitButton.textContent =
+                            "Enregistrer";
+                    }
+                }
+
+
+                return;
+            }
+
+
+            // ========================================================
+            // AJOUT
+            // ========================================================
+
+            if (!file) {
+
+                window.alert(
+                    "Merci de sélectionner une photo ou une vidéo."
+                );
+
+                return;
+            }
+
+
+            if (!title) {
+
+                window.alert(
+                    "Merci de renseigner un titre."
+                );
+
+                return;
+            }
+
+
+            const submitButton =
+                mediaForm.querySelector(
+                    'button[type="submit"]'
+                );
+
+
+            try {
+
+                if (
+                    submitButton
+                ) {
+
+                    submitButton.disabled =
+                        true;
+
+                    submitButton.textContent =
+                        "Envoi...";
+                }
+
+
+                const fileData =
+                    await fileToDataURL(
+                        file
+                    );
+
+
+                const result =
+                    await callMediaApi(
+                        {
+                            action:
+                                "create_media",
+
+                            fileName:
+                                file.name,
+
+                            mimeType:
+                                file.type,
+
+                            fileData,
+
+                            title,
+
+                            date,
+
+                            description
+                        }
+                    );
+
+
+                closeMediaEditor();
+
+
+                window.alert(
+                    "✅ Média envoyé vers Google Drive.\n\n" +
+                    "Le fichier apparaîtra dans la galerie du site après la prochaine synchronisation."
+                );
+
+
+                console.log(
+                    "Média créé :",
+                    result
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Erreur d'ajout média :",
+                    error
+                );
+
+
+                window.alert(
+                    "❌ Impossible d'ajouter le média.\n\n" +
+                    error.message
+                );
+
+
+            } finally {
+
+                if (
+                    submitButton
+                ) {
+
+                    submitButton.disabled =
+                        false;
+
+                    submitButton.textContent =
+                        "Enregistrer";
+                }
+            }
+
         }
+    );
+}
         // ============================================================
         // INITIALISATION
         // ============================================================
