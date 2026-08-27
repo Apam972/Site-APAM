@@ -1,7 +1,12 @@
 name: Synchronisation des médias APAM
 
 on:
+ 
   workflow_dispatch:
+
+  repository_dispatch:
+    types:
+      - apam-media-updated
 
   schedule:
     - cron: "0 9 * * 3"
