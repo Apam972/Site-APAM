@@ -1692,7 +1692,1015 @@ document.addEventListener(
             );
         }
 
+        // ============================================================
+        // ÉLÉMENTS MÉDIAS — APAM EN ACTION
+        // ============================================================
 
+        const mediaGallery =
+            document.getElementById(
+                "media-gallery"
+            );
+
+        const mediaGalleryEmpty =
+            document.getElementById(
+                "media-gallery-empty"
+            );
+
+        const mediaEditor =
+            document.getElementById(
+                "media-editor"
+            );
+
+        const mediaForm =
+            document.getElementById(
+                "media-form"
+            );
+
+        const newMediaButton =
+            document.getElementById(
+                "new-media-button"
+            );
+
+        const mediaEmptyAddButton =
+            document.getElementById(
+                "media-empty-add-button"
+            );
+
+        const cancelMediaEditorButton =
+            document.getElementById(
+                "cancel-media-editor-button"
+            );
+
+        const cancelMediaButton =
+            document.getElementById(
+                "cancel-media-button"
+            );
+
+        const mediaEditorTitle =
+            document.getElementById(
+                "media-editor-title"
+            );
+
+        const mediaDriveIdInput =
+            document.getElementById(
+                "media-drive-id"
+            );
+
+        const mediaTitleInput =
+            document.getElementById(
+                "media-title"
+            );
+
+        const mediaDateInput =
+            document.getElementById(
+                "media-date"
+            );
+
+        const mediaDescriptionInput =
+            document.getElementById(
+                "media-description"
+            );
+
+
+        // ============================================================
+        // DONNÉES MÉDIAS
+        // ============================================================
+
+        const MEDIA_JSON_URL =
+            "../data/images.json";
+
+        let medias = [];
+
+        let editingMediaId = null;
+
+
+        // ============================================================
+        // UTILITAIRES MÉDIAS
+        // ============================================================
+
+        function getMediaUrl(
+            media
+        ) {
+
+            if (
+                !media ||
+                !media.file
+            ) {
+
+                return "";
+            }
+
+            return (
+                `../assets/image-apam/${encodeURIComponent(
+                    media.file
+                )}`
+            );
+        }
+
+
+        function getMediaTypeLabel(
+            type
+        ) {
+
+            switch (
+                String(type || "").toLowerCase()
+            ) {
+
+                case "video":
+                    return "Vidéo";
+
+                case "image":
+                    return "Photo";
+
+                case "audio":
+                    return "Audio";
+
+                case "pdf":
+                    return "PDF";
+
+                default:
+                    return "Fichier";
+            }
+        }
+
+
+        function escapeAttribute(
+            value
+        ) {
+
+            return escapeHtml(
+                value || ""
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            );
+        }
+
+
+        // ============================================================
+        // CHARGEMENT images.json
+        // ============================================================
+
+        async function loadMediasFromServer() {
+
+            if (!mediaGallery) {
+
+                console.warn(
+                    "Interface Médias introuvable."
+                );
+
+                return;
+            }
+
+
+            try {
+
+                console.log(
+                    "Chargement des médias..."
+                );
+
+
+                const response =
+                    await fetch(
+                        `${MEDIA_JSON_URL}?ts=${Date.now()}`,
+                        {
+                            cache:
+                                "no-store"
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        `Impossible de charger images.json (${response.status})`
+                    );
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                if (
+                    !Array.isArray(data)
+                ) {
+
+                    throw new Error(
+                        "images.json ne contient pas une liste."
+                    );
+                }
+
+
+                medias =
+                    data.map(
+                        (
+                            media,
+                            index
+                        ) => ({
+
+                            ...media,
+
+                            _index:
+                                index,
+
+                            _id:
+                                media.drive_id ||
+                                media.file ||
+                                `media-${index}`
+                        })
+                    );
+
+
+                console.log(
+                    `${medias.length} média(s) chargé(s).`
+                );
+
+
+                renderMediaGallery();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Erreur de chargement des médias :",
+                    error
+                );
+
+
+                medias = [];
+
+
+                renderMediaGallery(
+                    true
+                );
+            }
+        }
+
+
+        // ============================================================
+        // RENDU GALERIE
+        // ============================================================
+
+        function renderMediaGallery(
+            loadError = false
+        ) {
+
+            if (!mediaGallery) {
+
+                return;
+            }
+
+
+            /*
+             * On conserve le bloc "aucun média" présent
+             * dans le HTML et on ne détruit pas son contenu.
+             */
+
+            const existingCards =
+                mediaGallery.querySelectorAll(
+                    ".media-card"
+                );
+
+
+            existingCards.forEach(
+                (
+                    card
+                ) => {
+
+                    card.remove();
+                }
+            );
+
+
+            if (
+                medias.length === 0
+            ) {
+
+                if (
+                    mediaGalleryEmpty
+                ) {
+
+                    mediaGalleryEmpty.hidden =
+                        false;
+
+
+                    const title =
+                        mediaGalleryEmpty.querySelector(
+                            "h3"
+                        );
+
+
+                    const text =
+                        mediaGalleryEmpty.querySelector(
+                            "p"
+                        );
+
+
+                    if (title) {
+
+                        title.textContent =
+                            loadError
+                                ? "Impossible de charger les médias"
+                                : "Aucun média";
+                    }
+
+
+                    if (text) {
+
+                        text.textContent =
+                            loadError
+                                ? "Une erreur est survenue pendant le chargement de images.json."
+                                : "Aucun média n'est disponible pour le moment.";
+                    }
+                }
+
+
+                return;
+            }
+
+
+            if (
+                mediaGalleryEmpty
+            ) {
+
+                mediaGalleryEmpty.hidden =
+                    true;
+            }
+
+
+            medias.forEach(
+                (
+                    media
+                ) => {
+
+                    const card =
+                        document.createElement(
+                            "article"
+                        );
+
+
+                    card.className =
+                        "media-card";
+
+
+                    // ------------------------------------------------
+                    // APERÇU
+                    // ------------------------------------------------
+
+                    const preview =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    preview.className =
+                        "media-card-preview";
+
+
+                    const type =
+                        String(
+                            media.type || ""
+                        ).toLowerCase();
+
+
+                    const mediaUrl =
+                        getMediaUrl(
+                            media
+                        );
+
+
+                    if (
+                        type === "video"
+                    ) {
+
+                        const video =
+                            document.createElement(
+                                "video"
+                            );
+
+
+                        video.src =
+                            mediaUrl;
+
+
+                        video.muted =
+                            true;
+
+
+                        video.playsInline =
+                            true;
+
+
+                        video.preload =
+                            "metadata";
+
+
+                        video.setAttribute(
+                            "aria-label",
+                            media.title ||
+                            "Vidéo APAM"
+                        );
+
+
+                        preview.appendChild(
+                            video
+                        );
+
+
+                    } else if (
+                        type === "image"
+                    ) {
+
+                        const image =
+                            document.createElement(
+                                "img"
+                            );
+
+
+                        image.src =
+                            mediaUrl;
+
+
+                        image.alt =
+                            media.title ||
+                            "Média APAM";
+
+
+                        image.loading =
+                            "lazy";
+
+
+                        image.addEventListener(
+                            "error",
+                            () => {
+
+                                preview.innerHTML =
+                                    `
+                                    <div
+                                        class="media-card-preview-empty"
+                                    >
+                                        Média introuvable
+                                    </div>
+                                    `;
+                            }
+                        );
+
+
+                        preview.appendChild(
+                            image
+                        );
+
+
+                    } else {
+
+                        preview.innerHTML =
+                            `
+                            <div
+                                class="media-card-preview-empty"
+                            >
+                                ${escapeHtml(
+                                    getMediaTypeLabel(
+                                        media.type
+                                    )
+                                )}
+                            </div>
+                            `;
+                    }
+
+
+                    // ------------------------------------------------
+                    // BADGE
+                    // ------------------------------------------------
+
+                    const badge =
+                        document.createElement(
+                            "span"
+                        );
+
+
+                    badge.className =
+                        "media-type-badge";
+
+
+                    badge.textContent =
+                        getMediaTypeLabel(
+                            media.type
+                        );
+
+
+                    preview.appendChild(
+                        badge
+                    );
+
+
+                    // ------------------------------------------------
+                    // INFORMATIONS
+                    // ------------------------------------------------
+
+                    const info =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    info.className =
+                        "media-card-info";
+
+
+                    info.innerHTML =
+                        `
+                        <h3
+                            class="media-card-title"
+                        >
+                            ${escapeHtml(
+                                media.title ||
+                                "Sans titre"
+                            )}
+                        </h3>
+
+                        <p
+                            class="media-card-date"
+                        >
+                            ${escapeHtml(
+                                formatDate(
+                                    media.date
+                                ) ||
+                                "Date inconnue"
+                            )}
+                        </p>
+
+                        ${
+                            media.description
+                                ? `
+                                    <p
+                                        class="media-card-description"
+                                    >
+                                        ${escapeHtml(
+                                            media.description
+                                        )}
+                                    </p>
+                                  `
+                                : ""
+                        }
+                        `;
+
+
+                    // ------------------------------------------------
+                    // ACTIONS
+                    // ------------------------------------------------
+
+                    const actions =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    actions.className =
+                        "media-card-actions";
+
+
+                    // MODIFIER
+
+                    const editButton =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    editButton.type =
+                        "button";
+
+
+                    editButton.className =
+                        "button-secondary";
+
+
+                    editButton.textContent =
+                        "Modifier";
+
+
+                    editButton.addEventListener(
+                        "click",
+                        () => {
+
+                            openMediaEditor(
+                                media._id
+                            );
+                        }
+                    );
+
+
+                    // SUPPRIMER
+
+                    const deleteButton =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    deleteButton.type =
+                        "button";
+
+
+                    deleteButton.className =
+                        "button-primary";
+
+
+                    deleteButton.textContent =
+                        "Supprimer";
+
+
+                    deleteButton.addEventListener(
+                        "click",
+                        () => {
+
+                            requestMediaDeletion(
+                                media
+                            );
+                        }
+                    );
+
+
+                    actions.appendChild(
+                        editButton
+                    );
+
+
+                    actions.appendChild(
+                        deleteButton
+                    );
+
+
+                    // ------------------------------------------------
+                    // ASSEMBLAGE
+                    // ------------------------------------------------
+
+                    card.appendChild(
+                        preview
+                    );
+
+
+                    card.appendChild(
+                        info
+                    );
+
+
+                    card.appendChild(
+                        actions
+                    );
+
+
+                    mediaGallery.appendChild(
+                        card
+                    );
+                }
+            );
+        }
+
+
+        // ============================================================
+        // OUVERTURE ÉDITEUR MÉDIA
+        // ============================================================
+
+        function openMediaEditor(
+            mediaId
+        ) {
+
+            const media =
+                medias.find(
+                    (
+                        item
+                    ) =>
+                        item._id === mediaId
+                );
+
+
+            if (!media) {
+
+                window.alert(
+                    "Média introuvable."
+                );
+
+                return;
+            }
+
+
+            editingMediaId =
+                mediaId;
+
+
+            if (
+                mediaEditor
+            ) {
+
+                mediaEditor.hidden =
+                    false;
+            }
+
+
+            if (
+                mediaTitleInput
+            ) {
+
+                mediaTitleInput.value =
+                    media.title ||
+                    "";
+            }
+
+
+            if (
+                mediaDateInput
+            ) {
+
+                mediaDateInput.value =
+                    media.date ||
+                    "";
+            }
+
+
+            if (
+                mediaDescriptionInput
+            ) {
+
+                mediaDescriptionInput.value =
+                    media.description ||
+                    "";
+            }
+
+
+            if (
+                mediaDriveIdInput
+            ) {
+
+                mediaDriveIdInput.value =
+                    media.drive_id ||
+                    "";
+            }
+
+
+            if (
+                mediaEditorTitle
+            ) {
+
+                mediaEditorTitle.textContent =
+                    "Modifier le média";
+            }
+
+
+            if (
+                mediaGallery
+            ) {
+
+                mediaGallery.hidden =
+                    true;
+            }
+
+
+            window.scrollTo(
+                {
+                    top: 0,
+                    behavior:
+                        "smooth"
+                }
+            );
+        }
+
+
+        // ============================================================
+        // FERMETURE ÉDITEUR MÉDIA
+        // ============================================================
+
+        function closeMediaEditor() {
+
+            if (
+                mediaEditor
+            ) {
+
+                mediaEditor.hidden =
+                    true;
+            }
+
+
+            if (
+                mediaGallery
+            ) {
+
+                mediaGallery.hidden =
+                    false;
+            }
+
+
+            editingMediaId =
+                null;
+
+
+            if (
+                mediaForm
+            ) {
+
+                mediaForm.reset();
+            }
+        }
+
+
+        // ============================================================
+        // DEMANDE DE SUPPRESSION
+        // ============================================================
+
+        function requestMediaDeletion(
+            media
+        ) {
+
+            if (!media) {
+
+                return;
+            }
+
+
+            const confirmed =
+                window.confirm(
+                    `Supprimer le média "${media.title || media.file}" ?\n\n` +
+                    "La suppression réelle de Google Drive n'est pas encore connectée."
+                );
+
+
+            if (!confirmed) {
+
+                return;
+            }
+
+
+            /*
+             * IMPORTANT :
+             *
+             * On ne supprime PAS encore le média de Drive
+             * et on ne modifie PAS images.json.
+             *
+             * Il nous faut l'endpoint Apps Script dédié aux médias.
+             */
+
+            window.alert(
+                "La galerie est prête pour cette fonctionnalité.\n\n" +
+                "La suppression Google Drive sera branchée avec le workflow média."
+            );
+        }
+
+
+        // ============================================================
+        // BOUTON AJOUTER UN MÉDIA
+        // ============================================================
+
+        function openNewMedia() {
+
+            /*
+             * Pour le moment, on prépare simplement
+             * l'éditeur.
+             *
+             * Le vrai upload devra passer par Drive
+             * puis déclencher le workflow de synchronisation.
+             */
+
+            editingMediaId =
+                null;
+
+
+            if (
+                mediaEditor
+            ) {
+
+                mediaEditor.hidden =
+                    false;
+            }
+
+
+            if (
+                mediaGallery
+            ) {
+
+                mediaGallery.hidden =
+                    true;
+            }
+
+
+            if (
+                mediaEditorTitle
+            ) {
+
+                mediaEditorTitle.textContent =
+                    "Ajouter un média";
+            }
+
+
+            if (
+                mediaForm
+            ) {
+
+                mediaForm.reset();
+            }
+
+
+            if (
+                mediaDriveIdInput
+            ) {
+
+                mediaDriveIdInput.value =
+                    "";
+            }
+        }
+
+
+        // ============================================================
+        // ÉVÉNEMENTS MÉDIAS
+        // ============================================================
+
+        if (
+            newMediaButton
+        ) {
+
+            newMediaButton.addEventListener(
+                "click",
+                () => {
+
+                    openNewMedia();
+                }
+            );
+        }
+
+
+        if (
+            mediaEmptyAddButton
+        ) {
+
+            mediaEmptyAddButton.addEventListener(
+                "click",
+                () => {
+
+                    openNewMedia();
+                }
+            );
+        }
+
+
+        if (
+            cancelMediaEditorButton
+        ) {
+
+            cancelMediaEditorButton.addEventListener(
+                "click",
+                () => {
+
+                    closeMediaEditor();
+                }
+            );
+        }
+
+
+        if (
+            cancelMediaButton
+        ) {
+
+            cancelMediaButton.addEventListener(
+                "click",
+                () => {
+
+                    closeMediaEditor();
+                }
+            );
+        }
+
+
+        // ============================================================
+        // ENREGISTREMENT MÉDIA
+        // ============================================================
+
+        if (
+            mediaForm
+        ) {
+
+            mediaForm.addEventListener(
+                "submit",
+                (event) => {
+
+                    event.preventDefault();
+
+
+                    /*
+                     * Nous ne faisons volontairement
+                     * aucune écriture serveur ici.
+                     *
+                     * Le prochain bloc sera relié à
+                     * Google Drive + Apps Script + workflow.
+                     */
+
+                    window.alert(
+                        "Le formulaire média est prêt.\n\n" +
+                        "La sauvegarde sera connectée à Google Drive dans l'étape suivante."
+                    );
+                }
+            );
+        }
         // ============================================================
         // INITIALISATION
         // ============================================================
@@ -1712,10 +2720,19 @@ document.addEventListener(
 
 
         // ------------------------------------------------------------
-        // SOURCE DE VÉRITÉ
-        // ------------------------------------------------------------
+// CHARGEMENT DES ACTUALITÉS
+// ------------------------------------------------------------
 
-        loadActualitesFromServer();
+loadActualitesFromServer();
+
+
+// ------------------------------------------------------------
+// CHARGEMENT DES MÉDIAS
+// ------------------------------------------------------------
+
+loadMediasFromServer();
+
+
 
     }
 );
