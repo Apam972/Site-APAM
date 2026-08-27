@@ -2,625 +2,146 @@
 <html lang="fr">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <title>APAM — Titre de la page</title>
 
-    <meta
-        name="description"
-        content="Découvrez les actualités de l'Association Pour l'Animation de Martinique."
-    >
+    <!-- Police Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <title>
-        Actualités | APAM
-    </title>
-
-
-    <!-- ============================================================
-         CSS PRINCIPAL
-    ============================================================= -->
-
-    <link
-        rel="stylesheet"
-        href="../CSS/style.css"
-    >
-
-
-    <!-- ============================================================
-         CSS ACTUALITÉS
-    ============================================================= -->
-
-    <link
-        rel="stylesheet"
-        href="../CSS/actualites.css"
-    >
-
-
-    <!-- ============================================================
-         FAVICON
-    ============================================================= -->
-
-    <link
-        rel="icon"
-        href="/favicon.ico"
-    >
-
+    <!-- Feuille de style commune -->
+    <link rel="stylesheet" href="../CSS/style.css">
 </head>
 
+<script src="../JS/gallery.js"></script>
 
+<div class="lightbox" id="photo-lightbox" aria-hidden="true">
+
+    <button
+        class="lightbox-close"
+        type="button"
+        aria-label="Fermer">
+        ×
+    </button>
+
+    <button
+        class="lightbox-prev"
+        type="button"
+        aria-label="Média précédent">
+        ‹
+    </button>
+
+    <div class="lightbox-media"></div>
+
+    <button
+        class="lightbox-next"
+        type="button"
+        aria-label="Média suivant">
+        ›
+    </button>
+
+</div>
 <body>
 
-
-    <!-- ============================================================
+    <!-- ========================================
          HEADER
-    ============================================================= -->
+         ======================================== -->
 
     <header class="site-header">
 
-        <div class="header-container">
+        <div class="container">
 
+            <a href="index.html" class="logo">
+                <img src="../assets/logo/logo-apam.png" alt="Logo APAM">
 
-            <!-- LOGO -->
-
-            <a
-                href="index.html"
-                class="site-brand"
-                aria-label="Retour à l'accueil de l'APAM"
-            >
-
-                <img
-                    src="assets/logo/logo.png"
-                    alt="Logo APAM"
-                    class="site-logo"
-                >
-
-
-                <div class="site-brand-text">
-
-                    <span>
-                        Association Pour l'Animation
-                    </span>
-
-                    <span>
-                        de Martinique
-                    </span>
-
-                </div>
-
+                <span class="site-title">
+                    Association Pour l'Animation<br>
+                    de Martinique
+                </span>
             </a>
 
+            <nav class="main-navigation">
+                <ul>
+                    <li>
+                        <a href="index.html">Accueil</a>
+                    </li>
 
-            <!-- NAVIGATION -->
+                    <li>
+                        <a href="association.html">L'association</a>
+                    </li>
 
-            <nav
-                class="main-navigation"
-                aria-label="Navigation principale"
-            >
+                    <li>
+                        <a href="activites.html">Nos activités</a>
+                    </li>
 
-                <a
-                    href="index.html"
-                >
-                    Accueil
-                </a>
+                    <li>
+                        <a href="actualites.html">Actualités</a>
+                    </li>
 
-
-                <a
-                    href="association.html"
-                >
-                    L'association
-                </a>
-
-
-                <a
-                    href="actions/actions.html"
-                >
-                    Nos activités
-                </a>
-
-
-                <a
-                    href="actualites.html"
-                    class="active"
-                    aria-current="page"
-                >
-                    Actualités
-                </a>
-
-
-                <a
-                    href="contact.html"
-                >
-                    Contact
-                </a>
-
+                    <li>
+                        <a href="contact.html">Contact</a>
+                    </li>
+                </ul>
             </nav>
-
-
-            <!-- MENU MOBILE -->
-
-            <button
-                type="button"
-                class="mobile-menu-button"
-                id="mobile-menu-button"
-                aria-label="Ouvrir le menu"
-                aria-expanded="false"
-            >
-
-                <span></span>
-                <span></span>
-                <span></span>
-
-            </button>
 
         </div>
 
     </header>
 
 
-
-    <!-- ============================================================
-         CONTENU PRINCIPAL
-    ============================================================= -->
+    <!-- ========================================
+         CONTENU DE LA PAGE
+         ======================================== -->
 
     <main>
 
+    <section class="action-section">
 
-        <!-- ========================================================
-             HERO ACTUALITÉS
-        ========================================================= -->
+        <div class="action-gallery-panel">
 
-        <section class="actualites-hero">
+            <div class="section-heading">
 
-            <div class="actualites-hero-inner">
+                <h2>
+                    L'APAM en action
+                </h2>
 
-                <p class="actualites-eyebrow">
-                    APAM
-                </p>
-
-
-                <h1>
-                    Actualités
-                </h1>
-
-
-                <p class="actualites-intro">
-                    Retrouvez les dernières nouvelles,
-                    actions et événements de l'association.
+                <p>
+                    Découvrez les actions et activités menées
+                    au quotidien par l'association.
                 </p>
 
             </div>
 
-        </section>
-
-
-
-        <!-- ========================================================
-             LISTE DES ACTUALITÉS
-        ========================================================= -->
-
-        <section
-            class="actualites-section"
-            aria-labelledby="actualites-title"
-        >
-
-            <div class="actualites-container">
-
-
-                <div class="actualites-heading">
-
-                    <div>
-
-                        <p class="section-eyebrow">
-                            La vie de l'APAM
-                        </p>
-
-
-                        <h2 id="actualites-title">
-                            Toutes nos actualités
-                        </h2>
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- =================================================
-                     GRILLE
-                ================================================== -->
-
-                <div
-                    class="news-grid"
-                    id="news-grid"
-                >
-
-
-                    <!-- =================================================
-                         MESSAGE DE CHARGEMENT
-                    ================================================== -->
-
-                    <div
-                        class="news-loading"
-                        id="news-loading"
-                    >
-
-                        <div
-                            class="news-loading-spinner"
-                        ></div>
-
-
-                        <p>
-                            Chargement des actualités...
-                        </p>
-
-                    </div>
-
-
-                </div>
-
-
-                <!-- =================================================
-                     MESSAGE D'ERREUR
-                ================================================== -->
-
-                <div
-                    class="news-error"
-                    id="news-error"
-                    hidden
-                >
-
-                    <div class="news-error-icon">
-                        !
-                    </div>
-
-
-                    <h2>
-                        Impossible de charger les actualités
-                    </h2>
-
-
-                    <p>
-                        Une erreur est survenue lors du
-                        chargement des actualités.
-                    </p>
-
-
-                    <button
-                        type="button"
-                        class="news-retry-button"
-                        id="news-retry-button"
-                    >
-                        Réessayer
-                    </button>
-
-                </div>
-
-
-                <!-- =================================================
-                     AUCUNE ACTUALITÉ
-                ================================================== -->
-
-                <div
-                    class="news-empty"
-                    id="news-empty"
-                    hidden
-                >
-
-                    <div class="news-empty-icon">
-                        📰
-                    </div>
-
-
-                    <h2>
-                        Aucune actualité pour le moment
-                    </h2>
-
-
-                    <p>
-                        Revenez prochainement pour découvrir
-                        les nouvelles de l'APAM.
-                    </p>
-
-                </div>
-
+            <div class="gallery" id="apam-gallery">
+                <!-- Les photos seront chargées automatiquement -->
             </div>
 
-        </section>
+        </div>
+
+    </section>
+
+</main>
 
 
-    </main>
-
-
-
-    <!-- ============================================================
-         MODAL ACTUALITÉ
-    ============================================================= -->
-
-    <div
-        class="news-modal"
-        id="news-modal"
-        aria-hidden="true"
-    >
-
-
-        <!-- ========================================================
-             FOND SOMBRE
-        ========================================================= -->
-
-        <div
-            class="news-modal-backdrop"
-            data-news-close
-        ></div>
-
-
-
-        <!-- ========================================================
-             CARTE OUVERTE
-        ========================================================= -->
-
-        <article
-            class="news-modal-card"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="news-modal-title"
-        >
-
-
-            <!-- BOUTON FERMER -->
-
-            <button
-                type="button"
-                class="news-modal-close"
-                id="news-modal-close"
-                data-news-close
-                aria-label="Fermer l'actualité"
-            >
-                ×
-            </button>
-
-
-
-            <!-- ====================================================
-                 IMAGE PRINCIPALE
-            ===================================================== -->
-
-            <div
-                class="news-modal-image-wrap"
-                id="news-modal-image-wrap"
-            >
-
-                <img
-                    id="news-modal-image"
-                    class="news-modal-image"
-                    src=""
-                    alt=""
-                >
-
-            </div>
-
-
-
-            <!-- ====================================================
-                 CONTENU
-            ===================================================== -->
-
-            <div class="news-modal-content">
-
-
-                <p
-                    id="news-modal-date"
-                    class="news-modal-date"
-                ></p>
-
-
-                <h2
-                    id="news-modal-title"
-                    class="news-modal-title"
-                ></h2>
-
-
-                <div
-                    id="news-modal-text"
-                    class="news-modal-text"
-                ></div>
-
-
-
-                <!-- =================================================
-                     GALERIE DE PHOTOS
-                ================================================== -->
-
-                <section
-                    class="news-modal-gallery-section"
-                    id="news-modal-gallery-section"
-                    hidden
-                >
-
-                    <div
-                        class="news-modal-gallery-heading"
-                    >
-
-                        <span>
-                            En images
-                        </span>
-
-                    </div>
-
-
-                    <div
-                        class="news-modal-gallery"
-                        id="news-modal-gallery"
-                    ></div>
-
-                </section>
-
-
-            </div>
-
-        </article>
-
-    </div>
-
-
-
-    <!-- ============================================================
+    <!-- ========================================
          FOOTER
-    ============================================================= -->
+         ======================================== -->
 
     <footer class="site-footer">
 
-        <div class="footer-container">
-
+        <div class="container">
 
             <div class="footer-brand">
 
-                <img
-                    src="assets/logo/logo.png"
-                    alt="Logo APAM"
-                    class="footer-logo"
-                >
-
-
-                <div>
-
-                    <h2>
-                        APAM
-                    </h2>
-
-                    <p>
-                        Association Pour l'Animation
-                        de Martinique
-                    </p>
-
-                </div>
-
-            </div>
-
-
-
-            <div class="footer-links">
-
-                <a
-                    href="index.html"
-                >
-                    Accueil
-                </a>
-
-
-                <a
-                    href="association.html"
-                >
-                    L'association
-                </a>
-
-
-                <a
-                    href="actions/actions.html"
-                >
-                    Nos activités
-                </a>
-
-
-                <a
-                    href="actualites.html"
-                >
-                    Actualités
-                </a>
-
-
-                <a
-                    href="contact.html"
-                >
-                    Contact
-                </a>
-
-            </div>
-
-
-
-            <div class="footer-bottom">
-
-                <p>
-                    © 2026 APAM —
-                    Tous droits réservés.
-                </p>
-
+                
             </div>
 
         </div>
 
     </footer>
 
-
-
-    <!-- ============================================================
-         JAVASCRIPT
-    ============================================================= -->
-
-    <script
-        src="JS/actualites.js"
-        defer
-    ></script>
-
-
-    <!-- ============================================================
-         MENU MOBILE
-    ============================================================= -->
-
-    <script>
-
-        document.addEventListener(
-            "DOMContentLoaded",
-            () => {
-
-                const button =
-                    document.getElementById(
-                        "mobile-menu-button"
-                    );
-
-
-                const navigation =
-                    document.querySelector(
-                        ".main-navigation"
-                    );
-
-
-                if (
-                    !button ||
-                    !navigation
-                ) {
-                    return;
-                }
-
-
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        const open =
-                            navigation.classList.toggle(
-                                "is-open"
-                            );
-
-
-                        button.setAttribute(
-                            "aria-expanded",
-                            open
-                                ? "true"
-                                : "false"
-                        );
-
-                    }
-                );
-
-            }
-        );
-
-    </script>
+    <script src="../JS/gallery.js"></script>
 
 </body>
 
