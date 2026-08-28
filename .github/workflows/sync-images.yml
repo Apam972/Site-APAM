@@ -15,6 +15,10 @@ on:
     - cron: "0 17 * * 5"
       timezone: "America/Martinique"
 
+concurrency:
+  group: apam-media-sync
+  cancel-in-progress: false
+
 
 jobs:
   sync-images:
@@ -119,4 +123,7 @@ jobs:
           fi
 
           git commit -m "Synchronisation des médias APAM"
+
+          git pull --rebase origin main
+
           git push
