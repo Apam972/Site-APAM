@@ -22,50 +22,6 @@
         "synced_at": "2026-08-28T17:49:12.425340+00:00"
     },
     {
-        "file": "1AN6mFohV6EW3PcUM5WdOrQ5TBT0Yiy8h.pdf",
-        "type": "pdf",
-        "title": "numérisé_apam3",
-        "description": "",
-        "date": "2026-08-28",
-        "drive_id": "1AN6mFohV6EW3PcUM5WdOrQ5TBT0Yiy8h",
-        "md5_checksum": "2ba39368a21d0792cbfdffa0069a16e5",
-        "modified_time": "2026-08-28T16:12:55.753Z",
-        "synced_at": "2026-08-28T17:49:13.066467+00:00"
-    },
-    {
-        "file": "1jTHw869V0mywC3inL8b0VgPSDQHSv7ZH.pdf",
-        "type": "pdf",
-        "title": "numérisé_apam2",
-        "description": "",
-        "date": "2026-08-28",
-        "drive_id": "1jTHw869V0mywC3inL8b0VgPSDQHSv7ZH",
-        "md5_checksum": "967995c59f7569f1397c26fe1da202da",
-        "modified_time": "2026-08-28T16:02:56.630Z",
-        "synced_at": "2026-08-28T17:49:13.968964+00:00"
-    },
-    {
-        "file": "1N7iHA5tZP9CtD-Lzqg9OjSR6KHB22fEG.pdf",
-        "type": "pdf",
-        "title": "numérisé_apam 1",
-        "description": "",
-        "date": "2026-08-28",
-        "drive_id": "1N7iHA5tZP9CtD-Lzqg9OjSR6KHB22fEG",
-        "md5_checksum": "23f5bb217e489ac5c30110ce2d47bfa9",
-        "modified_time": "2026-08-28T16:02:17.468Z",
-        "synced_at": "2026-08-28T17:49:14.689005+00:00"
-    },
-    {
-        "file": "1GNhCmibLzz-_lt8I2BPDTkT3KaYS4Ast.png",
-        "type": "image",
-        "title": "test",
-        "description": "",
-        "date": "2026-08-28",
-        "drive_id": "1GNhCmibLzz-_lt8I2BPDTkT3KaYS4Ast",
-        "md5_checksum": "b9ea9ce2b2fcdaaf53d73fa84f9bee49",
-        "modified_time": "2026-08-28T15:26:52.905Z",
-        "synced_at": "2026-08-28T17:49:15.525213+00:00"
-    },
-    {
         "file": "1hXzV430fcv2mUdwEHBZyw867HH4AwDZn.mp4",
         "type": "video",
         "title": "plages-et-drones",
