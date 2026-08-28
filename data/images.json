@@ -1,5 +1,38 @@
 [
     {
+        "file": "1kbQEWxE-yB3J_m9QlltuvYG9i3Mxvh08.jpg",
+        "type": "image",
+        "title": "test-samourai-2",
+        "description": "",
+        "date": "2026-08-28",
+        "drive_id": "1kbQEWxE-yB3J_m9QlltuvYG9i3Mxvh08",
+        "md5_checksum": "5f29a7fb6fe70303a965947415ee76c1",
+        "modified_time": "2026-08-28T14:26:41.728Z",
+        "synced_at": "2026-08-28T14:37:08.877422+00:00"
+    },
+    {
+        "file": "1d_06nA1m1CQRZ9jfqU9dahUAVp3sviwE.png",
+        "type": "image",
+        "title": "test-de-description",
+        "description": "",
+        "date": "2026-08-28",
+        "drive_id": "1d_06nA1m1CQRZ9jfqU9dahUAVp3sviwE",
+        "md5_checksum": "fb79cc775d88c36ea2852bb753190ad1",
+        "modified_time": "2026-08-28T14:26:41.618Z",
+        "synced_at": "2026-08-28T14:37:09.901361+00:00"
+    },
+    {
+        "file": "1hPURoiKlFswyp7x51c76m2oAH54MkSYO.png",
+        "type": "image",
+        "title": "1cTsDygN_80uVAWwwN83eZbzOAqPJT3E4",
+        "description": "",
+        "date": "2026-08-28",
+        "drive_id": "1hPURoiKlFswyp7x51c76m2oAH54MkSYO",
+        "md5_checksum": "b9ea9ce2b2fcdaaf53d73fa84f9bee49",
+        "modified_time": "2026-08-28T14:26:35.065Z",
+        "synced_at": "2026-08-28T14:37:10.489932+00:00"
+    },
+    {
         "file": "14huOlwdezmhPJXaP5NMJIHJwd78qGjhd.mp4",
         "type": "video",
         "title": "plages-et-drones",
