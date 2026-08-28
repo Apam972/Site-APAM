@@ -2526,14 +2526,12 @@ if (
             }
 
 
-            window.scrollTo(
-                {
-                    top: 0,
-                    behavior:
-                        "smooth"
-                }
-            );
-        }
+            if (mediaEditor) {
+    mediaEditor.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
 
 
         // ============================================================
@@ -2721,6 +2719,12 @@ if (
                 mediaDriveIdInput.value =
                     "";
             }
+            if (mediaEditor) {
+    mediaEditor.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
         }
 
 
