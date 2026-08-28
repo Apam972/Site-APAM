@@ -1,5 +1,16 @@
 [
     {
+        "file": "1Ii6-XWDcB1xRYv_b-jis5LkQfFKSI9ac.png",
+        "type": "image",
+        "title": "test",
+        "description": "[APAM_META]\n{\"title\":\"test\",\"description\":\"ceci est un test\",\"date\":\"2026-08-21\",\"originalName\":\"ChatGPT Image 19 août 2026, 12_45_40.png\",\"createdAt\":\"2026-08-27T16:51:29.425Z\"}",
+        "date": "2026-08-27",
+        "drive_id": "1Ii6-XWDcB1xRYv_b-jis5LkQfFKSI9ac",
+        "md5_checksum": "b9ea9ce2b2fcdaaf53d73fa84f9bee49",
+        "modified_time": "2026-08-27T16:51:29.488Z",
+        "synced_at": "2026-08-28T02:37:42.443157+00:00"
+    },
+    {
         "file": "1SouYUps7wHW9n5yOjRanyhIHPFxbRJEZ.jpg",
         "type": "image",
         "title": "PXL_20260826_155855714.MP",
@@ -79,12 +90,12 @@
     {
         "file": "1MPRC4WovLRrOpKJWcBDJAAzQWiUFJ8Ue.mp4",
         "type": "video",
-        "title": "plages et drone",
-        "description": "journée typique a la plage avec un drone ",
+        "title": "plages-et-drones",
+        "description": "[APAM_META]\n{\"title\":\"plages et drones\",\"description\":\"journée typique a la plage avec un drone\",\"date\":\"2026-08-22\",\"originalName\":\"plages et drone.mp4\",\"createdAt\":\"2026-08-27T16:50:44.858Z\"}",
         "date": "2026-08-22",
         "drive_id": "1MPRC4WovLRrOpKJWcBDJAAzQWiUFJ8Ue",
         "md5_checksum": "faa3e5dcb9de12c6d800534a64cb3c58",
         "modified_time": "2026-08-22T16:00:33.620Z",
-        "synced_at": "2026-08-22T16:43:01.849360+00:00"
+        "synced_at": "2026-08-28T02:37:42.443359+00:00"
     }
 ]
