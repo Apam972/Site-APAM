@@ -1,25 +1,14 @@
 [
     {
-        "file": "1vJeSDKhgNVKGUi9TexBC9a2IbQtAY5UQ.jpg",
+        "file": "1ZFzxKt6UwPupLTF6eDtM3E_3ain9ave1.png",
         "type": "image",
-        "title": "activite-2",
-        "description": "test 2",
+        "title": "test",
+        "description": "",
         "date": "2026-08-28",
-        "drive_id": "1vJeSDKhgNVKGUi9TexBC9a2IbQtAY5UQ",
-        "md5_checksum": "3abdff5c1da3f735c6d280553423717d",
-        "modified_time": "2026-08-28T17:53:05.812Z",
-        "synced_at": "2026-08-28T17:53:28.781780+00:00"
-    },
-    {
-        "file": "1WrqiWL8-yAnWvPDaR8ST4KtgJSvGoiep.jpg",
-        "type": "image",
-        "title": "activite-1",
-        "description": "test",
-        "date": "2026-08-28",
-        "drive_id": "1WrqiWL8-yAnWvPDaR8ST4KtgJSvGoiep",
-        "md5_checksum": "66f2e96e7b76af9e003f345060ded848",
-        "modified_time": "2026-08-28T17:48:51.723Z",
-        "synced_at": "2026-08-28T17:49:12.425340+00:00"
+        "drive_id": "1ZFzxKt6UwPupLTF6eDtM3E_3ain9ave1",
+        "md5_checksum": "b9ea9ce2b2fcdaaf53d73fa84f9bee49",
+        "modified_time": "2026-08-28T18:27:56.131Z",
+        "synced_at": "2026-08-28T18:31:29.039159+00:00"
     },
     {
         "file": "1hXzV430fcv2mUdwEHBZyw867HH4AwDZn.mp4",
@@ -66,17 +55,6 @@
         "synced_at": "2026-08-28T17:49:19.282312+00:00"
     },
     {
-        "file": "1bexZHpFoE178m7DgBJ7rqw-2Wmiujesv.jpg",
-        "type": "image",
-        "title": "journee-a-la-piscine",
-        "description": "",
-        "date": "2026-08-28",
-        "drive_id": "1bexZHpFoE178m7DgBJ7rqw-2Wmiujesv",
-        "md5_checksum": "c2a8b3e696c4ac6c07ddb9356541965e",
-        "modified_time": "2026-08-28T15:26:52.331Z",
-        "synced_at": "2026-08-28T18:04:57.233922+00:00"
-    },
-    {
         "file": "1jnY7i216OXrzNw0pk_Zna4P2o_kngm1N.png",
         "type": "image",
         "title": "ChatGPT Image 17 août 2026, 15_32_47",
@@ -86,17 +64,6 @@
         "md5_checksum": "6c7c8002b8304d95422f8fef73f8d3b2",
         "modified_time": "2026-08-28T15:26:52.183Z",
         "synced_at": "2026-08-28T17:49:21.201939+00:00"
-    },
-    {
-        "file": "1HQI7X3oekHQSlqJzCXmUQpQk965ZDL2e.png",
-        "type": "image",
-        "title": "ChatGPT Image 12 août 2026, 23_19_10",
-        "description": "",
-        "date": "2026-08-28",
-        "drive_id": "1HQI7X3oekHQSlqJzCXmUQpQk965ZDL2e",
-        "md5_checksum": "af96bdcb0fa35f8d506c119babcc212f",
-        "modified_time": "2026-08-28T15:26:52.042Z",
-        "synced_at": "2026-08-28T17:49:21.917457+00:00"
     },
     {
         "file": "1SMrrx-IDqGApydb-1-kTN3FjXqr32fkM.png",
