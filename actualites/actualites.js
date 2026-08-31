@@ -90,25 +90,72 @@ document.addEventListener(
             );
 
 
+            // ============================================================
+// LIGHTBOX DES IMAGES DE L'ARTICLE
+// ============================================================
+
+const articleImageLightbox =
+    document.getElementById(
+        "article-image-lightbox"
+    );
+
+const articleImageLightboxOverlay =
+    document.getElementById(
+        "article-image-lightbox-overlay"
+    );
+
+const articleImageLightboxClose =
+    document.getElementById(
+        "article-image-lightbox-close"
+    );
+
+const articleImageLightboxImage =
+    document.getElementById(
+        "article-image-lightbox-image"
+    );
+
+const articleImageLightboxPrev =
+    document.getElementById(
+        "article-image-lightbox-prev"
+    );
+
+const articleImageLightboxNext =
+    document.getElementById(
+        "article-image-lightbox-next"
+    );
+
+
+// Image actuellement affichée
+let currentLightboxIndex = 0;
+
+// Images de l'actualité actuellement ouverte
+let currentLightboxImages = [];
+
         // ============================================================
         // VÉRIFICATION
         // ============================================================
 
         if (
             !newsLoading ||
-            !newsList ||
-            !newsEmpty ||
-            !newsError ||
-            !newsErrorMessage ||
-            !retryButton ||
-            !articleModal ||
-            !articleModalOverlay ||
-            !articleModalClose ||
-            !articleModalImage ||
-            !articleModalDate ||
-            !articleModalTitle ||
-            !articleModalText ||
-            !articleModalImages
+    !newsList ||
+    !newsEmpty ||
+    !newsError ||
+    !newsErrorMessage ||
+    !retryButton ||
+    !articleModal ||
+    !articleModalOverlay ||
+    !articleModalClose ||
+    !articleModalImage ||
+    !articleModalDate ||
+    !articleModalTitle ||
+    !articleModalText ||
+    !articleModalImages ||
+    !articleImageLightbox ||
+    !articleImageLightboxOverlay ||
+    !articleImageLightboxClose ||
+    !articleImageLightboxImage ||
+    !articleImageLightboxPrev ||
+    !articleImageLightboxNext
         ) {
 
             console.error(
@@ -768,6 +815,8 @@ document.addEventListener(
                         image.className =
                             "article-modal-gallery-image";
 
+                         image.dataset.imagePath =
+                            imagePath;
 
                         articleModalImages.appendChild(
                             image
@@ -914,6 +963,309 @@ document.addEventListener(
             );
         }
 
+
+        // ============================================================
+// LIGHTBOX — AFFICHER UNE IMAGE
+// ============================================================
+
+function showLightboxImage(index) {
+
+    if (
+        currentLightboxImages.length === 0
+    ) {
+        return;
+    }
+
+
+    // Boucle automatiquement
+    if (
+        index < 0
+    ) {
+        index =
+            currentLightboxImages.length - 1;
+    }
+
+
+    if (
+        index >=
+        currentLightboxImages.length
+    ) {
+        index = 0;
+    }
+
+
+    currentLightboxIndex =
+        index;
+
+
+    const imagePath =
+        currentLightboxImages[
+            currentLightboxIndex
+        ];
+
+
+    articleImageLightboxImage.src =
+        resolveSitePath(
+            imagePath
+        );
+
+
+    articleImageLightboxImage.alt =
+        `Image ${currentLightboxIndex + 1}`;
+
+
+    // Afficher / cacher les flèches
+    const hasMultipleImages =
+        currentLightboxImages.length > 1;
+
+
+    articleImageLightboxPrev.style.display =
+        hasMultipleImages
+            ? "flex"
+            : "none";
+
+
+    articleImageLightboxNext.style.display =
+        hasMultipleImages
+            ? "flex"
+            : "none";
+}
+
+
+// ============================================================
+// LIGHTBOX — OUVRIR
+// ============================================================
+
+function openImageLightbox(
+    images,
+    index
+) {
+
+    if (
+        !Array.isArray(images)
+        ||
+        images.length === 0
+    ) {
+        return;
+    }
+
+
+    currentLightboxImages =
+        images.filter(
+            image =>
+                Boolean(image)
+        );
+
+
+    currentLightboxIndex =
+        index;
+
+
+    showLightboxImage(
+        currentLightboxIndex
+    );
+
+
+    articleImageLightbox.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+
+    articleImageLightbox.classList.add(
+        "is-open"
+    );
+}
+
+
+// ============================================================
+// LIGHTBOX — FERMER
+// ============================================================
+
+function closeImageLightbox() {
+
+    articleImageLightbox.classList.remove(
+        "is-open"
+    );
+
+
+    articleImageLightbox.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+
+    window.setTimeout(
+        () => {
+
+            if (
+                !articleImageLightbox.classList.contains(
+                    "is-open"
+                )
+            ) {
+
+                articleImageLightboxImage.src =
+                    "";
+
+                articleImageLightboxImage.alt =
+                    "";
+
+                currentLightboxImages =
+                    [];
+
+                currentLightboxIndex =
+                    0;
+            }
+
+        },
+        300
+    );
+}
+
+
+// ============================================================
+// LIGHTBOX — NAVIGATION
+// ============================================================
+
+function showPreviousLightboxImage() {
+
+    showLightboxImage(
+        currentLightboxIndex - 1
+    );
+}
+
+
+function showNextLightboxImage() {
+
+    showLightboxImage(
+        currentLightboxIndex + 1
+    );
+}
+
+
+// ============================================================
+// CLIC SUR LES IMAGES DE LA GALERIE
+// ============================================================
+
+articleModalImages.addEventListener(
+    "click",
+    (event) => {
+
+        const image =
+            event.target.closest(
+                ".article-modal-gallery-image"
+            );
+
+
+        if (!image) {
+            return;
+        }
+
+
+        const images =
+            Array.from(
+                articleModalImages.querySelectorAll(
+                    ".article-modal-gallery-image"
+                )
+            )
+            .map(
+                imageElement =>
+                    imageElement.dataset.imagePath
+            );
+
+
+        const index =
+            Array.from(
+                articleModalImages.querySelectorAll(
+                    ".article-modal-gallery-image"
+                )
+            )
+            .indexOf(
+                image
+            );
+
+
+        openImageLightbox(
+            images,
+            index
+        );
+    }
+);
+
+
+// ============================================================
+// BOUTONS LIGHTBOX
+// ============================================================
+
+articleImageLightboxClose.addEventListener(
+    "click",
+    closeImageLightbox
+);
+
+
+articleImageLightboxOverlay.addEventListener(
+    "click",
+    closeImageLightbox
+);
+
+
+articleImageLightboxPrev.addEventListener(
+    "click",
+    showPreviousLightboxImage
+);
+
+
+articleImageLightboxNext.addEventListener(
+    "click",
+    showNextLightboxImage
+);
+
+
+// ============================================================
+// CLAVIER LIGHTBOX
+// ============================================================
+
+document.addEventListener(
+    "keydown",
+    (event) => {
+
+        if (
+            !articleImageLightbox.classList.contains(
+                "is-open"
+            )
+        ) {
+            return;
+        }
+
+
+        if (
+            event.key === "Escape"
+        ) {
+
+            closeImageLightbox();
+
+            return;
+        }
+
+
+        if (
+            event.key === "ArrowLeft"
+        ) {
+
+            showPreviousLightboxImage();
+
+            return;
+        }
+
+
+        if (
+            event.key === "ArrowRight"
+        ) {
+
+            showNextLightboxImage();
+        }
+    }
+);
 
         // ============================================================
         // CLIC SUR LES CARTES
