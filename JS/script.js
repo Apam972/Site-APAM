@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const MAX_MEDIAS = 9;
     const SLIDE_DELAY = 15000;
 
+
     // ============================================================
     // UTILITAIRES
     // ============================================================
@@ -74,17 +75,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
 
-   function getMediaUrl(media) {
+    function getMediaUrl(media) {
 
-    if (
-        !media ||
-        !media.file
-    ) {
-        return "";
+        if (
+            !media ||
+            !media.file
+        ) {
+            return "";
+        }
+
+        return `assets/image-apam/${encodeURIComponent(media.file)}`;
     }
-
-    return `assets/image-apam/${encodeURIComponent(media.file)}`;
-} 
 
 
     // ============================================================
@@ -118,6 +119,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             );
         }
 
+
         // --------------------------------------------------------
         // Les plus récemment synchronisés en premier
         // --------------------------------------------------------
@@ -144,8 +146,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     MAX_MEDIAS
                 );
 
+
         // --------------------------------------------------------
-        // Si aucun média exploitable
+        // Aucun média
         // --------------------------------------------------------
 
         if (
@@ -162,8 +165,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
+
         // --------------------------------------------------------
-        // Construction du carrousel
+        // Construction
         // --------------------------------------------------------
 
         buildCarousel();
@@ -187,7 +191,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     // ============================================================
-    // CARROUSEL
+    // NOMBRE DE GROUPES
     // ============================================================
 
     function getGroupCount() {
@@ -199,12 +203,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
 
+    // ============================================================
+    // CONSTRUCTION DU CARROUSEL
+    // ============================================================
+
     function buildCarousel() {
 
         carousel.innerHTML = "";
 
+
         // --------------------------------------------------------
-        // Zone d'affichage
+        // VIEWPORT
         // --------------------------------------------------------
 
         const viewport =
@@ -215,6 +224,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         viewport.className =
             "home-actions-viewport";
 
+
+        // --------------------------------------------------------
+        // TRACK
+        // --------------------------------------------------------
 
         const track =
             document.createElement(
@@ -235,92 +248,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
         // --------------------------------------------------------
-        // Flèche précédente
-        // --------------------------------------------------------
-
-        const prevButton =
-            document.createElement(
-                "button"
-            );
-
-        prevButton.type =
-            "button";
-
-        prevButton.className =
-            "home-actions-prev";
-
-        prevButton.setAttribute(
-            "aria-label",
-            "Médias précédents"
-        );
-
-        prevButton.innerHTML =
-            "‹";
-
-        prevButton.addEventListener(
-            "click",
-            () => {
-
-                stopAutoSlide();
-
-                showGroup(
-                    currentGroup - 1
-                );
-
-                startAutoSlide();
-            }
-        );
-
-
-        // --------------------------------------------------------
-        // Flèche suivante
-        // --------------------------------------------------------
-
-        const nextButton =
-            document.createElement(
-                "button"
-            );
-
-        nextButton.type =
-            "button";
-
-        nextButton.className =
-            "home-actions-next";
-
-        nextButton.setAttribute(
-            "aria-label",
-            "Médias suivants"
-        );
-
-        nextButton.innerHTML =
-            "›";
-
-        nextButton.addEventListener(
-            "click",
-            () => {
-
-                stopAutoSlide();
-
-                showGroup(
-                    currentGroup + 1
-                );
-
-                startAutoSlide();
-            }
-        );
-
-
-        carousel.appendChild(
-            prevButton
-        );
-
-        carousel.appendChild(
-            nextButton
-        );
-
-
-        // --------------------------------------------------------
-        // Indicateurs
+        // DOTS
         // --------------------------------------------------------
 
         const dots =
@@ -330,10 +258,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         dots.className =
             "home-actions-dots";
-
-        carousel.appendChild(
-            dots
-        );
 
 
         for (
@@ -358,6 +282,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 `Afficher le groupe ${i + 1}`
             );
 
+
             dot.addEventListener(
                 "click",
                 () => {
@@ -370,14 +295,20 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             );
 
+
             dots.appendChild(
                 dot
             );
         }
 
 
+        carousel.appendChild(
+            dots
+        );
+
+
         // --------------------------------------------------------
-        // Génération des 9 médias
+        // MÉDIAS
         // --------------------------------------------------------
 
         medias.forEach(
@@ -391,6 +322,72 @@ document.addEventListener("DOMContentLoaded", async () => {
                 item.className =
                     "home-actions-item";
 
+                item.setAttribute(
+                    "tabindex",
+                    "0"
+                );
+
+                item.setAttribute(
+                    "role",
+                    "link"
+                );
+
+                item.setAttribute(
+                    "aria-label",
+                    `Voir ${media.title || "ce média"} dans les actions`
+                );
+
+
+                // ------------------------------------------------
+                // CLIC → PAGE ACTIONS
+                // ------------------------------------------------
+
+                function openMediaPage() {
+
+                    const target =
+                        `actions/actions.html?media=${encodeURIComponent(
+                            media.file
+                        )}`;
+
+                    window.location.href =
+                        target;
+                }
+
+
+                item.addEventListener(
+                    "click",
+                    openMediaPage
+                );
+
+
+                // ------------------------------------------------
+                // CLAVIER
+                // ------------------------------------------------
+
+                item.addEventListener(
+                    "keydown",
+                    (event) => {
+
+                        if (
+                            event.key ===
+                            "Enter"
+                        ) {
+
+                            openMediaPage();
+                        }
+
+                        if (
+                            event.key ===
+                            " "
+                        ) {
+
+                            event.preventDefault();
+
+                            openMediaPage();
+                        }
+                    }
+                );
+
 
                 const type =
                     getMediaType(
@@ -398,9 +395,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     );
 
 
-                // ------------------------------------------------
+                // =================================================
                 // IMAGE
-                // ------------------------------------------------
+                // =================================================
 
                 if (
                     type === "image"
@@ -423,15 +420,18 @@ document.addEventListener("DOMContentLoaded", async () => {
                     image.loading =
                         "lazy";
 
+                    image.draggable =
+                        false;
+
                     item.appendChild(
                         image
                     );
                 }
 
 
-                // ------------------------------------------------
+                // =================================================
                 // VIDÉO
-                // ------------------------------------------------
+                // =================================================
 
                 else if (
                     type === "video"
@@ -456,10 +456,33 @@ document.addEventListener("DOMContentLoaded", async () => {
                     video.preload =
                         "metadata";
 
-                    // Pas de contrôles,
-                    // pas d'autoplay.
                     video.controls =
                         false;
+
+
+                    // ------------------------------------------------
+                    // Première image de la vidéo
+                    // ------------------------------------------------
+
+                    video.addEventListener(
+                        "loadedmetadata",
+                        () => {
+
+                            try {
+
+                                video.currentTime =
+                                    0;
+
+                            } catch (error) {
+
+                                console.warn(
+                                    "Impossible de positionner la miniature vidéo.",
+                                    error
+                                );
+                            }
+                        }
+                    );
+
 
                     item.appendChild(
                         video
@@ -467,9 +490,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
 
 
-                // ------------------------------------------------
+                // =================================================
                 // AUTRE TYPE
-                // ------------------------------------------------
+                // =================================================
 
                 else {
 
@@ -499,7 +522,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
         // --------------------------------------------------------
-        // Première position
+        // PREMIÈRE POSITION
         // --------------------------------------------------------
 
         showGroup(
@@ -509,7 +532,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     // ============================================================
-    // AFFICHAGE D'UN GROUPE
+    // AFFICHER UN GROUPE
     // ============================================================
 
     function showGroup(
@@ -526,12 +549,26 @@ document.addEventListener("DOMContentLoaded", async () => {
                 ".home-actions-dot"
             );
 
+
         if (!track) {
             return;
         }
 
+
         const groupCount =
             getGroupCount();
+
+
+        if (
+            groupCount <= 0
+        ) {
+            return;
+        }
+
+
+        // --------------------------------------------------------
+        // BOUCLE
+        // --------------------------------------------------------
 
         currentGroup =
             (
@@ -541,12 +578,21 @@ document.addEventListener("DOMContentLoaded", async () => {
             groupCount;
 
 
+        // --------------------------------------------------------
+        // DÉPLACEMENT
+        // --------------------------------------------------------
+
         const offset =
             currentGroup * 100;
+
 
         track.style.transform =
             `translateX(-${offset}%)`;
 
+
+        // --------------------------------------------------------
+        // DOT ACTIF
+        // --------------------------------------------------------
 
         dots.forEach(
             (
@@ -575,6 +621,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
+
+        stopAutoSlide();
+
+
         autoSlideInterval =
             setInterval(
                 () => {
@@ -588,6 +638,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             );
     }
 
+
+    // ============================================================
+    // ARRÊT AUTOMATIQUE
+    // ============================================================
 
     function stopAutoSlide() {
 

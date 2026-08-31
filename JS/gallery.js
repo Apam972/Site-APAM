@@ -693,6 +693,22 @@ document.addEventListener("DOMContentLoaded", async () => {
             await response.json();
 
 
+        // ====================================================
+        // MÉDIA DEMANDÉ DEPUIS LE CARROUSEL
+        // ====================================================
+
+        const urlParams =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        const requestedMedia =
+            urlParams.get(
+                "media"
+            );
+
+
         gallery.innerHTML =
             "";
 
@@ -933,6 +949,29 @@ document.addEventListener("DOMContentLoaded", async () => {
                 );
             }
         );
+
+
+        // ====================================================
+        // OUVERTURE AUTOMATIQUE DU MÉDIA DEMANDÉ
+        // ====================================================
+
+        if (requestedMedia) {
+
+            const requestedIndex =
+                images.findIndex(
+                    (media) =>
+                        media.file ===
+                        requestedMedia
+                );
+
+
+            if (requestedIndex !== -1) {
+
+                openLightbox(
+                    requestedIndex
+                );
+            }
+        }
 
 
         // ====================================================
