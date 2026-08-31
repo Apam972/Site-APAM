@@ -620,20 +620,7 @@ body {
 }
 
 
-.highlight-card:hover {
 
-    transform:
-        translateY(-5px);
-
-    box-shadow:
-        12px 18px 30px
-        rgba(
-            0,
-            0,
-            0,
-            0.15
-        );
-}
 
 
 /* ============================================================
@@ -781,6 +768,20 @@ body {
     height: 215px;
     object-fit: cover;
     border-radius: 20px;
+}
+.home-actions-item img,
+.home-actions-item video {
+    cursor: pointer;
+
+    transition:
+        transform 0.3s ease,
+        filter 0.3s ease;
+}
+
+.home-actions-item:hover img,
+.home-actions-item:hover video {
+    transform: scale(1.03);
+    filter: brightness(0.85);
 }
 .home-actions-viewport {
     width: 100%;
