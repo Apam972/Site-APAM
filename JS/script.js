@@ -1,4 +1,3 @@
-```js
 document.addEventListener("DOMContentLoaded", async () => {
 
     const carousel = document.getElementById(
@@ -9,19 +8,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-
-    // ============================================================
-    // CONFIGURATION
-    // ============================================================
-
-    const GROUP_SIZE = 3;
-    const MAX_MEDIAS = 9;
-    const SLIDE_DELAY = 15000;
-
     let medias = [];
     let currentGroup = 0;
     let autoSlideInterval = null;
 
+    const GROUP_SIZE = 3;
+    const MAX_MEDIAS = 9;
+    const SLIDE_DELAY = 15000;
 
     // ============================================================
     // UTILITAIRES
@@ -33,12 +26,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             return String(media.type).toLowerCase();
         }
 
-        const fileName = media?.file || "";
+        const fileName =
+            media?.file ||
+            "";
 
-        const extension = fileName
-            .split(".")
-            .pop()
-            .toLowerCase();
+        const extension =
+            fileName
+                .split(".")
+                .pop()
+                .toLowerCase();
 
         const imageExtensions = [
             "jpg",
@@ -58,11 +54,19 @@ document.addEventListener("DOMContentLoaded", async () => {
             "mkv"
         ];
 
-        if (imageExtensions.includes(extension)) {
+        if (
+            imageExtensions.includes(
+                extension
+            )
+        ) {
             return "image";
         }
 
-        if (videoExtensions.includes(extension)) {
+        if (
+            videoExtensions.includes(
+                extension
+            )
+        ) {
             return "video";
         }
 
@@ -70,16 +74,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
 
-    function getMediaUrl(media) {
+   function getMediaUrl(media) {
 
-        if (!media?.file) {
-            return "";
-        }
-
-        return (
-            `assets/image-apam/${encodeURIComponent(media.file)}`
-        );
+    if (
+        !media ||
+        !media.file
+    ) {
+        return "";
     }
+
+    return `assets/image-apam/${encodeURIComponent(media.file)}`;
+} 
 
 
     // ============================================================
@@ -88,12 +93,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
 
-        const response = await fetch(
-            `data/images.json?ts=${Date.now()}`,
-            {
-                cache: "no-store"
-            }
-        );
+        const response =
+            await fetch(
+                `data/images.json?ts=${Date.now()}`,
+                {
+                    cache: "no-store"
+                }
+            );
 
         if (!response.ok) {
             throw new Error(
@@ -101,42 +107,50 @@ document.addEventListener("DOMContentLoaded", async () => {
             );
         }
 
-        const data = await response.json();
+        const data =
+            await response.json();
 
-        if (!Array.isArray(data)) {
+        if (
+            !Array.isArray(data)
+        ) {
             throw new Error(
                 "images.json ne contient pas une liste."
             );
         }
 
-
         // --------------------------------------------------------
-        // TRI PAR DATE DE SYNCHRONISATION
-        // --------------------------------------------------------
-
-        medias = data
-            .filter(
-                media =>
-                    media &&
-                    media.file &&
-                    media.synced_at
-            )
-            .sort(
-                (a, b) =>
-                    new Date(b.synced_at) -
-                    new Date(a.synced_at)
-            )
-            .slice(
-                0,
-                MAX_MEDIAS
-            );
-
-
-        // --------------------------------------------------------
-        // AUCUN MÉDIA
+        // Les plus récemment synchronisés en premier
         // --------------------------------------------------------
 
-        if (medias.length === 0) {
+        medias =
+            data
+                .filter(
+                    (media) =>
+                        media &&
+                        media.file &&
+                        media.synced_at
+                )
+                .sort(
+                    (a, b) =>
+                        new Date(
+                            b.synced_at
+                        ) -
+                        new Date(
+                            a.synced_at
+                        )
+                )
+                .slice(
+                    0,
+                    MAX_MEDIAS
+                );
+
+        // --------------------------------------------------------
+        // Si aucun média exploitable
+        // --------------------------------------------------------
+
+        if (
+            medias.length === 0
+        ) {
 
             carousel.innerHTML = `
                 <p class="gallery-empty">
@@ -148,9 +162,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
-
         // --------------------------------------------------------
-        // CONSTRUCTION
+        // Construction du carrousel
         // --------------------------------------------------------
 
         buildCarousel();
@@ -174,178 +187,61 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     // ============================================================
-    // NOMBRE DE GROUPES
+    // CARROUSEL
     // ============================================================
 
     function getGroupCount() {
 
         return Math.ceil(
-            medias.length / GROUP_SIZE
+            medias.length /
+            GROUP_SIZE
         );
     }
 
-
-    // ============================================================
-    // CONSTRUCTION DU CARROUSEL
-    // ============================================================
 
     function buildCarousel() {
 
         carousel.innerHTML = "";
 
-
         // --------------------------------------------------------
-        // VIEWPORT
+        // Zone d'affichage
         // --------------------------------------------------------
 
         const viewport =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
         viewport.className =
             "home-actions-viewport";
 
 
-        // --------------------------------------------------------
-        // TRACK
-        // --------------------------------------------------------
-
         const track =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
         track.className =
             "home-actions-track";
 
 
-        viewport.appendChild(track);
+        viewport.appendChild(
+            track
+        );
 
-        carousel.appendChild(viewport);
-
-
-        // --------------------------------------------------------
-        // CARTES
-        // --------------------------------------------------------
-
-        medias.forEach(media => {
-
-            const item =
-                document.createElement("article");
-
-            item.className =
-                "home-actions-item";
-
-
-            const type =
-                getMediaType(media);
-
-
-            // ====================================================
-            // IMAGE
-            // ====================================================
-
-            if (type === "image") {
-
-                const image =
-                    document.createElement("img");
-
-                image.src =
-                    getMediaUrl(media);
-
-                image.alt =
-                    media.title ||
-                    "Photo de l'APAM";
-
-                image.loading =
-                    "lazy";
-
-                item.appendChild(image);
-            }
-
-
-            // ====================================================
-            // VIDÉO
-            // ====================================================
-
-            else if (type === "video") {
-
-                const video =
-                    document.createElement("video");
-
-                video.src =
-                    getMediaUrl(media);
-
-                video.muted =
-                    true;
-
-                video.playsInline =
-                    true;
-
-                video.preload =
-                    "metadata";
-
-                video.controls =
-                    false;
-
-                /*
-                 * La vidéo ne se lance pas.
-                 *
-                 * On la positionne simplement sur
-                 * sa première image disponible.
-                 */
-
-                video.addEventListener(
-                    "loadedmetadata",
-                    () => {
-
-                        try {
-
-                            video.currentTime = 0;
-
-                        } catch (error) {
-
-                            console.warn(
-                                "Impossible de positionner la miniature vidéo.",
-                                error
-                            );
-                        }
-                    }
-                );
-
-                item.appendChild(video);
-            }
-
-
-            // ====================================================
-            // AUTRE TYPE
-            // ====================================================
-
-            else {
-
-                const placeholder =
-                    document.createElement("div");
-
-                placeholder.className =
-                    "home-actions-file";
-
-                placeholder.textContent =
-                    media.title ||
-                    "Média APAM";
-
-                item.appendChild(
-                    placeholder
-                );
-            }
-
-
-            track.appendChild(item);
-        });
+        carousel.appendChild(
+            viewport
+        );
 
 
         // --------------------------------------------------------
-        // FLÈCHE PRÉCÉDENTE
+        // Flèche précédente
         // --------------------------------------------------------
 
         const prevButton =
-            document.createElement("button");
+            document.createElement(
+                "button"
+            );
 
         prevButton.type =
             "button";
@@ -360,7 +256,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         prevButton.innerHTML =
             "‹";
-
 
         prevButton.addEventListener(
             "click",
@@ -378,11 +273,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
         // --------------------------------------------------------
-        // FLÈCHE SUIVANTE
+        // Flèche suivante
         // --------------------------------------------------------
 
         const nextButton =
-            document.createElement("button");
+            document.createElement(
+                "button"
+            );
 
         nextButton.type =
             "button";
@@ -397,7 +294,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         nextButton.innerHTML =
             "›";
-
 
         nextButton.addEventListener(
             "click",
@@ -424,14 +320,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
         // --------------------------------------------------------
-        // DOTS
+        // Indicateurs
         // --------------------------------------------------------
 
         const dots =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
         dots.className =
             "home-actions-dots";
+
+        carousel.appendChild(
+            dots
+        );
 
 
         for (
@@ -441,7 +343,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         ) {
 
             const dot =
-                document.createElement("button");
+                document.createElement(
+                    "button"
+                );
 
             dot.type =
                 "button";
@@ -453,7 +357,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 "aria-label",
                 `Afficher le groupe ${i + 1}`
             );
-
 
             dot.addEventListener(
                 "click",
@@ -467,29 +370,151 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             );
 
-
-            dots.appendChild(dot);
+            dots.appendChild(
+                dot
+            );
         }
 
 
-        carousel.appendChild(
-            dots
+        // --------------------------------------------------------
+        // Génération des 9 médias
+        // --------------------------------------------------------
+
+        medias.forEach(
+            (media) => {
+
+                const item =
+                    document.createElement(
+                        "article"
+                    );
+
+                item.className =
+                    "home-actions-item";
+
+
+                const type =
+                    getMediaType(
+                        media
+                    );
+
+
+                // ------------------------------------------------
+                // IMAGE
+                // ------------------------------------------------
+
+                if (
+                    type === "image"
+                ) {
+
+                    const image =
+                        document.createElement(
+                            "img"
+                        );
+
+                    image.src =
+                        getMediaUrl(
+                            media
+                        );
+
+                    image.alt =
+                        media.title ||
+                        "Photo de l'APAM";
+
+                    image.loading =
+                        "lazy";
+
+                    item.appendChild(
+                        image
+                    );
+                }
+
+
+                // ------------------------------------------------
+                // VIDÉO
+                // ------------------------------------------------
+
+                else if (
+                    type === "video"
+                ) {
+
+                    const video =
+                        document.createElement(
+                            "video"
+                        );
+
+                    video.src =
+                        getMediaUrl(
+                            media
+                        );
+
+                    video.muted =
+                        true;
+
+                    video.playsInline =
+                        true;
+
+                    video.preload =
+                        "metadata";
+
+                    // Pas de contrôles,
+                    // pas d'autoplay.
+                    video.controls =
+                        false;
+
+                    item.appendChild(
+                        video
+                    );
+                }
+
+
+                // ------------------------------------------------
+                // AUTRE TYPE
+                // ------------------------------------------------
+
+                else {
+
+                    const placeholder =
+                        document.createElement(
+                            "div"
+                        );
+
+                    placeholder.className =
+                        "home-actions-file";
+
+                    placeholder.textContent =
+                        media.title ||
+                        "Média APAM";
+
+                    item.appendChild(
+                        placeholder
+                    );
+                }
+
+
+                track.appendChild(
+                    item
+                );
+            }
         );
 
 
         // --------------------------------------------------------
-        // PREMIER GROUPE
+        // Première position
         // --------------------------------------------------------
 
-        showGroup(0);
+        showGroup(
+            0
+        );
     }
 
 
     // ============================================================
-    // AFFICHER UN GROUPE
+    // AFFICHAGE D'UN GROUPE
     // ============================================================
 
-    function showGroup(groupIndex) {
+    function showGroup(
+        groupIndex
+    ) {
 
         const track =
             carousel.querySelector(
@@ -501,24 +526,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                 ".home-actions-dot"
             );
 
-
         if (!track) {
             return;
         }
 
-
         const groupCount =
             getGroupCount();
-
-
-        if (groupCount <= 0) {
-            return;
-        }
-
-
-        // --------------------------------------------------------
-        // BOUCLE
-        // --------------------------------------------------------
 
         currentGroup =
             (
@@ -528,24 +541,18 @@ document.addEventListener("DOMContentLoaded", async () => {
             groupCount;
 
 
-        // --------------------------------------------------------
-        // DÉPLACEMENT
-        // --------------------------------------------------------
-
         const offset =
             currentGroup * 100;
-
 
         track.style.transform =
             `translateX(-${offset}%)`;
 
 
-        // --------------------------------------------------------
-        // DOT ACTIF
-        // --------------------------------------------------------
-
         dots.forEach(
-            (dot, index) => {
+            (
+                dot,
+                index
+            ) => {
 
                 dot.classList.toggle(
                     "active",
@@ -562,13 +569,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function startAutoSlide() {
 
-        if (getGroupCount() <= 1) {
+        if (
+            getGroupCount() <= 1
+        ) {
             return;
         }
-
-
-        stopAutoSlide();
-
 
         autoSlideInterval =
             setInterval(
@@ -584,13 +589,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
 
-    // ============================================================
-    // ARRÊT AUTOMATIQUE
-    // ============================================================
-
     function stopAutoSlide() {
 
-        if (autoSlideInterval) {
+        if (
+            autoSlideInterval
+        ) {
 
             clearInterval(
                 autoSlideInterval
@@ -602,4 +605,3 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
 });
-```
