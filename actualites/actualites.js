@@ -84,6 +84,11 @@ document.addEventListener(
                 "article-modal-text"
             );
 
+        const articleModalImages =
+            document.getElementById(
+                "article-modal-images"
+            );
+
 
         // ============================================================
         // VÉRIFICATION
@@ -102,7 +107,8 @@ document.addEventListener(
             !articleModalImage ||
             !articleModalDate ||
             !articleModalTitle ||
-            !articleModalText
+            !articleModalText ||
+            !articleModalImages
         ) {
 
             console.error(
@@ -711,6 +717,67 @@ document.addEventListener(
 
 
             // --------------------------------------------------------
+            // IMAGES SUPPLÉMENTAIRES
+            // --------------------------------------------------------
+
+            articleModalImages.innerHTML =
+                "";
+
+
+            if (
+                Array.isArray(
+                    news.images
+                )
+                &&
+                news.images.length > 0
+            ) {
+
+                news.images.forEach(
+                    (
+                        imagePath,
+                        index
+                    ) => {
+
+                        if (!imagePath) {
+                            return;
+                        }
+
+
+                        const image =
+                            document.createElement(
+                                "img"
+                            );
+
+
+                        image.src =
+                            resolveSitePath(
+                                imagePath
+                            );
+
+
+                        image.alt =
+                            `${news.title || "Actualité APAM"} — image ${
+                                index + 1
+                            }`;
+
+
+                        image.loading =
+                            "lazy";
+
+
+                        image.className =
+                            "article-modal-gallery-image";
+
+
+                        articleModalImages.appendChild(
+                            image
+                        );
+                    }
+                );
+            }
+
+
+            // --------------------------------------------------------
             // PRÉPARATION DU MODAL
             // --------------------------------------------------------
 
@@ -836,6 +903,9 @@ document.addEventListener(
                             "";
 
                         articleModalText.innerHTML =
+                            "";
+
+                        articleModalImages.innerHTML =
                             "";
                     }
 
