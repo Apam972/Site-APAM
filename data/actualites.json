@@ -1,5 +1,27 @@
 [
     {
+        "id": "test-4",
+        "slug": "test-4",
+        "title": "test 4",
+        "date": "2026-08-31",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        "cover": "assets/actu/test-4/image/cover.jpg",
+        "images": [
+            "assets/actu/test-4/image/photo-01.png"
+        ]
+    },
+    {
+        "id": "test-3",
+        "slug": "test-3",
+        "title": "test 3",
+        "date": "2026-08-31",
+        "content": "je suis en train d'ajouter des choses dans les actu de sortes a vérifier que tout es cool",
+        "cover": "assets/actu/test-3/image/cover.jpg",
+        "images": [
+            "assets/actu/test-3/image/photo-01.jpg"
+        ]
+    },
+    {
         "id": "test",
         "slug": "test",
         "title": "test",
@@ -15,7 +37,7 @@
         "slug": "test-2",
         "title": "test 2",
         "date": "2026-08-24",
-        "content": "test 3",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
         "cover": "assets/actu/test-2/image/cover.jpg",
         "images": []
     }
