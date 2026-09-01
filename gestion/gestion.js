@@ -3577,35 +3577,56 @@ if (
         return;
     }
 
+
     const type =
         fieldTypeInput.value;
+
+
+    // ========================================================
+    // OPTIONS — LISTE / CASE À COCHER
+    // ========================================================
 
     const needsOptions =
         type === "select" ||
         type === "checkbox";
 
+
     if (fieldOptionsGroup) {
+
         fieldOptionsGroup.hidden =
             !needsOptions;
     }
 
+
+    // ========================================================
+    // LONGUEUR MAXIMALE — TEXTE COURT
+    // ========================================================
+
     const needsMaxLength =
         type === "text";
 
+
     if (fieldMaxLengthGroup) {
+
         fieldMaxLengthGroup.hidden =
             !needsMaxLength;
     }
+
+
+    // ========================================================
+    // CONFIRMATION — E-MAIL
+    // ========================================================
+
     const needsEmailConfirmation =
-    type === "email";
+        type === "email";
+
 
     if (fieldEmailConfirmGroup) {
 
-            fieldEmailConfirmGroup.hidden =
+        fieldEmailConfirmGroup.hidden =
             !needsEmailConfirmation;
     }
 }
-
 
         // ============================================================
         // AJOUT / MODIFICATION
@@ -3982,9 +4003,8 @@ if (
                 defaultTab
             );
         }
-
-
-        // ------------------------------------------------------------
+ 
+// ------------------------------------------------------------
 // CHARGEMENT DES ACTUALITÉS
 // ------------------------------------------------------------
 
