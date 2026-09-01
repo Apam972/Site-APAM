@@ -3112,6 +3112,16 @@ if (
                 "field-type"
             );
 
+            const fieldMaxLengthGroup =
+    document.getElementById(
+        "field-max-length-group"
+    );
+
+const fieldMaxLengthInput =
+    document.getElementById(
+        "field-max-length"
+    );
+
         const fieldDescriptionInput =
             document.getElementById(
                 "field-description"
@@ -3464,6 +3474,9 @@ if (
                     );
 
 
+                fieldMaxLengthInput.value =
+                    field.maxLength || 100;    
+
                 fieldOptionsInput.value =
                     Array.isArray(
                         field.options
@@ -3550,30 +3563,50 @@ if (
 
         function updateFieldOptionsVisibility() {
 
-            if (
-                !fieldOptionsGroup ||
-                !fieldTypeInput
-            ) {
-
-                return;
-            }
+    if (
+        !fieldTypeInput
+    ) {
+        return;
+    }
 
 
-            const isSelect =
-                fieldTypeInput.value ===
-                "select";
+    const type =
+        fieldTypeInput.value;
 
 
-            fieldOptionsGroup.hidden =
-                !isSelect;
+    // ========================================================
+    // OPTIONS
+    // ========================================================
+
+    const needsOptions =
+        type === "select" ||
+        type === "checkbox";
 
 
-            if (!isSelect) {
+    if (fieldOptionsGroup) {
 
-                fieldOptionsInput.value =
-                    "";
-            }
-        }
+        fieldOptionsGroup.hidden =
+            !needsOptions;
+    }
+
+
+    // ========================================================
+    // LONGUEUR MAXIMALE — TEXTE COURT
+    // ========================================================
+
+    const needsMaxLength =
+        type === "text";
+
+
+    if (fieldMaxLengthGroup) {
+
+        fieldMaxLengthGroup.hidden =
+            !needsMaxLength;
+    }
+
+
+    updateFieldPreview();
+}
 
 
         // ============================================================
@@ -3603,6 +3636,29 @@ if (
 
                     const required =
                         fieldRequiredInput.checked;
+
+                    const maxLength =
+                        type === "text"
+                        ? Number(
+                        fieldMaxLengthInput.value
+                                )
+                        : null;
+        if (
+    type === "text" &&
+    (
+        !Number.isInteger(maxLength) ||
+        maxLength < 1
+    )
+) {
+
+    window.alert(
+        "Merci de renseigner une longueur maximale valide."
+    );
+
+    fieldMaxLengthInput.focus();
+
+    return;
+}
 
 
                     const options =
@@ -3687,6 +3743,11 @@ if (
                         field.required =
                             required;
 
+                        field.maxLength =
+                            type === "text"
+                                ? maxLength
+                                : null;
+
 
                         field.options =
                             type === "select"
@@ -3712,6 +3773,11 @@ if (
                                 description,
 
                                 required,
+
+                                maxLength:
+                                type === "text"
+                                    ? maxLength
+                                    : null,
 
                                 options:
                                     type === "select"
