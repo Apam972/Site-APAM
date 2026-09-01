@@ -1456,7 +1456,57 @@ document.addEventListener(
 
 
                 actualites =
-                    data;
+    data;
+
+
+// ============================================================
+// OUVERTURE D'UNE ACTUALITÉ DEPUIS L'INDEX
+// ============================================================
+
+const urlParams =
+    new URLSearchParams(
+        window.location.search
+    );
+
+const articleId =
+    urlParams.get(
+        "article"
+    );
+
+
+if (articleId) {
+
+    const article =
+        actualites.find(
+            (news) =>
+                news.id === articleId
+                ||
+                news.slug === articleId
+        );
+
+
+    if (article) {
+
+        // Attendre que le DOM soit correctement affiché
+        window.setTimeout(
+            () => {
+
+                openArticleModal(
+                    article
+                );
+
+            },
+            100
+        );
+
+    } else {
+
+        console.warn(
+            "Actualité demandée introuvable :",
+            articleId
+        );
+    }
+}
 
 
                 console.log(

@@ -788,7 +788,9 @@ document.addEventListener(
 
 
             link.href =
-                "actualites/actualites.html";
+    `actualites/actualites.html?article=${encodeURIComponent(
+        news.id
+    )}`;
 
 
             link.setAttribute(
