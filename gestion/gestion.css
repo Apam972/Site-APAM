@@ -1857,6 +1857,9 @@ body {
     min-height: 90px;
 }
 
+.field-max-length-group[hidden] {
+    display: none !important;
+}
 
 .form-group input[type="text"]:focus,
 .form-group select:focus,
