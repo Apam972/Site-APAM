@@ -3112,15 +3112,25 @@ if (
                 "field-type"
             );
 
-            const fieldMaxLengthGroup =
-    document.getElementById(
-        "field-max-length-group"
-    );
+        const fieldMaxLengthGroup =
+            document.getElementById(
+              "field-max-length-group"
+                );
 
-const fieldMaxLengthInput =
-    document.getElementById(
-        "field-max-length"
-    );
+        const fieldMaxLengthInput =
+            document.getElementById(
+              "field-max-length"
+                );
+        
+        const fieldEmailConfirmGroup =
+            document.getElementById(
+             "field-email-confirm-group"
+            );
+
+        const fieldEmailConfirmInput =
+            document.getElementById(
+             "field-email-confirm"
+            );
 
         const fieldDescriptionInput =
             document.getElementById(
@@ -3585,6 +3595,14 @@ const fieldMaxLengthInput =
     if (fieldMaxLengthGroup) {
         fieldMaxLengthGroup.hidden =
             !needsMaxLength;
+    }
+    const needsEmailConfirmation =
+    type === "email";
+
+    if (fieldEmailConfirmGroup) {
+
+            fieldEmailConfirmGroup.hidden =
+            !needsEmailConfirmation;
     }
 }
 
