@@ -541,7 +541,7 @@ body {
 
 /* #endregion */
 
-
+/* #region APAM EN ACTION + ACTUALITÉS */
 /* ============================================================
    APAM EN ACTION + ACTUALITÉS
 ============================================================ */
@@ -1405,6 +1405,132 @@ body {
 
 /* #endregion */
 
+/* #region CONTACT */
+/* ============================================================
+   CONTACT / REJOINDRE L'APAM
+============================================================ */
+
+.home-contact {
+    width: 100%;
+
+    padding: 0 0 75px;
+}
+
+
+.home-contact-panel {
+
+    width: 90%;
+
+    margin: 0 auto;
+
+    box-sizing: border-box;
+
+    padding: 40px 40px 45px;
+
+    background: #FFFFFF;
+
+    border-radius: 30px;
+
+    box-shadow:
+        10px 10px 20px
+        rgba(0, 0, 0, 0.12),
+
+        -5px -5px 15px
+        rgba(255, 255, 255, 0.8);
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    text-align: center;
+}
+
+
+/* ============================================================
+   TEXTE
+============================================================ */
+
+.home-contact-panel .highlight-content {
+
+    width: 100%;
+
+    max-width: none;
+}
+
+
+.home-contact-panel h2 {
+
+    display: inline-block;
+
+    position: relative;
+
+    margin: 0;
+
+    font-family:
+        'Poppins',
+        sans-serif;
+
+    font-size: 28px;
+
+    font-weight: 600;
+
+    line-height: 1.2;
+
+    color: #F5A623;
+}
+
+
+.home-contact-panel h2::after {
+
+    content: "";
+
+    display: block;
+
+    width: 72%;
+
+    height: 3px;
+
+    margin: 6px auto 0;
+
+    background: #C34324;
+}
+
+
+.home-contact-text {
+
+    max-width: 700px;
+
+    margin: 18px auto 0;
+
+    font-family:
+        'Poppins',
+        sans-serif;
+
+    font-size: 14px;
+
+    line-height: 1.55;
+
+    color: #555;
+}
+
+
+/* ============================================================
+   BOUTON
+============================================================ */
+
+.home-contact-buttons {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-top: 22px;
+}
+/* #endregion */
 
 /* #region ACTIONS PAGE */
 
