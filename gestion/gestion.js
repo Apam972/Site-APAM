@@ -3563,49 +3563,29 @@ const fieldMaxLengthInput =
 
         function updateFieldOptionsVisibility() {
 
-    if (
-        !fieldTypeInput
-    ) {
+    if (!fieldTypeInput) {
         return;
     }
 
-
     const type =
         fieldTypeInput.value;
-
-
-    // ========================================================
-    // OPTIONS
-    // ========================================================
 
     const needsOptions =
         type === "select" ||
         type === "checkbox";
 
-
     if (fieldOptionsGroup) {
-
         fieldOptionsGroup.hidden =
             !needsOptions;
     }
 
-
-    // ========================================================
-    // LONGUEUR MAXIMALE — TEXTE COURT
-    // ========================================================
-
     const needsMaxLength =
         type === "text";
 
-
     if (fieldMaxLengthGroup) {
-
         fieldMaxLengthGroup.hidden =
             !needsMaxLength;
     }
-
-
-    
 }
 
 
