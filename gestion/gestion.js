@@ -3063,7 +3063,845 @@ if (
         }
     );
 }
+        // ============================================================
+        // GESTION DES CHAMPS — VOLONTARIAT
+        // ============================================================
 
+        const fieldModal =
+            document.getElementById(
+                "field-modal"
+            );
+
+        const fieldModalOverlay =
+            document.getElementById(
+                "field-modal-overlay"
+            );
+
+        const fieldModalClose =
+            document.getElementById(
+                "field-modal-close"
+            );
+
+        const fieldModalCancel =
+            document.getElementById(
+                "field-modal-cancel"
+            );
+
+        const fieldForm =
+            document.getElementById(
+                "field-form"
+            );
+
+        const fieldModalTitle =
+            document.getElementById(
+                "field-modal-title"
+            );
+
+        const fieldIdInput =
+            document.getElementById(
+                "field-id"
+            );
+
+        const fieldLabelInput =
+            document.getElementById(
+                "field-label"
+            );
+
+        const fieldTypeInput =
+            document.getElementById(
+                "field-type"
+            );
+
+        const fieldDescriptionInput =
+            document.getElementById(
+                "field-description"
+            );
+
+        const fieldRequiredInput =
+            document.getElementById(
+                "field-required"
+            );
+
+        const fieldOptionsGroup =
+            document.getElementById(
+                "field-options-group"
+            );
+
+        const fieldOptionsInput =
+            document.getElementById(
+                "field-options"
+            );
+
+        const volunteerFieldsList =
+            document.getElementById(
+                "volunteer-fields-list"
+            );
+
+        const volunteerFieldsEmpty =
+            document.getElementById(
+                "volunteer-fields-empty"
+            );
+
+        const addVolunteerFieldButton =
+            document.getElementById(
+                "add-volunteer-field-button"
+            );
+
+        const addVolunteerFieldEmptyButton =
+            document.getElementById(
+                "add-volunteer-field-empty-button"
+            );
+
+
+        // ============================================================
+        // DONNÉES TEMPORAIRES
+        // ============================================================
+
+        let volunteerFields = [];
+
+        let editingFieldId = null;
+
+
+        // ============================================================
+        // LIBELLÉS DES TYPES
+        // ============================================================
+
+        function getFieldTypeLabel(
+            type
+        ) {
+
+            switch (type) {
+
+                case "text":
+                    return "Texte court";
+
+                case "textarea":
+                    return "Texte long";
+
+                case "email":
+                    return "Adresse e-mail";
+
+                case "tel":
+                    return "Téléphone";
+
+                case "date":
+                    return "Date";
+
+                case "file":
+                    return "Fichier";
+
+                case "select":
+                    return "Liste déroulante";
+
+                case "checkbox":
+                    return "Case à cocher";
+
+                default:
+                    return "Champ";
+            }
+        }
+
+
+        // ============================================================
+        // AFFICHAGE DES CHAMPS
+        // ============================================================
+
+        function renderVolunteerFields() {
+
+            if (
+                !volunteerFieldsList ||
+                !volunteerFieldsEmpty
+            ) {
+
+                return;
+            }
+
+
+            volunteerFieldsList.innerHTML =
+                "";
+
+
+            if (
+                volunteerFields.length === 0
+            ) {
+
+                volunteerFieldsEmpty.hidden =
+                    false;
+
+                return;
+            }
+
+
+            volunteerFieldsEmpty.hidden =
+                true;
+
+
+            volunteerFields.forEach(
+                (
+                    field
+                ) => {
+
+                    const item =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    item.className =
+                        "field-management-item";
+
+
+                    const information =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    information.className =
+                        "field-management-info";
+
+
+                    information.innerHTML = `
+
+                        <div class="field-management-main">
+
+                            <h3>
+                                ${escapeHtml(
+                                    field.label
+                                )}
+                            </h3>
+
+                            <span class="field-type">
+                                ${escapeHtml(
+                                    getFieldTypeLabel(
+                                        field.type
+                                    )
+                                )}
+                            </span>
+
+                        </div>
+
+
+                        <p class="field-management-description">
+
+                            ${
+                                field.description
+                                    ? escapeHtml(
+                                        field.description
+                                    )
+                                    : "Aucune description"
+                            }
+
+                        </p>
+
+
+                        <span
+                            class="field-required-badge ${
+                                field.required
+                                    ? "required"
+                                    : "optional"
+                            }"
+                        >
+
+                            ${
+                                field.required
+                                    ? "Obligatoire"
+                                    : "Facultatif"
+                            }
+
+                        </span>
+                    `;
+
+
+                    const actions =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    actions.className =
+                        "field-management-actions";
+
+
+                    // ------------------------------------------------
+                    // MODIFIER
+                    // ------------------------------------------------
+
+                    const editButton =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    editButton.type =
+                        "button";
+
+
+                    editButton.className =
+                        "button-secondary";
+
+
+                    editButton.textContent =
+                        "Modifier";
+
+
+                    editButton.addEventListener(
+                        "click",
+                        () => {
+
+                            openFieldEditor(
+                                field.id
+                            );
+                        }
+                    );
+
+
+                    // ------------------------------------------------
+                    // SUPPRIMER
+                    // ------------------------------------------------
+
+                    const deleteButton =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    deleteButton.type =
+                        "button";
+
+
+                    deleteButton.className =
+                        "button-primary";
+
+
+                    deleteButton.textContent =
+                        "Supprimer";
+
+
+                    deleteButton.addEventListener(
+                        "click",
+                        () => {
+
+                            deleteVolunteerField(
+                                field.id
+                            );
+                        }
+                    );
+
+
+                    actions.appendChild(
+                        editButton
+                    );
+
+
+                    actions.appendChild(
+                        deleteButton
+                    );
+
+
+                    item.appendChild(
+                        information
+                    );
+
+
+                    item.appendChild(
+                        actions
+                    );
+
+
+                    volunteerFieldsList.appendChild(
+                        item
+                    );
+                }
+            );
+        }
+
+
+        // ============================================================
+        // OUVRIR LA MODALE
+        // ============================================================
+
+        function openFieldModal(
+            field = null
+        ) {
+
+            if (!fieldModal) {
+                return;
+            }
+
+
+            editingFieldId =
+                field
+                    ? field.id
+                    : null;
+
+
+            if (field) {
+
+                fieldModalTitle.textContent =
+                    "Modifier le champ";
+
+
+                fieldIdInput.value =
+                    field.id || "";
+
+
+                fieldLabelInput.value =
+                    field.label || "";
+
+
+                fieldTypeInput.value =
+                    field.type || "text";
+
+
+                fieldDescriptionInput.value =
+                    field.description || "";
+
+
+                fieldRequiredInput.checked =
+                    Boolean(
+                        field.required
+                    );
+
+
+                fieldOptionsInput.value =
+                    Array.isArray(
+                        field.options
+                    )
+                        ? field.options.join(
+                            "\n"
+                        )
+                        : "";
+
+            } else {
+
+                fieldModalTitle.textContent =
+                    "Ajouter un champ";
+
+
+                fieldForm.reset();
+
+
+                fieldIdInput.value =
+                    "";
+
+
+                fieldTypeInput.value =
+                    "text";
+
+            }
+
+
+            updateFieldOptionsVisibility();
+
+
+            fieldModal.hidden =
+                false;
+
+
+            fieldModal.setAttribute(
+                "aria-hidden",
+                "false"
+            );
+
+
+            fieldLabelInput.focus();
+        }
+
+
+        // ============================================================
+        // FERMER LA MODALE
+        // ============================================================
+
+        function closeFieldModal() {
+
+            if (!fieldModal) {
+                return;
+            }
+
+
+            fieldModal.hidden =
+                true;
+
+
+            fieldModal.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+
+
+            editingFieldId =
+                null;
+
+
+            if (fieldForm) {
+
+                fieldForm.reset();
+            }
+
+
+            updateFieldOptionsVisibility();
+        }
+
+
+        // ============================================================
+        // AFFICHAGE OPTIONS LISTE
+        // ============================================================
+
+        function updateFieldOptionsVisibility() {
+
+            if (
+                !fieldOptionsGroup ||
+                !fieldTypeInput
+            ) {
+
+                return;
+            }
+
+
+            const isSelect =
+                fieldTypeInput.value ===
+                "select";
+
+
+            fieldOptionsGroup.hidden =
+                !isSelect;
+
+
+            if (!isSelect) {
+
+                fieldOptionsInput.value =
+                    "";
+            }
+        }
+
+
+        // ============================================================
+        // AJOUT / MODIFICATION
+        // ============================================================
+
+        if (fieldForm) {
+
+            fieldForm.addEventListener(
+                "submit",
+                (event) => {
+
+                    event.preventDefault();
+
+
+                    const label =
+                        fieldLabelInput.value.trim();
+
+
+                    const type =
+                        fieldTypeInput.value;
+
+
+                    const description =
+                        fieldDescriptionInput.value.trim();
+
+
+                    const required =
+                        fieldRequiredInput.checked;
+
+
+                    const options =
+                        fieldOptionsInput.value
+                            .split("\n")
+                            .map(
+                                (
+                                    option
+                                ) =>
+                                    option.trim()
+                            )
+                            .filter(
+                                Boolean
+                            );
+
+
+                    if (!label) {
+
+                        window.alert(
+                            "Merci de renseigner le nom du champ."
+                        );
+
+                        fieldLabelInput.focus();
+
+                        return;
+                    }
+
+
+                    if (
+                        type === "select" &&
+                        options.length === 0
+                    ) {
+
+                        window.alert(
+                            "Merci d'ajouter au moins une option pour la liste déroulante."
+                        );
+
+                        fieldOptionsInput.focus();
+
+                        return;
+                    }
+
+
+                    // ------------------------------------------------
+                    // MODIFICATION
+                    // ------------------------------------------------
+
+                    if (editingFieldId) {
+
+                        const field =
+                            volunteerFields.find(
+                                (
+                                    item
+                                ) =>
+                                    item.id ===
+                                    editingFieldId
+                            );
+
+
+                        if (!field) {
+
+                            window.alert(
+                                "Champ introuvable."
+                            );
+
+                            return;
+                        }
+
+
+                        field.label =
+                            label;
+
+
+                        field.type =
+                            type;
+
+
+                        field.description =
+                            description;
+
+
+                        field.required =
+                            required;
+
+
+                        field.options =
+                            type === "select"
+                                ? options
+                                : [];
+
+
+                    } else {
+
+                        // ------------------------------------------------
+                        // CRÉATION
+                        // ------------------------------------------------
+
+                        volunteerFields.push(
+                            {
+                                id:
+                                    generateId(),
+
+                                label,
+
+                                type,
+
+                                description,
+
+                                required,
+
+                                options:
+                                    type === "select"
+                                        ? options
+                                        : []
+                            }
+                        );
+                    }
+
+
+                    renderVolunteerFields();
+
+                    closeFieldModal();
+                }
+            );
+        }
+
+
+        // ============================================================
+        // OUVRIR EN MODIFICATION
+        // ============================================================
+
+        function openFieldEditor(
+            fieldId
+        ) {
+
+            const field =
+                volunteerFields.find(
+                    (
+                        item
+                    ) =>
+                        item.id === fieldId
+                );
+
+
+            if (!field) {
+
+                window.alert(
+                    "Champ introuvable."
+                );
+
+                return;
+            }
+
+
+            openFieldModal(
+                field
+            );
+        }
+
+
+        // ============================================================
+        // SUPPRESSION
+        // ============================================================
+
+        function deleteVolunteerField(
+            fieldId
+        ) {
+
+            const field =
+                volunteerFields.find(
+                    (
+                        item
+                    ) =>
+                        item.id === fieldId
+                );
+
+
+            if (!field) {
+                return;
+            }
+
+
+            const confirmed =
+                window.confirm(
+                    `Supprimer le champ "${field.label}" ?`
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            volunteerFields =
+                volunteerFields.filter(
+                    (
+                        item
+                    ) =>
+                        item.id !== fieldId
+                );
+
+
+            renderVolunteerFields();
+        }
+
+
+        // ============================================================
+        // BOUTONS AJOUTER
+        // ============================================================
+
+        if (
+            addVolunteerFieldButton
+        ) {
+
+            addVolunteerFieldButton.addEventListener(
+                "click",
+                () => {
+
+                    openFieldModal();
+                }
+            );
+        }
+
+
+        if (
+            addVolunteerFieldEmptyButton
+        ) {
+
+            addVolunteerFieldEmptyButton.addEventListener(
+                "click",
+                () => {
+
+                    openFieldModal();
+                }
+            );
+        }
+
+
+        // ============================================================
+        // FERMETURE MODALE
+        // ============================================================
+
+        if (fieldModalClose) {
+
+            fieldModalClose.addEventListener(
+                "click",
+                () => {
+
+                    closeFieldModal();
+                }
+            );
+        }
+
+
+        if (fieldModalCancel) {
+
+            fieldModalCancel.addEventListener(
+                "click",
+                () => {
+
+                    closeFieldModal();
+                }
+            );
+        }
+
+
+        if (fieldModalOverlay) {
+
+            fieldModalOverlay.addEventListener(
+                "click",
+                () => {
+
+                    closeFieldModal();
+                }
+            );
+        }
+
+
+        // ============================================================
+        // CHANGEMENT DU TYPE
+        // ============================================================
+
+        if (fieldTypeInput) {
+
+            fieldTypeInput.addEventListener(
+                "change",
+                () => {
+
+                    updateFieldOptionsVisibility();
+                }
+            );
+        }
+
+
+        // ============================================================
+        // INITIALISATION DES CHAMPS
+        // ============================================================
+
+        renderVolunteerFields();
         // ============================================================
         // INITIALISATION
         // ============================================================

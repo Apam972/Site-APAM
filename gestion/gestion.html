@@ -838,36 +838,327 @@
             data-content="volontariat"
         >
 
-            <div class="empty-management-panel">
+            <div class="fields-management">
 
-                <span class="management-icon">
-                    🙋
-                </span>
+    <!-- =====================================================
+         EN-TÊTE
+    ====================================================== -->
 
-                <h2>
-                    Volontariat
-                </h2>
+    <div class="fields-management-header">
 
-                <p>
-                    Cette section permettra de gérer
-                    les candidatures des bénévoles.
-                </p>
+        <div>
 
-                <button
-                    type="button"
-                    class="button-primary"
-                    disabled
-                >
-                    Bientôt disponible
-                </button>
+            <p class="panel-eyebrow">
+                Configuration
+            </p>
 
-            </div>
+            <h2>
+                Candidatures des bénévoles
+            </h2>
+
+            <p class="fields-management-intro">
+                Configurez les informations demandées
+                aux personnes souhaitant rejoindre
+                l'APAM comme bénévoles.
+            </p>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="button-primary"
+            id="add-volunteer-field-button"
+        >
+            + Ajouter un champ
+        </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         LISTE DES CHAMPS
+    ====================================================== -->
+
+    <div
+        class="fields-list"
+        id="volunteer-fields-list"
+    >
+
+        <!-- Les champs seront générés par JavaScript -->
+
+    </div>
+
+
+    <!-- =====================================================
+         ÉTAT VIDE
+    ====================================================== -->
+
+    <div
+        class="fields-empty"
+        id="volunteer-fields-empty"
+    >
+
+        <div class="management-icon">
+            🙋
+        </div>
+
+        <h3>
+            Aucun champ configuré
+        </h3>
+
+        <p>
+            Commencez par ajouter les informations
+            que vous souhaitez demander aux candidats.
+        </p>
+
+        <button
+            type="button"
+            class="button-primary"
+            id="add-volunteer-field-empty-button"
+        >
+            + Ajouter le premier champ
+        </button>
+
+    </div>
+
+</div>
 
         </section>
 
     </main>
 
+<!-- =====================================================
+     MODALE — AJOUT / MODIFICATION D'UN CHAMP
+====================================================== -->
 
+<div
+    id="field-modal"
+    class="field-modal"
+    aria-hidden="true"
+>
+
+    <div
+        id="field-modal-overlay"
+        class="field-modal-overlay"
+    ></div>
+
+
+    <div
+        class="field-modal-content"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="field-modal-title"
+    >
+
+        <!-- =============================================
+             EN-TÊTE
+        ============================================== -->
+
+        <div class="field-modal-header">
+
+            <div>
+
+                <p class="panel-eyebrow">
+                    Configuration
+                </p>
+
+                <h2 id="field-modal-title">
+                    Ajouter un champ
+                </h2>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="field-modal-close"
+                class="field-modal-close"
+                aria-label="Fermer"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <!-- =============================================
+             FORMULAIRE
+        ============================================== -->
+
+        <form
+            id="field-form"
+            class="field-form"
+        >
+
+            <!-- ID INTERNE -->
+
+            <input
+                type="hidden"
+                id="field-id"
+            >
+
+
+            <!-- NOM -->
+
+            <div class="form-group">
+
+                <label for="field-label">
+                    Nom du champ
+                </label>
+
+                <input
+                    type="text"
+                    id="field-label"
+                    placeholder="Ex. CV"
+                    required
+                >
+
+            </div>
+
+
+            <!-- TYPE -->
+
+            <div class="form-group">
+
+                <label for="field-type">
+                    Type de champ
+                </label>
+
+                <select
+                    id="field-type"
+                    required
+                >
+
+                    <option value="text">
+                        Texte court
+                    </option>
+
+                    <option value="textarea">
+                        Texte long
+                    </option>
+
+                    <option value="email">
+                        Adresse e-mail
+                    </option>
+
+                    <option value="tel">
+                        Téléphone
+                    </option>
+
+                    <option value="date">
+                        Date
+                    </option>
+
+                    <option value="file">
+                        Fichier
+                    </option>
+
+                    <option value="select">
+                        Liste déroulante
+                    </option>
+
+                    <option value="checkbox">
+                        Case à cocher
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- DESCRIPTION -->
+
+            <div class="form-group">
+
+                <label for="field-description">
+                    Description / indication
+                </label>
+
+                <textarea
+                    id="field-description"
+                    rows="3"
+                    placeholder="Ex. Formats acceptés : PDF, DOC ou DOCX"
+                ></textarea>
+
+            </div>
+
+
+            <!-- OBLIGATOIRE -->
+
+            <div class="field-required">
+
+                <label>
+
+                    <input
+                        type="checkbox"
+                        id="field-required"
+                    >
+
+                    <span>
+                        Champ obligatoire
+                    </span>
+
+                </label>
+
+            </div>
+
+
+            <!-- OPTIONS LISTE -->
+
+            <div
+                class="form-group field-options-group"
+                id="field-options-group"
+                hidden
+            >
+
+                <label for="field-options">
+                    Options de la liste
+                </label>
+
+                <textarea
+                    id="field-options"
+                    rows="5"
+                    placeholder="Une option par ligne"
+                ></textarea>
+
+                <p class="form-help">
+                    Exemple :<br>
+                    Animation<br>
+                    Sport<br>
+                    Culture
+                </p>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="form-actions">
+
+                <button
+                    type="button"
+                    class="button-secondary"
+                    id="field-modal-cancel"
+                >
+                    Annuler
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="button-primary"
+                >
+                    Enregistrer
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
     <!-- =====================================================
          JAVASCRIPT
     ====================================================== -->
