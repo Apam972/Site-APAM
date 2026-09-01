@@ -3605,7 +3605,7 @@ const fieldMaxLengthInput =
     }
 
 
-    updateFieldPreview();
+    
 }
 
 
