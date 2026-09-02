@@ -3121,6 +3121,21 @@ if (
             document.getElementById(
               "field-max-length"
                 );
+
+        const fieldDateLimitsGroup =
+            document.getElementById(
+            "field-date-limits-group"
+                );
+
+        const fieldDateMinInput =
+            document.getElementById(
+            "field-date-min"
+                );
+
+        const fieldDateMaxInput =
+            document.getElementById(
+            "field-date-max"
+                );
         
         const fieldEmailConfirmGroup =
             document.getElementById(
