@@ -1212,8 +1212,97 @@
             </div>
 
 
-            <!-- OPTIONS LISTE -->
+<!-- TYPES DE FICHIER -->
+<div
+    class="form-group field-file-types-group"
+    id="field-file-types-group"
+    hidden
+>
+    <label>
+        Types de fichiers autorisés
+    </label>
 
+    <label class="checkbox-row">
+        <input
+            type="checkbox"
+            id="field-file-types-limit"
+        >
+        Limiter les types de fichiers
+    </label>
+
+    <div
+        class="field-file-types-options"
+        id="field-file-types-options"
+        hidden
+    >
+        <label class="checkbox-row">
+            <input
+                type="checkbox"
+                value="pdf"
+                class="field-file-type-option"
+            >
+            PDF
+        </label>
+
+        <label class="checkbox-row">
+            <input
+                type="checkbox"
+                value="word"
+                class="field-file-type-option"
+            >
+            Word (.doc, .docx)
+        </label>
+
+        <label class="checkbox-row">
+            <input
+                type="checkbox"
+                value="excel"
+                class="field-file-type-option"
+            >
+            Excel (.xls, .xlsx)
+        </label>
+
+        <label class="checkbox-row">
+            <input
+                type="checkbox"
+                value="powerpoint"
+                class="field-file-type-option"
+            >
+            PowerPoint (.ppt, .pptx)
+        </label>
+
+        <label class="checkbox-row">
+            <input
+                type="checkbox"
+                value="image"
+                class="field-file-type-option"
+            >
+            Images (.jpg, .jpeg, .png, .gif, .webp)
+        </label>
+
+        <label class="checkbox-row">
+            <input
+                type="checkbox"
+                value="text"
+                class="field-file-type-option"
+            >
+            Texte (.txt)
+        </label>
+
+        <label class="checkbox-row">
+            <input
+                type="checkbox"
+                value="archive"
+                class="field-file-type-option"
+            >
+            Archives (.zip, .rar, .7z)
+        </label>
+    </div>
+
+    <p class="form-help">
+        Si la limitation est désactivée, tous les types de fichiers sont autorisés.
+    </p>
+</div>
             <div
                 class="form-group field-options-group"
                 id="field-options-group"
