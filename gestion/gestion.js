@@ -3641,6 +3641,15 @@ if (
         fieldEmailConfirmGroup.hidden =
             !needsEmailConfirmation;
     }
+
+    const needsDateLimits =
+    type === "date";
+
+    if (fieldDateLimitsGroup) {
+
+        fieldDateLimitsGroup.hidden =
+             !needsDateLimits;
+    }
 }
 
         // ============================================================
