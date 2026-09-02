@@ -3502,6 +3502,12 @@ if (
                 fieldMaxLengthInput.value =
                     field.maxLength || 100;    
 
+
+                fieldDateMinInput.value =
+                    field.dateMin || "";
+
+                fieldDateMaxInput.value =
+                    field.dateMax || "";
                 fieldOptionsInput.value =
                     Array.isArray(
                         field.options
@@ -3686,6 +3692,15 @@ if (
                         fieldMaxLengthInput.value
                                 )
                         : null;
+                     const dateMin =
+                            type === "date"
+                        ? fieldDateMinInput.value
+                                    : "";
+
+                    const dateMax =
+                        type === "date"
+                        ? fieldDateMaxInput.value
+                                    : "";
         if (
     type === "text" &&
     (
@@ -3790,6 +3805,16 @@ if (
                             type === "text"
                                 ? maxLength
                                 : null;
+                        
+                        field.dateMin =
+                            type === "date"
+                                ? dateMin
+                                : "";
+
+                        field.dateMax =
+                            type === "date"
+                                ? dateMax
+                                : "";
 
 
                         field.options =
@@ -3818,9 +3843,19 @@ if (
                                 required,
 
                                 maxLength:
-                                type === "text"
-                                    ? maxLength
-                                    : null,
+                                    type === "text"
+                                        ? maxLength
+                                        : null,
+
+                                dateMin:
+                                    type === "date"
+                                        ? dateMin
+                                        : "",
+
+                                dateMax:
+                                    type === "date"
+                                        ? dateMax
+                                        : "",
 
                                 options:
                                     type === "select"
