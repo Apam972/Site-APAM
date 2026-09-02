@@ -3117,6 +3117,21 @@ if (
               "field-max-length-group"
                 );
 
+        const fieldFileTypesGroup =
+            document.getElementById(
+                "field-file-types-group"
+                );
+
+        const fieldFileTypesLimitInput =
+            document.getElementById(
+                "field-file-types-limit"
+                );
+
+        const fieldFileTypesOptions =
+            document.getElementById(
+                "field-file-types-options"
+                );
+
         const fieldMaxLengthInput =
             document.getElementById(
               "field-max-length"
@@ -3651,11 +3666,20 @@ if (
     const needsDateLimits =
     type === "date";
 
+
     if (fieldDateLimitsGroup) {
 
         fieldDateLimitsGroup.hidden =
              !needsDateLimits;
     }
+    const needsFileTypes =
+    type === "file";
+
+    if (fieldFileTypesGroup) {
+
+        fieldFileTypesGroup.hidden =
+            !needsFileTypes;
+}
 }
 
         // ============================================================
@@ -4039,6 +4063,20 @@ if (
                 }
             );
         }
+        if (fieldFileTypesLimitInput) {
+
+    fieldFileTypesLimitInput.addEventListener(
+        "change",
+        () => {
+
+            if (fieldFileTypesOptions) {
+
+                fieldFileTypesOptions.hidden =
+                    !fieldFileTypesLimitInput.checked;
+            }
+        }
+     );  
+    }
 
 
         // ============================================================
