@@ -1857,7 +1857,7 @@ body {
     min-height: 90px;
 }
 
-.field-max-length-group[hidden] {
+.form-group[hidden] {
     display: none !important;
 }
 
