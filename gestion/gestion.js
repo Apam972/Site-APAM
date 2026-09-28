@@ -3532,6 +3532,30 @@ if (
                         )
                         : "";
 
+                        fieldFileTypesLimitInput.checked =
+    Boolean(
+        field.fileTypesLimited
+    );
+
+document.querySelectorAll(
+    ".field-file-type-option"
+).forEach(
+    (option) => {
+        option.checked =
+            Array.isArray(
+                field.fileTypes
+            )
+            && field.fileTypes.includes(
+                option.value
+            );
+    }
+);
+
+if (fieldFileTypesOptions) {
+    fieldFileTypesOptions.hidden =
+        !fieldFileTypesLimitInput.checked;
+}
+
             } else {
 
                 fieldModalTitle.textContent =
@@ -3755,7 +3779,19 @@ if (
                             .filter(
                                 Boolean
                             );
+                    const fileTypesLimited =
+                        type === "file"
+                            ? fieldFileTypesLimitInput.checked
+                             : false;
 
+                    const fileTypes =
+                        type === "file" && fileTypesLimited
+                            ? Array.from(
+                             document.querySelectorAll(
+                            ".field-file-type-option:checked"
+                                )
+                             ).map(option => option.value)
+                                : [];
 
                     if (!label) {
 
@@ -3845,7 +3881,15 @@ if (
                             type === "select"
                                 ? options
                                 : [];
+                        field.fileTypesLimited =
+                             type === "file"
+                                ? fileTypesLimited
+                                : false;
 
+                        field.fileTypes =
+                            type === "file"
+                                ? fileTypes
+                                : [];
 
                     } else {
 
@@ -3881,10 +3925,20 @@ if (
                                         ? dateMax
                                         : "",
 
-                                options:
-                                    type === "select"
-                                        ? options
-                                        : []
+                               options:
+    type === "select"
+        ? options
+        : [],
+
+fileTypesLimited:
+    type === "file"
+        ? fileTypesLimited
+        : false,
+
+fileTypes:
+    type === "file"
+        ? fileTypes
+        : []
                             }
                         );
                     }
