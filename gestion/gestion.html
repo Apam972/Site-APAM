@@ -68,56 +68,46 @@
         ================================================== -->
 
         <nav
-            class="gestion-tabs"
-            aria-label="Sections de gestion"
-        >
+    class="gestion-tabs"
+    aria-label="Sections de gestion"
+>
 
-            <button
-                type="button"
-                class="gestion-tab active"
-                data-tab="actualites"
-            >
-                📰 Actualités
-            </button>
-
-
-            <button
-                type="button"
-                class="gestion-tab"
-                data-tab="actions"
-            >
-                🤝 APAM en action
-            </button>
+    <button
+        type="button"
+        class="gestion-tab active"
+        data-tab="actualites"
+    >
+        📰 Actualités
+    </button>
 
 
-            <button
-                type="button"
-                class="gestion-tab"
-                data-tab="inscriptions"
-            >
-                📝 Inscriptions
-            </button>
+    <button
+        type="button"
+        class="gestion-tab"
+        data-tab="actions"
+    >
+        🤝 APAM en action
+    </button>
 
 
-            <button
-                type="button"
-                class="gestion-tab"
-                data-tab="adhesion"
-            >
-                👥 Adhésion
-            </button>
+    <button
+        type="button"
+        class="gestion-tab"
+        data-tab="activites"
+    >
+        🎯 Activités
+    </button>
 
 
-            <button
-                type="button"
-                class="gestion-tab"
-                data-tab="volontariat"
-            >
-                🙋 Volontariat
-            </button>
+    <button
+        type="button"
+        class="gestion-tab"
+        data-tab="inscriptions"
+    >
+        📝 Inscriptions
+    </button>
 
-        </nav>
-
+</nav>
 
         <!-- =================================================
              ACTUALITÉS
@@ -1160,8 +1150,10 @@
                 ></textarea>
 
             </div>
-            <!-- =================================================
-     CONFIRMATION — E-MAIL
+            
+            
+<!-- =================================================
+            CONFIRMATION — E-MAIL
 ================================================== -->
 
 <div
@@ -1190,8 +1182,70 @@
     </p>
 
 </div>
+<!-- FORMAT TÉLÉPHONE -->
 
+<div
+    class="form-group field-phone-format-group"
+    id="field-phone-format-group"
+    hidden
+>
 
+    <label for="field-phone-format">
+        Format du numéro
+    </label>
+
+    <select id="field-phone-format">
+
+        <option value="none">
+            Sans indication
+        </option>
+
+        <option value="martinique">
+            Numéro Martinique
+        </option>
+
+        <option value="france">
+            Numéro France
+        </option>
+
+    </select>
+
+    <p class="form-help">
+        Cette indication aide la personne à saisir son numéro.
+        Elle ne bloque pas les autres formats.
+    </p>
+
+</div>
+
+            <!-- SÉLECTION CASES À COCHER -->
+
+        <div
+        class="form-group field-multiple-group"
+        id="field-multiple-group"
+        hidden
+        >
+
+        <label>
+         Mode de sélection
+        </label>
+
+        <label class="checkbox-label">
+
+        <input
+            type="checkbox"
+            id="field-multiple"
+        >
+
+        Autoriser plusieurs sélections
+
+     </label>
+
+            <p class="form-help">
+            Si cette option est activée, plusieurs cases pourront
+            être sélectionnées simultanément.
+            </p>
+
+            </div>
             <!-- OBLIGATOIRE -->
 
             <div class="field-required">
