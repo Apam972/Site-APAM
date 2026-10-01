@@ -2051,3 +2051,52 @@ body {
         width: 100%;
     }
 }
+/* ============================================================
+   SOUS-ONGLETS DES INSCRIPTIONS
+============================================================ */
+
+.inscriptions-management {
+    width: 100%;
+}
+
+.inscriptions-subtabs {
+    display: flex;
+    gap: 10px;
+    margin: 0 0 25px;
+    padding: 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.inscriptions-subtab {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: #666;
+    padding: 12px 22px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition:
+        color 0.2s ease,
+        border-color 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.inscriptions-subtab:hover {
+    color: #222;
+    background: #f5f5f5;
+}
+
+.inscriptions-subtab.active {
+    color: #222;
+    border-bottom-color: #222;
+}
+
+.inscription-subcontent {
+    width: 100%;
+}
+
+.inscription-subcontent[hidden] {
+    display: none;
+}
