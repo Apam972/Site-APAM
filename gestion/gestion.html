@@ -748,43 +748,336 @@
         </section>
 
 
+       <!-- =================================================
+     INSCRIPTIONS
+================================================== -->
+
+<section
+    class="gestion-tab-content"
+    data-content="inscriptions"
+>
+
+    <div class="inscriptions-management">
+
         <!-- =================================================
-             INSCRIPTIONS
+             EN-TÊTE
         ================================================== -->
 
-        <section
-            class="gestion-tab-content"
-            data-content="inscriptions"
-        >
+        <div class="inscriptions-header">
 
-            <div class="empty-management-panel">
+            <div>
 
-                <span class="management-icon">
-                    📝
-                </span>
-
-                <h2>
-                    Inscriptions aux activités
-                </h2>
-
-                <p>
-                    Ici seront gérées les activités,
-                    les inscriptions et les participants.
+                <p class="panel-eyebrow">
+                    Configuration
                 </p>
 
-                <button
-                    type="button"
-                    class="button-primary"
-                    disabled
-                >
-                    Bientôt disponible
-                </button>
+                <h2>
+                    Inscriptions
+                </h2>
+
+                <p class="inscriptions-intro">
+                    Configurez les formulaires proposés
+                    aux personnes souhaitant rejoindre
+                    ou participer aux activités de l'APAM.
+                </p>
 
             </div>
 
-        </section>
+        </div>
 
 
+        <!-- =================================================
+             SOUS-NAVIGATION
+        ================================================== -->
+
+        <div
+            class="inscriptions-subtabs"
+            role="tablist"
+            aria-label="Types d'inscription"
+        >
+
+            <button
+                type="button"
+                class="inscriptions-subtab active"
+                data-inscription-tab="adhesion"
+            >
+                👥 Adhésion
+            </button>
+
+
+            <button
+                type="button"
+                class="inscriptions-subtab"
+                data-inscription-tab="volontariat"
+            >
+                🙋 Volontariat
+            </button>
+
+
+            <button
+                type="button"
+                class="inscriptions-subtab"
+                data-inscription-tab="service-civique"
+            >
+                🎯 Service civique
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             CONTENU — ADHÉSION
+        ================================================== -->
+
+        <div
+            class="inscription-subcontent active"
+            data-inscription-content="adhesion"
+        >
+
+            <div class="fields-management">
+
+                <div class="fields-management-header">
+
+                    <div>
+
+                        <p class="panel-eyebrow">
+                            Adhésion
+                        </p>
+
+                        <h3>
+                            Formulaire d'adhésion
+                        </h3>
+
+                        <p class="fields-management-intro">
+                            Configurez les informations demandées
+                            aux personnes souhaitant adhérer
+                            à l'APAM.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="button-primary"
+                        id="add-adhesion-field-button"
+                    >
+                        + Ajouter un champ
+                    </button>
+
+                </div>
+
+
+                <div
+                    class="fields-list"
+                    id="adhesion-fields-list"
+                >
+                </div>
+
+
+                <div
+                    class="fields-empty"
+                    id="adhesion-fields-empty"
+                >
+
+                    <div class="management-icon">
+                        👥
+                    </div>
+
+                    <h3>
+                        Aucun champ configuré
+                    </h3>
+
+                    <p>
+                        Commencez par ajouter les informations
+                        demandées aux adhérents.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="button-primary"
+                        id="add-adhesion-field-empty-button"
+                    >
+                        + Ajouter le premier champ
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             CONTENU — VOLONTARIAT
+        ================================================== -->
+
+        <div
+            class="inscription-subcontent"
+            data-inscription-content="volontariat"
+            hidden
+        >
+
+            <div class="fields-management">
+
+                <div class="fields-management-header">
+
+                    <div>
+
+                        <p class="panel-eyebrow">
+                            Volontariat
+                        </p>
+
+                        <h3>
+                            Candidature de bénévole
+                        </h3>
+
+                        <p class="fields-management-intro">
+                            Configurez les informations demandées
+                            aux personnes souhaitant rejoindre
+                            l'APAM comme bénévoles.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="button-primary"
+                        id="add-volunteer-field-button"
+                    >
+                        + Ajouter un champ
+                    </button>
+
+                </div>
+
+
+                <div
+                    class="fields-list"
+                    id="volunteer-fields-list"
+                >
+                </div>
+
+
+                <div
+                    class="fields-empty"
+                    id="volunteer-fields-empty"
+                >
+
+                    <div class="management-icon">
+                        🙋
+                    </div>
+
+                    <h3>
+                        Aucun champ configuré
+                    </h3>
+
+                    <p>
+                        Commencez par ajouter les informations
+                        demandées aux bénévoles.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="button-primary"
+                        id="add-volunteer-field-empty-button"
+                    >
+                        + Ajouter le premier champ
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             CONTENU — SERVICE CIVIQUE
+        ================================================== -->
+
+        <div
+            class="inscription-subcontent"
+            data-inscription-content="service-civique"
+            hidden
+        >
+
+            <div class="fields-management">
+
+                <div class="fields-management-header">
+
+                    <div>
+
+                        <p class="panel-eyebrow">
+                            Service civique
+                        </p>
+
+                        <h3>
+                            Candidature en service civique
+                        </h3>
+
+                        <p class="fields-management-intro">
+                            Configurez les informations demandées
+                            aux personnes souhaitant effectuer
+                            un service civique auprès de l'APAM.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="button-primary"
+                        id="add-service-civique-field-button"
+                    >
+                        + Ajouter un champ
+                    </button>
+
+                </div>
+
+
+                <div
+                    class="fields-list"
+                    id="service-civique-fields-list"
+                >
+                </div>
+
+
+                <div
+                    class="fields-empty"
+                    id="service-civique-fields-empty"
+                >
+
+                    <div class="management-icon">
+                        🎯
+                    </div>
+
+                    <h3>
+                        Aucun champ configuré
+                    </h3>
+
+                    <p>
+                        Commencez par ajouter les informations
+                        demandées aux candidats au service civique.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="button-primary"
+                        id="add-service-civique-field-empty-button"
+                    >
+                        + Ajouter le premier champ
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
         <!-- =================================================
              ADHÉSION
         ================================================== -->
