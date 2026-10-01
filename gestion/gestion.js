@@ -3161,6 +3161,25 @@ if (
             document.getElementById(
              "field-email-confirm"
             );
+            const fieldPhoneFormatGroup =
+                 document.getElementById(
+                "field-phone-format-group"
+                    );
+
+        const fieldPhoneFormatInput =
+                    document.getElementById(
+                "field-phone-format"
+                );
+
+        const fieldMultipleGroup =
+                document.getElementById(
+                "field-multiple-group"
+                );
+
+        const fieldMultipleInput =
+                document.getElementById(
+                "field-multiple"
+                );
 
         const fieldDescriptionInput =
             document.getElementById(
@@ -3208,6 +3227,87 @@ if (
         // ============================================================
 
         let volunteerFields = [];
+
+async function loadInscriptionFields() {
+    try {
+        const response = await fetch("data/inscriptions.json");
+
+        if (!response.ok) {
+            throw new Error(
+                `Erreur HTTP ${response.status}`
+            );
+        }
+
+        const data = await response.json();
+
+        volunteerFields =
+            data.volontariat?.fields || [];
+
+    } catch (error) {
+        console.error(
+            "Erreur lors du chargement des inscriptions :",
+            error
+        );
+    }
+}
+async function saveInscriptionFields() {
+    try {
+        const payload = {
+            action: "save_inscription_fields",
+            volontariat: {
+                fields: volunteerFields
+            }
+        };
+
+        const response = await fetch(
+            APPS_SCRIPT_URL,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type":
+                        "text/plain;charset=utf-8"
+                },
+                body: JSON.stringify(payload)
+            }
+        );
+
+        const responseText =
+            await response.text();
+
+        let result;
+
+        try {
+            result =
+                JSON.parse(responseText);
+        } catch (error) {
+            throw new Error(
+                "Réponse invalide du serveur Apps Script."
+            );
+        }
+
+        if (!result.success) {
+            throw new Error(
+                result.message ||
+                "Le serveur a refusé l'enregistrement."
+            );
+        }
+
+        console.log(
+            "Configuration des inscriptions enregistrée."
+        );
+
+    } catch (error) {
+        console.error(
+            "Erreur d'enregistrement des inscriptions :",
+            error
+        );
+
+        window.alert(
+            "❌ Impossible d'enregistrer la configuration.\n\n" +
+            error.message
+        );
+    }
+}
 
         let editingFieldId = null;
 
@@ -3555,6 +3655,18 @@ if (fieldFileTypesOptions) {
     fieldFileTypesOptions.hidden =
         !fieldFileTypesLimitInput.checked;
 }
+fieldEmailConfirmInput.checked =
+    Boolean(
+        field.confirmEmail
+    );
+
+fieldPhoneFormatInput.value =
+    field.phoneFormat || "none";
+
+fieldMultipleInput.checked =
+    Boolean(
+        field.multiple
+    );
 
             } else {
 
@@ -3704,6 +3816,30 @@ if (fieldFileTypesOptions) {
         fieldFileTypesGroup.hidden =
             !needsFileTypes;
 }
+    // ========================================================
+    // FORMAT — TÉLÉPHONE
+    // ========================================================
+
+    const needsPhoneFormat =
+        type === "tel";
+
+    if (fieldPhoneFormatGroup) {
+
+        fieldPhoneFormatGroup.hidden =
+            !needsPhoneFormat;
+    }
+    // ========================================================
+    // SÉLECTION MULTIPLE — CASES À COCHER
+    // ========================================================
+
+    const needsMultipleSelection =
+    type === "checkbox";
+
+    if (fieldMultipleGroup) {
+
+            fieldMultipleGroup.hidden =
+            !needsMultipleSelection;
+}
 }
 
         // ============================================================
@@ -3714,7 +3850,7 @@ if (fieldFileTypesOptions) {
 
             fieldForm.addEventListener(
                 "submit",
-                (event) => {
+                async (event) => {
 
                     event.preventDefault();
 
@@ -3792,7 +3928,20 @@ if (fieldFileTypesOptions) {
                                 )
                              ).map(option => option.value)
                                 : [];
+                            const confirmEmail =
+                                 type === "email"
+                                    ? fieldEmailConfirmInput.checked
+                                     : false;
 
+                            const phoneFormat =
+                                 type === "tel"
+                                    ? fieldPhoneFormatInput.value
+                                    : "none";
+
+                            const multiple =
+                                type === "checkbox"
+                                    ? fieldMultipleInput.checked
+                                    : false;
                     if (!label) {
 
                         window.alert(
@@ -3806,7 +3955,7 @@ if (fieldFileTypesOptions) {
 
 
                     if (
-                        type === "select" &&
+                        (type === "select" || type === "checkbox") &&
                         options.length === 0
                     ) {
 
@@ -3878,7 +4027,7 @@ if (fieldFileTypesOptions) {
 
 
                         field.options =
-                            type === "select"
+                            type === "select" || type === "checkbox"
                                 ? options
                                 : [];
                         field.fileTypesLimited =
@@ -3890,6 +4039,21 @@ if (fieldFileTypesOptions) {
                             type === "file"
                                 ? fileTypes
                                 : [];
+                                
+                        field.confirmEmail =
+                            type === "email"
+                                ? confirmEmail
+                                : false;
+
+                        field.phoneFormat =
+                            type === "tel"
+                                ? phoneFormat
+                                : "none";
+
+                        field.multiple =
+                            type === "checkbox"
+                                ? multiple
+                                : false;
 
                     } else {
 
@@ -3925,24 +4089,41 @@ if (fieldFileTypesOptions) {
                                         ? dateMax
                                         : "",
 
-                               options:
-    type === "select"
-        ? options
-        : [],
+                                options:
+                                    type === "select" || type === "checkbox"
+                                        ? options
+                                        : [],
 
-fileTypesLimited:
-    type === "file"
-        ? fileTypesLimited
-        : false,
+                                fileTypesLimited:
+                                    type === "file"
+                                        ? fileTypesLimited
+                                        : false,
 
-fileTypes:
-    type === "file"
-        ? fileTypes
-        : []
+                                fileTypes:
+                                    type === "file"
+                                        ? fileTypes
+                                        : [],
+
+                                confirmEmail:
+                                    type === "email"
+                                        ? confirmEmail
+                                        : false,
+
+                                phoneFormat:
+                                    type === "tel"
+                                        ? phoneFormat
+                                        : "none",
+
+                                multiple:
+                                    type === "checkbox"
+                                        ? multiple
+                                        : false
                             }
                         );
                     }
 
+
+                    await saveInscriptionFields();
 
                     renderVolunteerFields();
 
@@ -4137,7 +4318,9 @@ fileTypes:
         // INITIALISATION DES CHAMPS
         // ============================================================
 
-        renderVolunteerFields();
+        loadInscriptionFields().then(() => {
+             renderVolunteerFields();
+        });
         // ============================================================
         // INITIALISATION
         // ============================================================
