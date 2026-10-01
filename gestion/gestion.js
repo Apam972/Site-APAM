@@ -4322,6 +4322,69 @@ fieldMultipleInput.checked =
              renderVolunteerFields();
         });
         // ============================================================
+        // SOUS-ONGLETS DES INSCRIPTIONS
+        // ============================================================
+
+const inscriptionSubtabs =
+    document.querySelectorAll(
+        ".inscriptions-subtab"
+    );
+
+    console.log(
+    "Sous-onglets trouvés :",
+    inscriptionSubtabs.length
+    );
+
+const inscriptionSubcontents =
+    document.querySelectorAll(
+        ".inscription-subcontent"
+    );
+
+inscriptionSubtabs.forEach(
+    (button) => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                const target =
+                    button.dataset.inscriptionTab;
+
+                inscriptionSubtabs.forEach(
+                    (tab) => {
+
+                        tab.classList.toggle(
+                            "active",
+                            tab === button
+                        );
+
+                    }
+                );
+
+                inscriptionSubcontents.forEach(
+                    (content) => {
+
+                        const isActive =
+                            content.dataset.inscriptionContent ===
+                            target;
+
+                        content.hidden =
+                            !isActive;
+
+                        content.classList.toggle(
+                            "active",
+                            isActive
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+    }
+);
+        // ============================================================
         // INITIALISATION
         // ============================================================
 
