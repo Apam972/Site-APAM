@@ -3227,10 +3227,19 @@ if (
         // ============================================================
 
         let volunteerFields = [];
+        let inscriptionFields = {
+    adhesion: [],
+    volontariat: [],
+    "service-civique": []
+};
+
+let currentInscriptionType = "adhesion";
 
 async function loadInscriptionFields() {
     try {
-        const response = await fetch("data/inscriptions.json");
+        const response = await fetch(
+            "data/inscriptions.json"
+        );
 
         if (!response.ok) {
             throw new Error(
@@ -3240,10 +3249,19 @@ async function loadInscriptionFields() {
 
         const data = await response.json();
 
-        volunteerFields =
-            data.volontariat?.fields || [];
+        inscriptionFields = {
+            adhesion:
+                data.adhesion?.fields || [],
+
+            volontariat:
+                data.volontariat?.fields || [],
+
+            "service-civique":
+                data["service-civique"]?.fields || []
+        };
 
     } catch (error) {
+
         console.error(
             "Erreur lors du chargement des inscriptions :",
             error
