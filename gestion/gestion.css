@@ -1649,6 +1649,53 @@ body {
 
 }
 /* ============================================================
+   INSCRIPTIONS
+============================================================ */
+
+.inscriptions-subtabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.inscriptions-subtab {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 999px;
+    background: #FFF8EC;
+    color: #555;
+    font-family: "Poppins", sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        background 0.25s ease,
+        color 0.25s ease,
+        transform 0.25s ease;
+}
+
+.inscriptions-subtab:hover {
+    background: #FFF3D8;
+    color: #C34324;
+}
+
+.inscriptions-subtab.active {
+    background: #F5A623;
+    color: white;
+    box-shadow:
+        0 4px 12px
+        rgba(245, 166, 35, 0.25);
+}
+
+.inscription-subcontent {
+    width: 100%;
+}
+
+.inscription-subcontent[hidden] {
+    display: none;
+}
+/* ============================================================
    GESTION DES CHAMPS — MODALE
 ============================================================ */
 
@@ -2052,51 +2099,20 @@ body {
     }
 }
 /* ============================================================
-   SOUS-ONGLETS DES INSCRIPTIONS
+   LOADER
 ============================================================ */
 
-.inscriptions-management {
-    width: 100%;
+.loader {
+    width: 50px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 8px solid;
+    border-color: #000 #0000;
+    animation: l1 1s infinite;
 }
 
-.inscriptions-subtabs {
-    display: flex;
-    gap: 10px;
-    margin: 0 0 25px;
-    padding: 0;
-    border-bottom: 1px solid #ddd;
-}
-
-.inscriptions-subtab {
-    appearance: none;
-    border: none;
-    background: transparent;
-    color: #666;
-    padding: 12px 22px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    border-bottom: 3px solid transparent;
-    transition:
-        color 0.2s ease,
-        border-color 0.2s ease,
-        background-color 0.2s ease;
-}
-
-.inscriptions-subtab:hover {
-    color: #222;
-    background: #f5f5f5;
-}
-
-.inscriptions-subtab.active {
-    color: #222;
-    border-bottom-color: #222;
-}
-
-.inscription-subcontent {
-    width: 100%;
-}
-
-.inscription-subcontent[hidden] {
-    display: none;
+@keyframes l1 {
+    to {
+        transform: rotate(.5turn);
+    }
 }

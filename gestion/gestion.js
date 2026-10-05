@@ -3091,6 +3091,11 @@ if (
             document.getElementById(
                 "field-form"
             );
+            
+        const fieldSubmitButton =
+            fieldForm?.querySelector(
+        'button[type="submit"]'
+            );
 
         const fieldModalTitle =
             document.getElementById(
@@ -3358,7 +3363,7 @@ async function saveInscriptionFields() {
         );
     }
 }
-
+        let isSavingField = false;
         let editingFieldId = null;
 
 
@@ -4187,11 +4192,38 @@ fieldMultipleInput.checked =
                     }
 
 
-                    await saveInscriptionFields();
+                    if (isSavingField) {
+    return;
+}
 
-                    renderInscriptionFields();
+isSavingField = true;
 
-                    closeFieldModal();
+if (fieldSubmitButton) {
+    fieldSubmitButton.disabled = true;
+
+    fieldSubmitButton.innerHTML =
+        '<div class="loader"></div>';
+}
+
+try {
+
+    await saveInscriptionFields();
+
+    renderInscriptionFields();
+
+    closeFieldModal();
+
+} finally {
+
+    isSavingField = false;
+
+    if (fieldSubmitButton) {
+        fieldSubmitButton.disabled = false;
+
+        fieldSubmitButton.textContent =
+            "Enregistrer";
+    }
+}
                 }
             );
         }
