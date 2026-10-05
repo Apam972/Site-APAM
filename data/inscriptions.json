@@ -34,6 +34,22 @@
                 "confirmEmail": false,
                 "phoneFormat": "none",
                 "multiple": false
+            },
+            {
+                "id": "muvncd7v82jmob",
+                "label": "test",
+                "type": "text",
+                "description": "",
+                "required": false,
+                "maxLength": 100,
+                "dateMin": "",
+                "dateMax": "",
+                "options": [],
+                "fileTypesLimited": false,
+                "fileTypes": [],
+                "confirmEmail": false,
+                "phoneFormat": "none",
+                "multiple": false
             }
         ]
     },
