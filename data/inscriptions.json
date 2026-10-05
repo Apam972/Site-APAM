@@ -1,23 +1,6 @@
 {
     "adhesion": {
-        "fields": [
-            {
-                "id": "muvitfvoecub8s",
-                "label": "test 2 d",
-                "type": "text",
-                "description": "",
-                "required": false,
-                "maxLength": 100,
-                "dateMin": "",
-                "dateMax": "",
-                "options": [],
-                "fileTypesLimited": false,
-                "fileTypes": [],
-                "confirmEmail": false,
-                "phoneFormat": "none",
-                "multiple": false
-            }
-        ]
+        "fields": []
     },
     "volontariat": {
         "fields": [
