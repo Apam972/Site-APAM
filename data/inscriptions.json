@@ -34,6 +34,22 @@
                 "confirmEmail": false,
                 "phoneFormat": "none",
                 "multiple": false
+            },
+            {
+                "id": "muvkv0b27oga69",
+                "label": "test de suppression",
+                "type": "text",
+                "description": "",
+                "required": false,
+                "maxLength": 100,
+                "dateMin": "",
+                "dateMax": "",
+                "options": [],
+                "fileTypesLimited": false,
+                "fileTypes": [],
+                "confirmEmail": false,
+                "phoneFormat": "none",
+                "multiple": false
             }
         ]
     },
