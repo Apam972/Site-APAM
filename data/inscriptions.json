@@ -19,6 +19,22 @@
                 "confirmEmail": false,
                 "phoneFormat": "none",
                 "multiple": false
+            },
+            {
+                "id": "muvg7ti44pvrx8",
+                "label": "test 1v",
+                "type": "text",
+                "description": "",
+                "required": false,
+                "maxLength": 100,
+                "dateMin": "",
+                "dateMax": "",
+                "options": [],
+                "fileTypesLimited": false,
+                "fileTypes": [],
+                "confirmEmail": false,
+                "phoneFormat": "none",
+                "multiple": false
             }
         ]
     },
