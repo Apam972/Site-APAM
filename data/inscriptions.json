@@ -2,22 +2,6 @@
     "adhesion": {
         "fields": [
             {
-                "id": "muvgdyeyoh4ot2",
-                "label": "test 1 d",
-                "type": "text",
-                "description": "",
-                "required": false,
-                "maxLength": 100,
-                "dateMin": "",
-                "dateMax": "",
-                "options": [],
-                "fileTypesLimited": false,
-                "fileTypes": [],
-                "confirmEmail": false,
-                "phoneFormat": "none",
-                "multiple": false
-            },
-            {
                 "id": "muvge2bnjqn2wy",
                 "label": "test 1 d",
                 "type": "text",
