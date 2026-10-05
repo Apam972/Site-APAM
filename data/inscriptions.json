@@ -42,22 +42,6 @@
     "service-civique": {
         "fields": [
             {
-                "id": "muvghpolz6qv6v",
-                "label": "test 1 s",
-                "type": "text",
-                "description": "",
-                "required": false,
-                "maxLength": 100,
-                "dateMin": "",
-                "dateMax": "",
-                "options": [],
-                "fileTypesLimited": false,
-                "fileTypes": [],
-                "confirmEmail": false,
-                "phoneFormat": "none",
-                "multiple": false
-            },
-            {
                 "id": "muvghr6ynl5wmv",
                 "label": "test 1 s",
                 "type": "text",
