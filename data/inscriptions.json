@@ -3,7 +3,24 @@
         "fields": []
     },
     "volontariat": {
-        "fields": []
+        "fields": [
+            {
+                "id": "muvg7py8ueyzny",
+                "label": "test 1v",
+                "type": "text",
+                "description": "",
+                "required": false,
+                "maxLength": 100,
+                "dateMin": "",
+                "dateMax": "",
+                "options": [],
+                "fileTypesLimited": false,
+                "fileTypes": [],
+                "confirmEmail": false,
+                "phoneFormat": "none",
+                "multiple": false
+            }
+        ]
     },
     "service-civique": {
         "fields": []
