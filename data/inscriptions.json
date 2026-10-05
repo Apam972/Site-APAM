@@ -16,6 +16,24 @@
                 "confirmEmail": false,
                 "phoneFormat": "none",
                 "multiple": false
+            },
+            {
+                "id": "muvjnsn3jy8ydz",
+                "label": "test 1 a",
+                "type": "file",
+                "description": "pdf ou rien mon sang",
+                "required": true,
+                "maxLength": null,
+                "dateMin": "",
+                "dateMax": "",
+                "options": [],
+                "fileTypesLimited": true,
+                "fileTypes": [
+                    "pdf"
+                ],
+                "confirmEmail": false,
+                "phoneFormat": "none",
+                "multiple": false
             }
         ]
     },
