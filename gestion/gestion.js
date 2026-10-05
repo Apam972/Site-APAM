@@ -3200,33 +3200,66 @@ if (
             document.getElementById(
                 "field-options"
             );
-
+        const adhesionFieldsList =
+             document.getElementById(
+                "adhesion-fields-list"
+            );
         const volunteerFieldsList =
             document.getElementById(
                 "volunteer-fields-list"
             );
-
+        const serviceCiviqueFieldsList =
+            document.getElementById(
+                "service-civique-fields-list"
+            );
+        const adhesionFieldsEmpty =
+            document.getElementById(
+                "adhesion-fields-empty"
+            );
         const volunteerFieldsEmpty =
             document.getElementById(
                 "volunteer-fields-empty"
             );
+            const serviceCiviqueFieldsEmpty =
+            document.getElementById(
+                "service-civique-fields-empty"
+            );
+        const addAdhesionFieldButton =
+            document.getElementById(
+                "add-adhesion-field-button"
+            );
 
-        const addVolunteerFieldButton =
+    const addVolunteerFieldButton =
             document.getElementById(
                 "add-volunteer-field-button"
             );
 
-        const addVolunteerFieldEmptyButton =
-            document.getElementById(
-                "add-volunteer-field-empty-button"
-            );
+    const addServiceCiviqueFieldButton =
+        document.getElementById(
+            "add-service-civique-field-button"
+        );
+
+    const addAdhesionFieldEmptyButton =
+        document.getElementById(
+            "add-adhesion-field-empty-button"
+        );
+
+    const addVolunteerFieldEmptyButton =
+        document.getElementById(
+            "add-volunteer-field-empty-button"
+        );
+
+    const addServiceCiviqueFieldEmptyButton =
+        document.getElementById(
+            "add-service-civique-field-empty-button"
+        );
 
 
         // ============================================================
         // DONNÉES TEMPORAIRES
         // ============================================================
 
-        let volunteerFields = [];
+       
         let inscriptionFields = {
     adhesion: [],
     volontariat: [],
@@ -3270,12 +3303,11 @@ async function loadInscriptionFields() {
 }
 async function saveInscriptionFields() {
     try {
-        const payload = {
-            action: "save_inscription_fields",
-            volontariat: {
-                fields: volunteerFields
-            }
-        };
+       const payload = {
+    action: "save_inscription_fields",
+    type: currentInscriptionType,
+    fields: inscriptionFields[currentInscriptionType]
+    };
 
         const response = await fetch(
             APPS_SCRIPT_URL,
@@ -3374,37 +3406,51 @@ async function saveInscriptionFields() {
         // AFFICHAGE DES CHAMPS
         // ============================================================
 
-        function renderVolunteerFields() {
+        function renderInscriptionFields() {
+             const fieldsList =
+                currentInscriptionType === "adhesion"
+                ? adhesionFieldsList
+                : currentInscriptionType === "volontariat"
+                ? volunteerFieldsList
+                : serviceCiviqueFieldsList;
+
+        const fieldsEmpty =
+                currentInscriptionType === "adhesion"
+                ? adhesionFieldsEmpty
+                : currentInscriptionType === "volontariat"
+                ? volunteerFieldsEmpty
+                : serviceCiviqueFieldsEmpty;
+
+
+if (
+    !fieldsList ||
+    !fieldsEmpty
+) {
+
+    return;
+}
+
+
+fieldsList.innerHTML =
+    "";
+
 
             if (
-                !volunteerFieldsList ||
-                !volunteerFieldsEmpty
+                inscriptionFields[currentInscriptionType].length === 0
             ) {
 
-                return;
-            }
-
-
-            volunteerFieldsList.innerHTML =
-                "";
-
-
-            if (
-                volunteerFields.length === 0
-            ) {
-
-                volunteerFieldsEmpty.hidden =
+                fieldsEmpty.hidden =
                     false;
 
                 return;
             }
 
 
-            volunteerFieldsEmpty.hidden =
+            fieldsEmpty.hidden =
                 true;
 
 
-            volunteerFields.forEach(
+            inscriptionFields[currentInscriptionType].forEach(
                 (
                     field
                 ) => {
@@ -3577,7 +3623,7 @@ async function saveInscriptionFields() {
                     );
 
 
-                    volunteerFieldsList.appendChild(
+                    fieldsList.appendChild(
                         item
                     );
                 }
@@ -3994,7 +4040,7 @@ fieldMultipleInput.checked =
                     if (editingFieldId) {
 
                         const field =
-                            volunteerFields.find(
+                            inscriptionFields[currentInscriptionType].find(
                                 (
                                     item
                                 ) =>
@@ -4079,7 +4125,7 @@ fieldMultipleInput.checked =
                         // CRÉATION
                         // ------------------------------------------------
 
-                        volunteerFields.push(
+                        inscriptionFields[currentInscriptionType].push(
                             {
                                 id:
                                     generateId(),
@@ -4143,7 +4189,7 @@ fieldMultipleInput.checked =
 
                     await saveInscriptionFields();
 
-                    renderVolunteerFields();
+                    renderInscriptionFields();
 
                     closeFieldModal();
                 }
@@ -4160,7 +4206,7 @@ fieldMultipleInput.checked =
         ) {
 
             const field =
-                volunteerFields.find(
+                inscriptionFields[currentInscriptionType].find(
                     (
                         item
                     ) =>
@@ -4188,12 +4234,12 @@ fieldMultipleInput.checked =
         // SUPPRESSION
         // ============================================================
 
-        function deleteVolunteerField(
+        async function deleteVolunteerField(
             fieldId
         ) {
 
             const field =
-                volunteerFields.find(
+               inscriptionFields[currentInscriptionType].find(
                     (
                         item
                     ) =>
@@ -4217,8 +4263,8 @@ fieldMultipleInput.checked =
             }
 
 
-            volunteerFields =
-                volunteerFields.filter(
+            inscriptionFields[currentInscriptionType] =
+                inscriptionFields[currentInscriptionType].filter(
                     (
                         item
                     ) =>
@@ -4226,7 +4272,8 @@ fieldMultipleInput.checked =
                 );
 
 
-            renderVolunteerFields();
+           await saveInscriptionFields();
+            renderInscriptionFields();
         }
 
 
@@ -4234,32 +4281,88 @@ fieldMultipleInput.checked =
         // BOUTONS AJOUTER
         // ============================================================
 
-        if (
-            addVolunteerFieldButton
-        ) {
+       if (
+    addAdhesionFieldButton
+) {
 
-            addVolunteerFieldButton.addEventListener(
-                "click",
-                () => {
+    addAdhesionFieldButton.addEventListener(
+        "click",
+        () => {
 
-                    openFieldModal();
-                }
-            );
+            openFieldModal();
         }
+    );
+}
 
 
-        if (
-            addVolunteerFieldEmptyButton
-        ) {
+if (
+    addVolunteerFieldButton
+) {
 
-            addVolunteerFieldEmptyButton.addEventListener(
-                "click",
-                () => {
+    addVolunteerFieldButton.addEventListener(
+        "click",
+        () => {
 
-                    openFieldModal();
-                }
-            );
+            openFieldModal();
         }
+    );
+}
+
+
+if (
+    addServiceCiviqueFieldButton
+) {
+
+    addServiceCiviqueFieldButton.addEventListener(
+        "click",
+        () => {
+
+            openFieldModal();
+        }
+    );
+}
+
+
+if (
+    addAdhesionFieldEmptyButton
+) {
+
+    addAdhesionFieldEmptyButton.addEventListener(
+        "click",
+        () => {
+
+            openFieldModal();
+        }
+    );
+}
+
+
+if (
+    addVolunteerFieldEmptyButton
+) {
+
+    addVolunteerFieldEmptyButton.addEventListener(
+        "click",
+        () => {
+
+            openFieldModal();
+        }
+    );
+}
+
+
+if (
+    addServiceCiviqueFieldEmptyButton
+) {
+
+    addServiceCiviqueFieldEmptyButton.addEventListener(
+        "click",
+        () => {
+
+            openFieldModal();
+        }
+    );
+}
 
 
         // ============================================================
@@ -4337,7 +4440,7 @@ fieldMultipleInput.checked =
         // ============================================================
 
         loadInscriptionFields().then(() => {
-             renderVolunteerFields();
+             renderInscriptionFields();
         });
         // ============================================================
         // SOUS-ONGLETS DES INSCRIPTIONS
@@ -4367,6 +4470,10 @@ inscriptionSubtabs.forEach(
 
                 const target =
                     button.dataset.inscriptionTab;
+
+                currentInscriptionType = target;
+                
+                renderInscriptionFields();
 
                 inscriptionSubtabs.forEach(
                     (tab) => {
