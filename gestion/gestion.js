@@ -3276,7 +3276,7 @@ let currentInscriptionType = "adhesion";
 async function loadInscriptionFields() {
     try {
         const response = await fetch(
-            "data/inscriptions.json"
+            "../data/inscriptions.json"
         );
 
         if (!response.ok) {
