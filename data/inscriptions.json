@@ -106,22 +106,6 @@
                 "confirmEmail": false,
                 "phoneFormat": "none",
                 "multiple": false
-            },
-            {
-                "id": "muvk138tj44lr2",
-                "label": "test de temps 3",
-                "type": "text",
-                "description": "",
-                "required": false,
-                "maxLength": 100,
-                "dateMin": "",
-                "dateMax": "",
-                "options": [],
-                "fileTypesLimited": false,
-                "fileTypes": [],
-                "confirmEmail": false,
-                "phoneFormat": "none",
-                "multiple": false
             }
         ]
     }
