@@ -34,6 +34,22 @@
                 "confirmEmail": false,
                 "phoneFormat": "none",
                 "multiple": false
+            },
+            {
+                "id": "muvk0osta74row",
+                "label": "test de temps 2",
+                "type": "text",
+                "description": "",
+                "required": false,
+                "maxLength": 100,
+                "dateMin": "",
+                "dateMax": "",
+                "options": [],
+                "fileTypesLimited": false,
+                "fileTypes": [],
+                "confirmEmail": false,
+                "phoneFormat": "none",
+                "multiple": false
             }
         ]
     },
