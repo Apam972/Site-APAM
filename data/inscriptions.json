@@ -2,24 +2,8 @@
     "adhesion": {
         "fields": [
             {
-                "id": "muviy44zgijvfs",
-                "label": "motivation 2",
-                "type": "date",
-                "description": "",
-                "required": false,
-                "maxLength": null,
-                "dateMin": "2026-10-07",
-                "dateMax": "2026-10-14",
-                "options": [],
-                "fileTypesLimited": false,
-                "fileTypes": [],
-                "confirmEmail": false,
-                "phoneFormat": "none",
-                "multiple": false
-            },
-            {
-                "id": "muviz0z0ukrk31",
-                "label": "test simultané",
+                "id": "muvj0eez7ytx4f",
+                "label": "test 3",
                 "type": "text",
                 "description": "",
                 "required": false,
