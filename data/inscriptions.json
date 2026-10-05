@@ -70,22 +70,6 @@
                 "confirmEmail": false,
                 "phoneFormat": "none",
                 "multiple": false
-            },
-            {
-                "id": "muvk0970bzfn27",
-                "label": "test de temps",
-                "type": "text",
-                "description": "",
-                "required": false,
-                "maxLength": 100,
-                "dateMin": "",
-                "dateMax": "",
-                "options": [],
-                "fileTypesLimited": false,
-                "fileTypes": [],
-                "confirmEmail": false,
-                "phoneFormat": "none",
-                "multiple": false
             }
         ]
     },
