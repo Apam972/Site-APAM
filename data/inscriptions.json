@@ -1,6 +1,23 @@
 {
     "adhesion": {
-        "fields": []
+        "fields": [
+            {
+                "id": "muviw49w4qudly",
+                "label": "test 1 d",
+                "type": "text",
+                "description": "test multiple",
+                "required": true,
+                "maxLength": 100,
+                "dateMin": "",
+                "dateMax": "",
+                "options": [],
+                "fileTypesLimited": false,
+                "fileTypes": [],
+                "confirmEmail": false,
+                "phoneFormat": "none",
+                "multiple": false
+            }
+        ]
     },
     "volontariat": {
         "fields": [
