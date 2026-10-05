@@ -2,14 +2,14 @@
     "adhesion": {
         "fields": [
             {
-                "id": "muviw49w4qudly",
-                "label": "test 1 d",
-                "type": "text",
-                "description": "test multiple",
-                "required": true,
-                "maxLength": 100,
-                "dateMin": "",
-                "dateMax": "",
+                "id": "muviy44zgijvfs",
+                "label": "motivation 2",
+                "type": "date",
+                "description": "",
+                "required": false,
+                "maxLength": null,
+                "dateMin": "2026-10-07",
+                "dateMax": "2026-10-14",
                 "options": [],
                 "fileTypesLimited": false,
                 "fileTypes": [],
