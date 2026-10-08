@@ -19,6 +19,8 @@ document.addEventListener(
 
         let actualites = [];
 
+        let activities = [];
+
         let editingId = null;
 
 
@@ -415,10 +417,125 @@ document.addEventListener(
             }
         }
 
+// ============================================================
+// CHARGEMENT DES ACTIVITÉS
+// ============================================================
 
+async function loadActivitiesFromServer() {
+
+    try {
+
+        const response = await fetch(
+            "../data/activites.json"
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                "Impossible de charger activites.json"
+            );
+        }
+
+        activities = await response.json();
+
+        console.log(
+            
+            "Activités chargées :",
+            activities
+        );
+        renderActivitiesList();
+
+    } catch (error) {
+
+        console.error(
+            "Erreur lors du chargement des activités :",
+            error
+        );
+
+        activities = [];
+
+    }
+}
         // ============================================================
         // RENDU DE LA LISTE
         // ============================================================
+
+        // ============================================================
+// RENDU DE LA LISTE DES ACTIVITÉS
+// ============================================================
+
+function renderActivitiesList() {
+
+    if (!activitiesList || !activitiesEmpty) {
+        return;
+    }
+
+    activitiesList.innerHTML = "";
+
+    if (activities.length === 0) {
+
+        activitiesEmpty.hidden = false;
+
+        return;
+    }
+
+    activitiesEmpty.hidden = true;
+
+    activities.forEach(
+        (activity) => {
+
+            const card =
+                document.createElement(
+                    "article"
+                );
+
+            card.className =
+                "activity-card";
+
+            card.innerHTML = `
+                <div class="activity-card-info">
+
+                    <h3>
+                        ${escapeHtml(
+                            activity.title ||
+                            "Sans titre"
+                        )}
+                    </h3>
+
+                    <p>
+                        ${escapeHtml(
+                            activity.description ||
+                            "Aucune description"
+                        )}
+                    </p>
+
+                </div>
+
+                <div class="activity-card-actions">
+
+                    <button
+                        type="button"
+                        class="button-secondary"
+                    >
+                        Modifier
+                    </button>
+
+                    <button
+                        type="button"
+                        class="button-primary"
+                    >
+                        Supprimer
+                    </button>
+
+                </div>
+            `;
+
+            activitiesList.appendChild(
+                card
+            );
+        }
+    );
+}
+
 
         function renderNewsList(
             loadError = false
@@ -3239,6 +3356,26 @@ if (
                 "add-volunteer-field-button"
             );
 
+    const activitiesList =
+    document.getElementById(
+        "activities-list"
+            );
+
+    const activitiesEmpty =
+    document.getElementById(
+        "activities-empty"
+            );
+
+    const addActivityButton =
+    document.getElementById(
+        "add-activity-button"
+            );
+
+    const addActivityEmptyButton =
+    document.getElementById(
+        "add-activity-empty-button"
+            );
+
     const addServiceCiviqueFieldButton =
         document.getElementById(
             "add-service-civique-field-button"
@@ -4563,6 +4700,12 @@ inscriptionSubtabs.forEach(
 // ------------------------------------------------------------
 
 loadActualitesFromServer();
+
+// ------------------------------------------------------------
+// CHARGEMENT DES ACTIVITÉS
+// ------------------------------------------------------------
+
+loadActivitiesFromServer();
 
 
 // ------------------------------------------------------------
