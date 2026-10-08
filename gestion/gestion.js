@@ -3351,50 +3351,93 @@ if (
                 "add-adhesion-field-button"
             );
 
-    const addVolunteerFieldButton =
+        const addVolunteerFieldButton =
             document.getElementById(
                 "add-volunteer-field-button"
             );
 
-    const activitiesList =
-    document.getElementById(
-        "activities-list"
+        const activitiesList =
+            document.getElementById(
+                "activities-list"
             );
 
-    const activitiesEmpty =
-    document.getElementById(
-        "activities-empty"
+        const activitiesEmpty =
+            document.getElementById(
+                "activities-empty"
             );
 
-    const addActivityButton =
-    document.getElementById(
-        "add-activity-button"
+        const addActivityButton =
+            document.getElementById(
+                "add-activity-button"
             );
 
-    const addActivityEmptyButton =
-    document.getElementById(
-        "add-activity-empty-button"
+        const addActivityEmptyButton =
+            document.getElementById(
+                "add-activity-empty-button"
             );
 
-    const addServiceCiviqueFieldButton =
-        document.getElementById(
-            "add-service-civique-field-button"
-        );
+        const activityModal =
+            document.getElementById(
+                "activity-modal"
+            );
 
-    const addAdhesionFieldEmptyButton =
-        document.getElementById(
-            "add-adhesion-field-empty-button"
-        );
+        const closeActivityModal =
+            document.getElementById(
+                "close-activity-modal"
+            );
 
-    const addVolunteerFieldEmptyButton =
-        document.getElementById(
-            "add-volunteer-field-empty-button"
-        );
+        const cancelActivityButton =
+            document.getElementById(
+                "cancel-activity-button"
+            );
 
-    const addServiceCiviqueFieldEmptyButton =
-        document.getElementById(
-            "add-service-civique-field-empty-button"
-        );
+        const addServiceCiviqueFieldButton =
+            document.getElementById(
+                "add-service-civique-field-button"
+            );
+
+        const addAdhesionFieldEmptyButton =
+            document.getElementById(
+                "add-adhesion-field-empty-button"
+            );
+
+         const addVolunteerFieldEmptyButton =
+            document.getElementById(
+                "add-volunteer-field-empty-button"
+            );
+
+        const addServiceCiviqueFieldEmptyButton =
+            document.getElementById(
+                "add-service-civique-field-empty-button"
+            );
+
+            function openActivityModal() {
+                activityModal.hidden = false;
+                }
+
+            function closeActivityModalFunction() {
+                activityModal.hidden = true;
+                }
+
+            addActivityButton?.addEventListener(
+                "click",
+              openActivityModal
+                );
+
+            addActivityEmptyButton?.addEventListener(
+                "click",
+             openActivityModal
+                );
+
+            closeActivityModal?.addEventListener(
+                "click",
+             closeActivityModalFunction
+                );
+
+            cancelActivityButton?.addEventListener(
+                "click",
+             closeActivityModalFunction
+                );
 
 
         // ============================================================
