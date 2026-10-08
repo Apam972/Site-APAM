@@ -748,7 +748,292 @@
         </section>
 
 
-       <!-- =================================================
+<!-- =================================================
+     ACTIVITÉS
+================================================== -->
+
+<section
+    class="gestion-tab-content"
+    data-content="activites"
+>
+
+    <div class="gestion-section-header">
+
+        <div>
+            <h2>🎯 Activités</h2>
+
+            <p>
+                Gestion des activités proposées par l’APAM.
+            </p>
+        </div>
+
+        <button
+            type="button"
+            class="button-primary"
+            id="add-activity-button"
+        >
+            + Ajouter une activité
+        </button>
+
+    </div>
+
+
+    <div
+        class="gestion-list"
+        id="activities-list"
+    >
+        <!-- Les activités seront affichées ici -->
+    </div>
+
+
+    <div
+        class="gestion-empty"
+        id="activities-empty"
+        hidden
+    >
+
+        <p>
+            Aucune activité pour le moment.
+        </p>
+
+        <button
+            type="button"
+            class="button-primary"
+            id="add-activity-empty-button"
+        >
+            + Ajouter une activité
+        </button>
+
+    </div>
+
+</section>
+
+<!-- =================================================
+     MODALE ACTIVITÉ
+================================================== -->
+
+<div
+    class="modal"
+    id="activity-modal"
+    hidden
+>
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <div>
+                <p class="panel-eyebrow">
+                    Activité
+                </p>
+
+                <h2 id="activity-modal-title">
+                    Ajouter une activité
+                </h2>
+            </div>
+
+            <button
+                type="button"
+                class="modal-close"
+                id="close-activity-modal"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <form id="activity-form">
+
+            <!-- TITRE -->
+
+            <div class="form-group">
+
+                <label for="activity-title">
+                    Titre
+                </label>
+
+                <input
+                    type="text"
+                    id="activity-title"
+                    placeholder="Ex. Soirée jeux de société"
+                    required
+                >
+
+            </div>
+
+
+            <!-- DESCRIPTION -->
+
+            <div class="form-group">
+
+                <label for="activity-description">
+                    Description
+                </label>
+
+                <textarea
+                    id="activity-description"
+                    rows="5"
+                    placeholder="Description de l’activité..."
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <!-- DATE -->
+
+            <div class="form-group">
+
+                <label for="activity-date">
+                    Date
+                </label>
+
+                <input
+                    type="date"
+                    id="activity-date"
+                    required
+                >
+
+            </div>
+
+
+            <!-- HORAIRES -->
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label for="activity-start-time">
+                        Heure de début
+                    </label>
+
+                    <input
+                        type="time"
+                        id="activity-start-time"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="activity-end-time">
+                        Heure de fin
+                    </label>
+
+                    <input
+                        type="time"
+                        id="activity-end-time"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- LIEU -->
+
+            <div class="form-group">
+
+                <label for="activity-location">
+                    Lieu
+                </label>
+
+                <input
+                    type="text"
+                    id="activity-location"
+                    placeholder="Ex. Place d’Armes"
+                    required
+                >
+
+            </div>
+
+
+            <!-- PLACES -->
+
+            <div class="form-group">
+
+                <label for="activity-capacity">
+                    Nombre de places
+                </label>
+
+                <input
+                    type="number"
+                    id="activity-capacity"
+                    min="1"
+                    placeholder="Ex. 20"
+                >
+
+            </div>
+
+
+            <!-- INSCRIPTION -->
+
+            <div class="form-group">
+
+                <label for="activity-registration">
+                    Inscription obligatoire
+                </label>
+
+                <select id="activity-registration">
+
+                    <option value="false">
+                        Non
+                    </option>
+
+                    <option value="true">
+                        Oui
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- IMAGE -->
+
+            <div class="form-group">
+
+                <label for="activity-image">
+                    Image / affiche
+                </label>
+
+                <input
+                    type="file"
+                    id="activity-image"
+                    accept="image/*"
+                >
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="form-actions">
+
+                <button
+                    type="button"
+                    class="button-secondary"
+                    id="cancel-activity-button"
+                >
+                    Annuler
+                </button>
+
+                <button
+                    type="submit"
+                    class="button-primary"
+                >
+                    Enregistrer
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+<!-- =================================================
      INSCRIPTIONS
 ================================================== -->
 
