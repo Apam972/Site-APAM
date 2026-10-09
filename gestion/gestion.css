@@ -934,6 +934,52 @@ body {
 }
 
 
+/* =================================================
+   CARTES ACTIVITÉS
+================================================= */
+
+.activity-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 18px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.activity-card-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.activity-card-info h3 {
+    margin: 0 0 8px;
+    color: #F5A623;
+    font-size: 18px;
+}
+
+.activity-card-info p {
+    margin: 0;
+    color: #666;
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: pre-line;
+}
+
+.activity-card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.activity-card-actions button {
+    min-width: 110px;
+}
+
+
+
 /* ============================================================
    SECTIONS PAS ENCORE DISPONIBLES
 ============================================================ */
