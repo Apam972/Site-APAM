@@ -1064,6 +1064,145 @@ body {
     }
 }
 
+/* =================================================
+   MODALE ACTIVITÉ
+================================================= */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+}
+
+.modal[hidden] {
+    display: none !important;
+}
+
+.modal-content {
+    width: 100%;
+    max-width: 650px;
+    max-height: 90vh;
+    overflow-y: auto;
+
+    padding: 32px;
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.25);
+}
+
+.modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: #C34324;
+    font-size: 24px;
+}
+
+.modal-close {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: #f1f1f1;
+    color: #333;
+    font-size: 26px;
+    cursor: pointer;
+}
+
+#activity-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#activity-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#activity-form label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+#activity-form input:not([type="file"]),
+#activity-form textarea,
+#activity-form select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    border: 1px solid #D8D8D8;
+    border-radius: 10px;
+    background: #FAFAFA;
+    color: #333;
+    font: inherit;
+}
+
+#activity-form textarea {
+    resize: vertical;
+}
+
+#activity-form input:focus,
+#activity-form textarea:focus,
+#activity-form select:focus {
+    outline: none;
+    border-color: #F5A623;
+    box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.15);
+}
+
+#activity-form .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+#activity-form .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+@media (max-width: 600px) {
+    .modal {
+        padding: 12px;
+    }
+
+    .modal-content {
+        padding: 22px;
+        max-height: 94vh;
+    }
+
+    #activity-form .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    #activity-form .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    #activity-form .form-actions button {
+        width: 100%;
+    }
+}
+
 
 
 
@@ -1989,6 +2128,7 @@ body {
     font-size: 14px;
 
     font-weight: 600;
+
 
     color: #333;
 }
