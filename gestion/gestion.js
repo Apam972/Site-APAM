@@ -966,9 +966,9 @@ function renderActivitiesList() {
             }
 
 
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
+            newsEditor.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
             });
         }
 

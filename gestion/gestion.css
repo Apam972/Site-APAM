@@ -904,8 +904,9 @@ body {
 ============================================================ */
 
 .news-editor {
-
     width: 100%;
+    margin-top: 40px;
+    scroll-margin-top: 30px;
 }
 
 
