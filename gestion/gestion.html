@@ -812,192 +812,122 @@
      MODALE ACTIVITÉ
 ================================================== -->
 
+```html
+<!-- =================================================
+     ÉDITEUR D'ACTIVITÉ
+================================================== -->
+
 <div
-    class="modal"
-    id="activity-modal"
+    class="activity-editor"
+    id="activity-editor"
     hidden
 >
-    <div class="modal-content">
+    <!-- EN-TÊTE -->
 
-        <div class="modal-header">
-
-            <div>
-                <p class="panel-eyebrow">
-                    Activité
-                </p>
-
-                <h2 id="activity-modal-title">
-                    Ajouter une activité
-                </h2>
-            </div>
-
-            <button
-                type="button"
-                class="modal-close"
-                id="close-activity-modal"
-            >
-                ×
-            </button>
-
+    <div class="gestion-section-header">
+        <div>
+            <p class="panel-eyebrow">Publication</p>
+            <h2 id="activity-modal-title">Ajouter une activité</h2>
         </div>
 
+        <button
+            type="button"
+            class="button-secondary"
+            id="close-activity-modal"
+        >
+            ← Retour aux activités
+        </button>
+    </div>
 
-        <form id="activity-form">
+    <!-- FORMULAIRE + APERÇU -->
 
-            <!-- TITRE -->
+    <div class="news-editor-layout">
+
+        <!-- FORMULAIRE -->
+
+        <form id="activity-form" class="activity-form">
 
             <div class="form-group">
-
-                <label for="activity-title">
-                    Titre
-                </label>
-
+                <label for="activity-title">Titre de l'activité</label>
                 <input
                     type="text"
                     id="activity-title"
                     placeholder="Ex. Soirée jeux de société"
                     required
                 >
-
             </div>
 
-
-            <!-- DESCRIPTION -->
-
             <div class="form-group">
-
-                <label for="activity-description">
-                    Description
-                </label>
-
+                <label for="activity-description">Description</label>
                 <textarea
                     id="activity-description"
                     rows="5"
                     placeholder="Description de l’activité..."
                     required
                 ></textarea>
-
             </div>
 
-
-            <!-- DATE -->
-
             <div class="form-group">
-
-                <label for="activity-date">
-                    Date
-                </label>
-
+                <label for="activity-date">Date</label>
                 <input
                     type="date"
                     id="activity-date"
                     required
                 >
-
             </div>
 
-
-            <!-- HORAIRES -->
-
             <div class="form-row">
-
                 <div class="form-group">
-
-                    <label for="activity-start-time">
-                        Heure de début
-                    </label>
-
+                    <label for="activity-start-time">Heure de début</label>
                     <input
                         type="time"
                         id="activity-start-time"
                         required
                     >
-
                 </div>
 
-
                 <div class="form-group">
-
-                    <label for="activity-end-time">
-                        Heure de fin
-                    </label>
-
+                    <label for="activity-end-time">Heure de fin</label>
                     <input
                         type="time"
                         id="activity-end-time"
                     >
-
                 </div>
-
             </div>
 
-
-            <!-- LIEU -->
-
             <div class="form-group">
-
-                <label for="activity-location">
-                    Lieu
-                </label>
-
+                <label for="activity-location">Lieu</label>
                 <input
                     type="text"
                     id="activity-location"
                     placeholder="Ex. Place d’Armes"
                     required
                 >
-
             </div>
 
-
-            <!-- PLACES -->
-
             <div class="form-group">
-
-                <label for="activity-capacity">
-                    Nombre de places
-                </label>
-
+                <label for="activity-capacity">Nombre de places</label>
                 <input
                     type="number"
                     id="activity-capacity"
                     min="1"
                     placeholder="Ex. 20"
                 >
-
             </div>
 
-
-            <!-- INSCRIPTION -->
-
             <div class="form-group">
-
                 <label for="activity-registration">
                     Inscription obligatoire
                 </label>
 
                 <select id="activity-registration">
-
-                    <option value="false">
-                        Non
-                    </option>
-
-                    <option value="true">
-                        Oui
-                    </option>
-
+                    <option value="false">Non</option>
+                    <option value="true">Oui</option>
                 </select>
-
             </div>
 
-
-            <!-- IMAGE -->
-
             <div class="form-group">
-
-                <label for="activity-image">
-                    Image / affiche
-                </label>
+                <label for="activity-image">Image / affiche</label>
 
                 <input
                     type="file"
@@ -1005,13 +935,12 @@
                     accept="image/*"
                 >
 
+                <p class="form-help">
+                    Choisissez une image pour illustrer l'activité.
+                </p>
             </div>
 
-
-            <!-- ACTIONS -->
-
             <div class="form-actions">
-
                 <button
                     type="button"
                     class="button-secondary"
@@ -1026,13 +955,75 @@
                 >
                     Enregistrer
                 </button>
-
             </div>
 
         </form>
 
+        <!-- APERÇU -->
+
+        <aside class="preview-panel">
+            <div class="panel-heading">
+                <div>
+                    <p class="panel-eyebrow">Aperçu</p>
+                    <h2>Sur le site</h2>
+                </div>
+            </div>
+
+            <article class="activity-preview">
+
+                <div
+                    class="activity-preview-image"
+                    id="activity-preview-image"
+                >
+                    <span>Affiche de l'activité</span>
+                </div>
+
+                <div class="activity-preview-content">
+
+                    <p
+                        class="activity-preview-date"
+                        id="activity-preview-date"
+                    >
+                        Date de l'activité
+                    </p>
+
+                    <h3 id="activity-preview-title">
+                        Titre de l'activité
+                    </h3>
+
+                    <p
+                        class="activity-preview-description"
+                        id="activity-preview-description"
+                    >
+                        La description apparaîtra ici...
+                    </p>
+
+                    <div class="activity-preview-details">
+                        <p id="activity-preview-time">
+                            🕒 Horaires à définir
+                        </p>
+
+                        <p id="activity-preview-location">
+                            📍 Lieu à définir
+                        </p>
+
+                        <p id="activity-preview-capacity">
+                            👥 Nombre de places non défini
+                        </p>
+
+                        <p id="activity-preview-registration">
+                            📝 Inscription non obligatoire
+                        </p>
+                    </div>
+
+                </div>
+
+            </article>
+        </aside>
+
     </div>
 </div>
+```
 <!-- =================================================
      INSCRIPTIONS
 ================================================== -->

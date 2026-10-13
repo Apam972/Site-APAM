@@ -3376,9 +3376,9 @@ if (
                 "add-activity-empty-button"
             );
 
-        const activityModal =
+        const activityEditor =
             document.getElementById(
-                "activity-modal"
+                "activity-editor"
             );
 
         const closeActivityModal =
@@ -3411,34 +3411,49 @@ if (
                 "add-service-civique-field-empty-button"
             );
 
-            function openActivityModal() {
-                activityModal.hidden = false;
-                }
+           function openActivityModal() {
+    activityEditor.hidden = false;
 
-            function closeActivityModalFunction() {
-                activityModal.hidden = true;
-                }
+    activitiesList.hidden = true;
 
-            addActivityButton?.addEventListener(
-                "click",
-              openActivityModal
-                );
+    if (activitiesEmpty) {
+        activitiesEmpty.hidden = true;
+    }
 
-            addActivityEmptyButton?.addEventListener(
-                "click",
-             openActivityModal
-                );
+    activityEditor.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
 
-            closeActivityModal?.addEventListener(
-                "click",
-             closeActivityModalFunction
-                );
+function closeActivityModalFunction() {
+    activityEditor.hidden = true;
 
-            cancelActivityButton?.addEventListener(
-                "click",
-             closeActivityModalFunction
-                );
+    activitiesList.hidden = false;
 
+    if (activitiesEmpty) {
+        activitiesEmpty.hidden = activitiesList.children.length > 0;
+    }
+}
+addActivityButton?.addEventListener(
+    "click",
+    openActivityModal
+);
+
+addActivityEmptyButton?.addEventListener(
+    "click",
+    openActivityModal
+);
+
+closeActivityModal?.addEventListener(
+    "click",
+    closeActivityModalFunction
+);
+
+cancelActivityButton?.addEventListener(
+    "click",
+    closeActivityModalFunction
+);
 
         // ============================================================
         // DONNÉES TEMPORAIRES

@@ -2390,3 +2390,39 @@ body {
         transform: rotate(.5turn);
     }
 }
+
+/* =================================================
+   ÉDITEUR D'ACTIVITÉ
+================================================= */
+
+.activity-editor {
+    width: 100%;
+    margin-top: 40px;
+    scroll-margin-top: 30px;
+}
+
+.activity-editor[hidden] {
+    display: none !important;
+}
+
+.activity-editor .news-editor-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.8fr);
+    gap: 30px;
+    align-items: start;
+}
+
+.activity-editor .preview-panel {
+    position: sticky;
+    top: 30px;
+}
+
+@media (max-width: 900px) {
+    .activity-editor .news-editor-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .activity-editor .preview-panel {
+        position: static;
+    }
+}
