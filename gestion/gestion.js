@@ -53,6 +53,19 @@ document.addEventListener(
                 return;
             }
 
+            // Fermer les éditeurs lorsqu'on change d'onglet
+        if (newsEditor) {
+    newsEditor.hidden = true;
+        }
+
+        if (activityEditor) {
+    activityEditor.hidden = true;
+        }
+
+    if (mediaEditor) {
+    mediaEditor.hidden = true;
+        }
+
 
             tabs.forEach(
                 (tab) => {
@@ -3390,6 +3403,59 @@ if (
             document.getElementById(
                 "cancel-activity-button"
             );
+            const activityForm =
+    document.getElementById("activity-form");
+
+    const activityTitleInput =
+    document.getElementById("activity-title");
+
+    const activityDescriptionInput =
+    document.getElementById("activity-description");
+
+    const activityDateInput =
+    document.getElementById("activity-date");
+
+    const activityStartTimeInput =
+    document.getElementById("activity-start-time");
+
+    const activityEndTimeInput =
+    document.getElementById("activity-end-time");
+
+    const activityLocationInput =
+    document.getElementById("activity-location");
+
+    const activityCapacityInput =
+    document.getElementById("activity-capacity");
+
+    const activityRegistrationInput =
+    document.getElementById("activity-registration");
+
+    const activityImageInput =
+    document.getElementById("activity-image");
+
+    const activityPreviewImage =
+    document.getElementById("activity-preview-image");
+
+    const activityPreviewDate =
+    document.getElementById("activity-preview-date");
+
+    const activityPreviewTitle =
+    document.getElementById("activity-preview-title");
+
+    const activityPreviewDescription =
+    document.getElementById("activity-preview-description");
+
+    const activityPreviewTime =
+    document.getElementById("activity-preview-time");
+
+    const activityPreviewLocation =
+    document.getElementById("activity-preview-location");
+
+    const activityPreviewCapacity =
+    document.getElementById("activity-preview-capacity");
+
+    const activityPreviewRegistration =
+    document.getElementById("activity-preview-registration");
 
         const addServiceCiviqueFieldButton =
             document.getElementById(
@@ -3433,6 +3499,61 @@ function closeActivityModalFunction() {
 
     if (activitiesEmpty) {
         activitiesEmpty.hidden = activitiesList.children.length > 0;
+    }
+}
+
+// ============================================================
+// APERÇU EN DIRECT — ACTIVITÉS
+// ============================================================
+
+function updateActivityPreview() {
+    if (activityPreviewTitle) {
+        activityPreviewTitle.textContent =
+            activityTitleInput.value.trim() ||
+            "Titre de l'activité";
+    }
+
+    if (activityPreviewDescription) {
+        activityPreviewDescription.textContent =
+            activityDescriptionInput.value.trim() ||
+            "La description apparaîtra ici...";
+    }
+
+    if (activityPreviewDate) {
+        activityPreviewDate.textContent =
+            formatDate(activityDateInput.value) ||
+            "Date de l'activité";
+    }
+
+    if (activityPreviewTime) {
+        const start = activityStartTimeInput.value;
+        const end = activityEndTimeInput.value;
+
+        activityPreviewTime.textContent =
+            start && end ? `${start} – ${end}` :
+            start ? `À partir de ${start}` :
+            end ? `Jusqu'à ${end}` :
+            "Horaires à définir";
+    }
+
+    if (activityPreviewLocation) {
+        activityPreviewLocation.textContent =
+            activityLocationInput.value.trim() ||
+            "Lieu à définir";
+    }
+
+    if (activityPreviewCapacity) {
+        activityPreviewCapacity.textContent =
+            activityCapacityInput.value
+                ? `Nombre de places : ${activityCapacityInput.value}`
+                : "Nombre de places non défini";
+    }
+
+    if (activityPreviewRegistration) {
+        activityPreviewRegistration.textContent =
+            activityRegistrationInput.value === "oui"
+                ? "Inscription obligatoire"
+                : "Inscription non obligatoire";
     }
 }
 addActivityButton?.addEventListener(
