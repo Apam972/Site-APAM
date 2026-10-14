@@ -2426,3 +2426,30 @@ body {
         position: static;
     }
 }
+
+/* Bouton de sélection d'image pour les activités */
+#activity-image {
+    width: 100%;
+    max-width: 100%;
+    font-family: inherit;
+    font-size: 13px;
+    color: #333;
+}
+
+#activity-image::file-selector-button {
+    margin-right: 12px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background-color: #f9a11b;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+#activity-image::file-selector-button:hover {
+    background-color: #e88b08;
+}
