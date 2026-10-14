@@ -3430,6 +3430,9 @@ if (
     const activityRegistrationInput =
     document.getElementById("activity-registration");
 
+    const activityRegistrationUrlInput = 
+    document.getElementById("activity-registration-url");
+
     const activityImageInput =
     document.getElementById("activity-image");
 

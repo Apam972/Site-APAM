@@ -915,30 +915,51 @@
                 >
             </div>
 
-            <div class="form-group">
-                <label for="activity-registration">
-                    Inscription obligatoire
-                </label>
+            
 
-                <select id="activity-registration">
-                    <option value="false">Non</option>
-                    <option value="true">Oui</option>
-                </select>
-            </div>
+           
+<div class="form-group">
+    <label for="activity-registration">
+        Inscription obligatoire
+    </label>
 
-            <div class="form-group">
-                <label for="activity-image">Image / affiche</label>
+    <select id="activity-registration">
+        <option value="false">Non</option>
+        <option value="true">Oui</option>
+    </select>
+</div>
 
-                <input
-                    type="file"
-                    id="activity-image"
-                    accept="image/*"
-                >
+<div class="form-group">
+    <label for="activity-registration-url">
+        Lien d'inscription (Google Forms)
+    </label>
 
-                <p class="form-help">
-                    Choisissez une image pour illustrer l'activité.
-                </p>
-            </div>
+    <input
+        type="url"
+        id="activity-registration-url"
+        placeholder="https://forms.gle/..."
+    >
+
+    <p class="form-help">
+        Collez le lien du formulaire d'inscription.
+        Laissez vide si aucun formulaire n'est nécessaire.
+    </p>
+</div>
+
+<div class="form-group">
+    <label for="activity-image">Image / affiche</label>
+
+    <input
+        type="file"
+        id="activity-image"
+        accept="image/*"
+    >
+
+    <p class="form-help">
+        Choisissez une image pour illustrer l'activité.
+    </p>
+</div>
+
 
             <div class="form-actions">
                 <button
