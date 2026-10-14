@@ -3576,6 +3576,23 @@ cancelActivityButton?.addEventListener(
     closeActivityModalFunction
 );
 
+const activityPreviewInputs = [
+    activityTitleInput,
+    activityDescriptionInput,
+    activityDateInput,
+    activityStartTimeInput,
+    activityEndTimeInput,
+    activityLocationInput,
+    activityCapacityInput,
+    activityRegistrationInput
+];
+
+activityPreviewInputs.forEach((input) => {
+    input?.addEventListener("input", updateActivityPreview);
+    input?.addEventListener("change", updateActivityPreview);
+});
+
+
         // ============================================================
         // DONNÉES TEMPORAIRES
         // ============================================================
