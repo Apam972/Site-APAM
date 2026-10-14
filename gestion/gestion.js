@@ -23,6 +23,8 @@ document.addEventListener(
 
         let editingId = null;
 
+        let editingActivityId = null;
+
 
         // ============================================================
         // NAVIGATION DES ONGLETS
@@ -3403,62 +3405,63 @@ if (
             document.getElementById(
                 "cancel-activity-button"
             );
-            const activityForm =
-    document.getElementById("activity-form");
+            
+        const activityForm =
+            document.getElementById("activity-form");
 
-    const activityTitleInput =
-    document.getElementById("activity-title");
+        const activityTitleInput =
+            document.getElementById("activity-title");
 
-    const activityDescriptionInput =
-    document.getElementById("activity-description");
+        const activityDescriptionInput =
+            document.getElementById("activity-description");
 
-    const activityDateInput =
-    document.getElementById("activity-date");
+        const activityDateInput =
+            document.getElementById("activity-date");
 
-    const activityStartTimeInput =
-    document.getElementById("activity-start-time");
+        const activityStartTimeInput =
+            document.getElementById("activity-start-time");
 
-    const activityEndTimeInput =
-    document.getElementById("activity-end-time");
+        const activityEndTimeInput =
+            document.getElementById("activity-end-time");
 
-    const activityLocationInput =
-    document.getElementById("activity-location");
+        const activityLocationInput =
+            document.getElementById("activity-location");
 
-    const activityCapacityInput =
-    document.getElementById("activity-capacity");
+        const activityCapacityInput =
+            document.getElementById("activity-capacity");
 
-    const activityRegistrationInput =
-    document.getElementById("activity-registration");
+        const activityRegistrationInput =
+            document.getElementById("activity-registration");
 
-    const activityRegistrationUrlInput = 
-    document.getElementById("activity-registration-url");
+        const activityRegistrationUrlInput = 
+            document.getElementById("activity-registration-url");
 
-    const activityImageInput =
-    document.getElementById("activity-image");
+        const activityImageInput =
+            document.getElementById("activity-image");
 
-    const activityPreviewImage =
-    document.getElementById("activity-preview-image");
+        const activityPreviewImage =
+            document.getElementById("activity-preview-image");
 
-    const activityPreviewDate =
-    document.getElementById("activity-preview-date");
+        const activityPreviewDate =
+            document.getElementById("activity-preview-date");
 
-    const activityPreviewTitle =
-    document.getElementById("activity-preview-title");
+        const activityPreviewTitle =
+            document.getElementById("activity-preview-title");
 
-    const activityPreviewDescription =
-    document.getElementById("activity-preview-description");
+        const activityPreviewDescription =
+            document.getElementById("activity-preview-description");
 
-    const activityPreviewTime =
-    document.getElementById("activity-preview-time");
+        const activityPreviewTime =
+            document.getElementById("activity-preview-time");
 
-    const activityPreviewLocation =
-    document.getElementById("activity-preview-location");
+        const activityPreviewLocation =
+            document.getElementById("activity-preview-location");
 
-    const activityPreviewCapacity =
-    document.getElementById("activity-preview-capacity");
+        const activityPreviewCapacity =
+            document.getElementById("activity-preview-capacity");
 
-    const activityPreviewRegistration =
-    document.getElementById("activity-preview-registration");
+        const activityPreviewRegistration =
+            document.getElementById("activity-preview-registration");
 
         const addServiceCiviqueFieldButton =
             document.getElementById(
@@ -3480,9 +3483,15 @@ if (
                 "add-service-civique-field-empty-button"
             );
 
-           function openActivityModal() {
-    activityEditor.hidden = false;
+           
 
+function openActivityModal() {
+    editingActivityId = null;
+
+    activityForm.reset();
+    updateActivityPreview();
+
+    activityEditor.hidden = false;
     activitiesList.hidden = true;
 
     if (activitiesEmpty) {
@@ -3553,12 +3562,101 @@ function updateActivityPreview() {
     }
 
     if (activityPreviewRegistration) {
-        activityPreviewRegistration.textContent =
-            activityRegistrationInput.value === "oui"
-                ? "Inscription obligatoire"
-                : "Inscription non obligatoire";
+    activityPreviewRegistration.textContent =
+        activityRegistrationInput.value === "true"
+            ? "Inscription obligatoire"
+            : "Inscription non obligatoire";
     }
 }
+
+function getActivityFormData() {
+    const capacityValue = activityCapacityInput.value.trim();
+    const registrationUrl = activityRegistrationUrlInput.value.trim();
+
+    return {
+        id: editingActivityId || generateId(),
+        title: activityTitleInput.value.trim(),
+        description: activityDescriptionInput.value.trim(),
+        date: activityDateInput.value,
+        startTime: activityStartTimeInput.value,
+        endTime: activityEndTimeInput.value,
+        location: activityLocationInput.value.trim(),
+        capacity: capacityValue ? Number(capacityValue) : null,
+        registrationRequired:
+            activityRegistrationInput.value === "true",
+        registrationUrl: registrationUrl,
+        image: "",
+        status: "upcoming"
+    };
+}
+
+
+activityForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const activity = getActivityFormData();
+
+    if (!activity.title || !activity.date || !activity.description) {
+        alert("Merci de remplir le titre, la date et la description.");
+        return;
+    }
+
+    const submitButton = activityForm.querySelector(
+        'button[type="submit"]'
+    );
+
+    if (submitButton) {
+        submitButton.disabled = true;
+    }
+
+    try {
+        const response = await fetch(APPS_SCRIPT_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
+            body: JSON.stringify({
+                action: "save_activities",
+                activities: [
+                    ...activities.filter(
+                        item => item.id !== activity.id
+                    ),
+                    activity
+                ]
+            })
+        });
+
+        const responseText = await response.text();
+        const result = JSON.parse(responseText);
+
+        if (!result.success) {
+            throw new Error(
+                result.message || "Échec de l'enregistrement."
+            );
+        }
+
+        activities = [
+            ...activities.filter(
+                item => item.id !== activity.id
+            ),
+            activity
+        ];
+
+        renderActivitiesList();
+        closeActivityModalFunction();
+
+        alert("Activité enregistrée sur GitHub !");
+    } catch (error) {
+        console.error("Erreur de sauvegarde :", error);
+        alert("Impossible d'enregistrer l'activité : " + error.message);
+    } finally {
+        if (submitButton) {
+            submitButton.disabled = false;
+        }
+    }
+});
+
+
 addActivityButton?.addEventListener(
     "click",
     openActivityModal
