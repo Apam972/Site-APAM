@@ -867,8 +867,77 @@
                 ></textarea>
             </div>
 
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="activity-category">Catégorie</label>
+                    <input type="text" id="activity-category" placeholder="Ex. Jeux, sport, solidarité">
+                </div>
+                <div class="form-group">
+                    <label for="activity-age-range">Tranche d’âge</label>
+                    <input type="text" id="activity-age-range" placeholder="Ex. Dès 6 ans, adultes, tout public">
+                </div>
+            </div>
+
             <div class="form-group">
-                <label for="activity-date">Date</label>
+                <label>Sessions de l’activité</label>
+                <p class="form-help">La date, les horaires et le lieu ci-dessous constituent la première session. Vous pourrez en ajouter d’autres.</p>
+                <div id="activity-sessions-list" class="activity-sessions-list"></div>
+                <button type="button" class="button-secondary" id="add-activity-session">+ Ajouter une session</button>
+            </div>
+
+            <div class="form-group activity-config-section">
+                <h3>Tarification</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="activity-tariff-mode">Mode de tarification</label>
+                        <select id="activity-tariff-mode">
+                            <option value="free">Gratuit</option>
+                            <option value="fixed">Tarif fixe / ponctuel</option>
+                            <option value="recurring">Tarif par séance (récurrent)</option>
+                            <option value="periods">Tarifs par périodes / forfaits</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="activity-price">Prix de base (€)</label>
+                        <input type="number" id="activity-price" min="0" step="0.01" value="0">
+                    </div>
+                </div>
+                <div class="form-group" id="activity-payment-frequency-group" hidden>
+                    <label for="activity-payment-frequency">Fréquence de paiement</label>
+                    <select id="activity-payment-frequency">
+                        <option value="upfront">Paiement intégral</option>
+                        <option value="monthly">Mensuel</option>
+                        <option value="quarterly">Trimestriel</option>
+                        <option value="yearly">Annuel</option>
+                    </select>
+                </div>
+                <div class="form-group" id="activity-periods-group" hidden>
+                    <label for="activity-periods">Périodes disponibles (une par ligne : nom | prix)</label>
+                    <textarea id="activity-periods" rows="4" placeholder="Matinée | 5
+Après-midi | 7
+Journée | 10"></textarea>
+                    <label for="activity-bundles">Forfaits (un par ligne : nom | périodes séparées par des virgules | prix)</label>
+                    <textarea id="activity-bundles" rows="4" placeholder="Journée complète | Matinée,Après-midi | 10"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="activity-discount-type">Réduction proposée</label>
+                        <select id="activity-discount-type">
+                            <option value="none">Aucune</option>
+                            <option value="fixed">Montant fixe (€)</option>
+                            <option value="percent">Pourcentage (%)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="activity-discount-value">Valeur de la réduction</label>
+                        <input type="number" id="activity-discount-value" min="0" step="0.01" value="0">
+                    </div>
+                </div>
+                <p class="form-help">Ces paramètres sont enregistrés dans la fiche activité. Le calcul définitif des prix et des codes promo devra être validé côté Apps Script avant tout paiement.</p>
+            </div>
+
+            <div class="form-group">
+                <label for="activity-date">Date de la première session</label>
                 <input
                     type="date"
                     id="activity-date"
@@ -927,6 +996,20 @@
         <option value="false">Non</option>
         <option value="true">Oui</option>
     </select>
+</div>
+
+<div class="form-group">
+    <label for="activity-participant-mode">Inscriptions par participant</label>
+    <select id="activity-participant-mode">
+        <option value="single">Un seul participant par inscription</option>
+        <option value="multiple">Un ou plusieurs participants</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="activity-promo-codes">Codes promotionnels associés (un par ligne)</label>
+    <textarea id="activity-promo-codes" rows="3" placeholder="BIENVENUE10 | percent | 10 | 2026-11-01 | 2026-12-31 | 100"></textarea>
+    <p class="form-help">Format : CODE | fixed ou percent | valeur | date de début | date de fin | nombre maximal d’utilisations. Le contrôle réel devra être effectué côté serveur.</p>
 </div>
 
 <div class="form-group">

@@ -56,17 +56,17 @@ document.addEventListener(
             }
 
             // Fermer les éditeurs lorsqu'on change d'onglet
-        if (newsEditor) {
-    newsEditor.hidden = true;
-        }
+            if (newsEditor) {
+                newsEditor.hidden = true;
+            }
 
-        if (activityEditor) {
-    activityEditor.hidden = true;
-        }
+            if (activityEditor) {
+                activityEditor.hidden = true;
+            }
 
-    if (mediaEditor) {
-    mediaEditor.hidden = true;
-        }
+            if (mediaEditor) {
+                mediaEditor.hidden = true;
+            }
 
 
             tabs.forEach(
@@ -432,263 +432,278 @@ document.addEventListener(
             }
         }
 
-// ============================================================
-// CHARGEMENT DES ACTIVITÉS
-// ============================================================
+        // ============================================================
+        // CHARGEMENT DES ACTIVITÉS
+        // ============================================================
 
-async function loadActivitiesFromServer() {
+        async function loadActivitiesFromServer() {
 
-    try {
+            try {
 
-       const response = await fetch(
-        `../data/activites.json?ts=${Date.now()}`,
-        {
-        cache: "no-store"
+                const response = await fetch(
+                    `../data/activites.json?ts=${Date.now()}`,
+                    {
+                        cache: "no-store"
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error(
+                        `Impossible de charger activites.json (${response.status})`
+                    );
+                }
+
+                const data = await response.json();
+
+                if (!Array.isArray(data)) {
+                    throw new Error(
+                        "activites.json ne contient pas une liste valide."
+                    );
+                }
+
+                activities = data;
+
+                console.log("Activités chargées :", activities);
+
+                renderActivitiesList();
+
+            } catch (error) {
+
+                console.error(
+                    "Erreur lors du chargement des activités :",
+                    error
+                );
+
+                activities = [];
+
+            }
         }
-    );
-
-    if (!response.ok) {
-    throw new Error(
-        `Impossible de charger activites.json (${response.status})`
-        );
-    }
-
-    const data = await response.json();
-
-    if (!Array.isArray(data)) {
-    throw new Error(
-        "activites.json ne contient pas une liste valide."
-    );
-}
-
-activities = data;
-
-console.log("Activités chargées :", activities);
-
-renderActivitiesList();
-
-    } catch (error) {
-
-        console.error(
-            "Erreur lors du chargement des activités :",
-            error
-        );
-
-        activities = [];
-
-    }
-}
         // ============================================================
         // RENDU DE LA LISTE
         // ============================================================
 
-        
-// ============================================================
-// RENDU DE LA LISTE DES ACTIVITÉS
-// ============================================================
+
+        // ============================================================
+        // RENDU DE LA LISTE DES ACTIVITÉS
+        // ============================================================
 
 
-function renderActivitiesList() {
+        function renderActivitiesList() {
 
-    if (!activitiesList || !activitiesEmpty) {
-        return;
-    }
+            if (!activitiesList || !activitiesEmpty) {
+                return;
+            }
 
-    activitiesList.innerHTML = "";
+            activitiesList.innerHTML = "";
 
-    if (activities.length === 0) {
-        activitiesEmpty.hidden = false;
-        return;
-    }
+            if (activities.length === 0) {
+                activitiesEmpty.hidden = false;
+                return;
+            }
 
-    activitiesEmpty.hidden = true;
+            activitiesEmpty.hidden = true;
 
-    activities.forEach((activity) => {
+            activities.forEach((activity) => {
 
-        const card = document.createElement("article");
-        card.className = "activity-card";
+                const card = document.createElement("article");
+                card.className = "activity-card";
+                // Image de l'activité
+                if (activity.image) {
+                    const image = document.createElement("img");
 
-        const info = document.createElement("div");
-        info.className = "activity-card-info";
+                    image.src = activity.image;
+                    image.alt = activity.title || "Image de l'activité";
+                    image.className = "activity-card-image";
+                    image.loading = "lazy";
 
-        const title = document.createElement("h3");
-        title.textContent = activity.title || "Sans titre";
+                    image.addEventListener("error", () => {
+                        image.remove();
+                    });
 
-        const description = document.createElement("p");
-        description.textContent =
-            activity.description || "Aucune description";
+                    card.appendChild(image);
+                }
 
-        info.append(title, description);
+                const info = document.createElement("div");
+                info.className = "activity-card-info";
 
-        const actions = document.createElement("div");
-        actions.className = "activity-card-actions";
+                const title = document.createElement("h3");
+                title.textContent = activity.title || "Sans titre";
 
-        const editButton = document.createElement("button");
-        editButton.type = "button";
-        editButton.className = "button-secondary";
-        editButton.textContent = "Modifier";
+                const description = document.createElement("p");
+                description.textContent =
+                    activity.description || "Aucune description";
 
-        editButton.addEventListener("click", () => {
-            editActivity(activity.id);
-        });
+                info.append(title, description);
 
-        const deleteButton = document.createElement("button");
-        deleteButton.type = "button";
-        deleteButton.className = "button-primary";
-        deleteButton.textContent = "Supprimer";
+                const actions = document.createElement("div");
+                actions.className = "activity-card-actions";
 
-        deleteButton.addEventListener("click", () => {
-            deleteActivity(activity.id);
-        });
+                const editButton = document.createElement("button");
+                editButton.type = "button";
+                editButton.className = "button-secondary";
+                editButton.textContent = "Modifier";
 
-        actions.append(editButton, deleteButton);
-        card.append(info, actions);
-        activitiesList.appendChild(card);
-    });
-}
+                editButton.addEventListener("click", () => {
+                    editActivity(activity.id);
+                });
 
+                const deleteButton = document.createElement("button");
+                deleteButton.type = "button";
+                deleteButton.className = "button-primary";
+                deleteButton.textContent = "Supprimer";
 
-// ============================================================
-// MODIFIER UNE ACTIVITÉ
-// ============================================================
+                deleteButton.addEventListener("click", () => {
+                    deleteActivity(activity.id);
+                });
 
-function editActivity(activityId) {
-
-    const activity = activities.find(
-        item => String(item.id) === String(activityId)
-    );
-
-    if (!activity) {
-        alert("Impossible de retrouver cette activité.");
-        return;
-    }
-
-    editingActivityId = activity.id;
-
-    activityForm.reset();
-
-    activityTitleInput.value = activity.title || "";
-    activityDescriptionInput.value = activity.description || "";
-    activityDateInput.value = activity.date || "";
-    activityStartTimeInput.value = activity.startTime || "";
-    activityEndTimeInput.value = activity.endTime || "";
-    activityLocationInput.value = activity.location || "";
-
-    activityCapacityInput.value =
-        activity.capacity ?? "";
-
-    activityRegistrationInput.value =
-        activity.registrationRequired ? "true" : "false";
-
-    activityRegistrationUrlInput.value =
-        activity.registrationUrl || "";
-
-    // Réinitialiser uniquement le champ fichier.
-    // L'image existante sera conservée lors de la sauvegarde.
-    activityImageInput.value = "";
-
-    // Afficher l'image existante dans l'aperçu.
-    if (activityPreviewImage) {
-        activityPreviewImage.replaceChildren();
-
-        if (activity.image) {
-            const image = document.createElement("img");
-
-            image.src = activity.image;
-            image.alt = activity.title || "Image de l'activité";
-
-            image.style.width = "100%";
-            image.style.height = "100%";
-            image.style.objectFit = "cover";
-
-            activityPreviewImage.appendChild(image);
-        } else {
-            const placeholder = document.createElement("span");
-            placeholder.textContent = "Affiche de l'activité";
-            activityPreviewImage.appendChild(placeholder);
+                actions.append(editButton, deleteButton);
+                card.append(info, actions);
+                activitiesList.appendChild(card);
+            });
         }
-    }
-
-    updateActivityPreview();
-
-    activityEditor.hidden = false;
-    activitiesList.hidden = true;
-    activitiesEmpty.hidden = true;
-
-    activityEditor.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
-}
 
 
-// ============================================================
-// SUPPRIMER UNE ACTIVITÉ
-// ============================================================
+        // ============================================================
+        // MODIFIER UNE ACTIVITÉ
+        // ============================================================
 
-async function deleteActivity(activityId) {
+        function editActivity(activityId) {
 
-    const activity = activities.find(
-        item => String(item.id) === String(activityId)
-    );
-
-    if (!activity) {
-        alert("Impossible de retrouver cette activité.");
-        return;
-    }
-
-    const confirmed = confirm(
-        `Voulez-vous vraiment supprimer l'activité "${activity.title}" ?`
-    );
-
-    if (!confirmed) {
-        return;
-    }
-
-    try {
-
-        const remainingActivities = activities.filter(
-            item => String(item.id) !== String(activityId)
-        );
-
-        const response = await fetch(APPS_SCRIPT_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "text/plain;charset=utf-8"
-            },
-            body: JSON.stringify({
-                action: "save_activities",
-                activities: remainingActivities
-            })
-        });
-
-        const responseText = await response.text();
-        const result = JSON.parse(responseText);
-
-        if (!response.ok || !result.success) {
-            throw new Error(
-                result.message || "Échec de la suppression."
+            const activity = activities.find(
+                item => String(item.id) === String(activityId)
             );
+
+            if (!activity) {
+                alert("Impossible de retrouver cette activité.");
+                return;
+            }
+
+            editingActivityId = activity.id;
+
+            activityForm.reset();
+
+            activityTitleInput.value = activity.title || "";
+            activityDescriptionInput.value = activity.description || "";
+            activityDateInput.value = activity.date || "";
+            activityStartTimeInput.value = activity.startTime || "";
+            activityEndTimeInput.value = activity.endTime || "";
+            activityLocationInput.value = activity.location || "";
+
+            activityCapacityInput.value =
+                activity.capacity ?? "";
+
+            activityRegistrationInput.value =
+                activity.registrationRequired ? "true" : "false";
+
+            activityRegistrationUrlInput.value =
+                activity.registrationUrl || "";
+
+            // Réinitialiser uniquement le champ fichier.
+            // L'image existante sera conservée lors de la sauvegarde.
+            activityImageInput.value = "";
+
+            // Afficher l'image existante dans l'aperçu.
+            if (activityPreviewImage) {
+                activityPreviewImage.replaceChildren();
+
+                if (activity.image) {
+                    const image = document.createElement("img");
+
+                    image.src = activity.image;
+                    image.alt = activity.title || "Image de l'activité";
+
+                    image.style.width = "100%";
+                    image.style.height = "100%";
+                    image.style.objectFit = "cover";
+
+                    activityPreviewImage.appendChild(image);
+                } else {
+                    const placeholder = document.createElement("span");
+                    placeholder.textContent = "Affiche de l'activité";
+                    activityPreviewImage.appendChild(placeholder);
+                }
+            }
+
+            updateActivityPreview();
+
+            activityEditor.hidden = false;
+            activitiesList.hidden = true;
+            activitiesEmpty.hidden = true;
+
+            activityEditor.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
         }
 
-        activities = remainingActivities;
 
-        renderActivitiesList();
+        // ============================================================
+        // SUPPRIMER UNE ACTIVITÉ
+        // ============================================================
 
-        alert("Activité supprimée avec succès.");
+        async function deleteActivity(activityId) {
 
-    } catch (error) {
+            const activity = activities.find(
+                item => String(item.id) === String(activityId)
+            );
 
-        console.error(
-            "Erreur lors de la suppression de l'activité :",
-            error
-        );
+            if (!activity) {
+                alert("Impossible de retrouver cette activité.");
+                return;
+            }
 
-        alert(
-            "Impossible de supprimer l'activité : " + error.message
-        );
-    }
-}
+            const confirmed = confirm(
+                `Voulez-vous vraiment supprimer l'activité "${activity.title}" ?`
+            );
+
+            if (!confirmed) {
+                return;
+            }
+
+            try {
+
+                const remainingActivities = activities.filter(
+                    item => String(item.id) !== String(activityId)
+                );
+
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8"
+                    },
+                    body: JSON.stringify({
+                        action: "save_activities",
+                        activities: remainingActivities
+                    })
+                });
+
+                const responseText = await response.text();
+                const result = JSON.parse(responseText);
+
+                if (!response.ok || !result.success) {
+                    throw new Error(
+                        result.message || "Échec de la suppression."
+                    );
+                }
+
+                activities = remainingActivities;
+
+                renderActivitiesList();
+
+                alert("Activité supprimée avec succès.");
+
+            } catch (error) {
+
+                console.error(
+                    "Erreur lors de la suppression de l'activité :",
+                    error
+                );
+
+                alert(
+                    "Impossible de supprimer l'activité : " + error.message
+                );
+            }
+        }
 
 
 
@@ -716,11 +731,10 @@ async function deleteActivity(activityId) {
 
                 empty.innerHTML = `
                     <p>
-                        ${
-                            loadError
-                                ? "Impossible de charger les actualités."
-                                : "Aucune actualité pour le moment."
-                        }
+                        ${loadError
+                        ? "Impossible de charger les actualités."
+                        : "Aucune actualité pour le moment."
+                    }
                     </p>
 
                     <button
@@ -728,11 +742,10 @@ async function deleteActivity(activityId) {
                         class="button-primary"
                         id="new-news-empty-button-rendered"
                     >
-                        ${
-                            loadError
-                                ? "Réessayer"
-                                : "Créer la première actualité"
-                        }
+                        ${loadError
+                        ? "Réessayer"
+                        : "Créer la première actualité"
+                    }
                     </button>
                 `;
 
@@ -858,24 +871,24 @@ async function deleteActivity(activityId) {
                     info.innerHTML = `
                         <p class="news-card-date">
                             ${escapeHtml(
-                                formatDate(
-                                    news.date
-                                )
-                            )}
+                        formatDate(
+                            news.date
+                        )
+                    )}
                         </p>
 
                         <h3>
                             ${escapeHtml(
-                                news.title
-                            )}
+                        news.title
+                    )}
                         </h3>
 
                         <p class="news-card-description">
                             ${escapeHtml(
-                                getPreviewText(
-                                    news.content
-                                )
-                            )}
+                        getPreviewText(
+                            news.content
+                        )
+                    )}
                         </p>
                     `;
 
@@ -1122,8 +1135,8 @@ async function deleteActivity(activityId) {
 
 
             newsEditor.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
+                behavior: "smooth",
+                block: "start"
             });
         }
 
@@ -1786,7 +1799,7 @@ async function deleteActivity(activityId) {
                             ] = {
 
                                 ...actualites[
-                                    newsIndex
+                                newsIndex
                                 ],
 
                                 title,
@@ -2032,9 +2045,9 @@ async function deleteActivity(activityId) {
             document.getElementById(
                 "media-description"
             );
-            const mediaFileInput =
-             document.getElementById(
-                 "media-file"
+        const mediaFileInput =
+            document.getElementById(
+                "media-file"
             );
 
 
@@ -2050,62 +2063,62 @@ async function deleteActivity(activityId) {
         let editingMediaId = null;
 
         async function callMediaApi(
-    payload
-) {
+            payload
+        ) {
 
-    const response =
-        await fetch(
-            APPS_SCRIPT_URL,
-            {
-                method: "POST",
+            const response =
+                await fetch(
+                    APPS_SCRIPT_URL,
+                    {
+                        method: "POST",
 
-                headers: {
-                    "Content-Type":
-                        "text/plain;charset=utf-8"
-                },
+                        headers: {
+                            "Content-Type":
+                                "text/plain;charset=utf-8"
+                        },
 
-                body:
-                    JSON.stringify(
-                        payload
-                    )
+                        body:
+                            JSON.stringify(
+                                payload
+                            )
+                    }
+                );
+
+
+            const responseText =
+                await response.text();
+
+
+            let result;
+
+            try {
+
+                result =
+                    JSON.parse(
+                        responseText
+                    );
+
+            } catch (error) {
+
+                throw new Error(
+                    "Réponse invalide du serveur Apps Script."
+                );
             }
-        );
 
 
-    const responseText =
-        await response.text();
+            if (
+                !result.success
+            ) {
+
+                throw new Error(
+                    result.message ||
+                    "Le serveur a refusé l'opération."
+                );
+            }
 
 
-    let result;
-
-    try {
-
-        result =
-            JSON.parse(
-                responseText
-            );
-
-    } catch (error) {
-
-        throw new Error(
-            "Réponse invalide du serveur Apps Script."
-        );
-    }
-
-
-    if (
-        !result.success
-    ) {
-
-        throw new Error(
-            result.message ||
-            "Le serveur a refusé l'opération."
-        );
-    }
-
-
-    return result;
-}
+            return result;
+        }
 
 
         // ============================================================
@@ -2137,7 +2150,7 @@ async function deleteActivity(activityId) {
         ) {
 
             switch (
-                String(type || "").toLowerCase()
+            String(type || "").toLowerCase()
             ) {
 
                 case "video":
@@ -2165,10 +2178,10 @@ async function deleteActivity(activityId) {
             return escapeHtml(
                 value || ""
             )
-            .replace(
-                /"/g,
-                "&quot;"
-            );
+                .replace(
+                    /"/g,
+                    "&quot;"
+                );
         }
 
 
@@ -2495,10 +2508,10 @@ async function deleteActivity(activityId) {
                                 class="media-card-preview-empty"
                             >
                                 ${escapeHtml(
-                                    getMediaTypeLabel(
-                                        media.type
-                                    )
-                                )}
+                                getMediaTypeLabel(
+                                    media.type
+                                )
+                            )}
                             </div>
                             `;
                     }
@@ -2549,34 +2562,33 @@ async function deleteActivity(activityId) {
                             class="media-card-title"
                         >
                             ${escapeHtml(
-                                media.title ||
-                                "Sans titre"
-                            )}
+                            media.title ||
+                            "Sans titre"
+                        )}
                         </h3>
 
                         <p
                             class="media-card-date"
                         >
                             ${escapeHtml(
-                                formatDate(
-                                    media.date
-                                ) ||
-                                "Date inconnue"
-                            )}
+                            formatDate(
+                                media.date
+                            ) ||
+                            "Date inconnue"
+                        )}
                         </p>
 
-                        ${
-                            media.description
-                                ? `
+                        ${media.description
+                            ? `
                                     <p
                                         class="media-card-description"
                                     >
                                         ${escapeHtml(
-                                            media.description
-                                        )}
+                                media.description
+                            )}
                                     </p>
                                   `
-                                : ""
+                            : ""
                         }
                         `;
 
@@ -2723,13 +2735,13 @@ async function deleteActivity(activityId) {
 
             editingMediaId =
                 mediaId;
-if (
-    mediaFileInput
-) {
+            if (
+                mediaFileInput
+            ) {
 
-    mediaFileInput.value =
-        "";
-}
+                mediaFileInput.value =
+                    "";
+            }
 
             if (
                 mediaEditor
@@ -2799,12 +2811,12 @@ if (
 
 
             if (mediaEditor) {
-    mediaEditor.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
-   }
- }
+                mediaEditor.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            }
+        }
 
 
         // ============================================================
@@ -2848,88 +2860,88 @@ if (
         // DEMANDE DE SUPPRESSION
         // ============================================================
 
-       async function requestMediaDeletion(
-    media
-) {
+        async function requestMediaDeletion(
+            media
+        ) {
 
-    if (!media) {
+            if (!media) {
 
-        return;
-    }
-
-
-    if (!media.drive_id) {
-
-        window.alert(
-            "Impossible de supprimer ce média : drive_id manquant."
-        );
-
-        return;
-    }
+                return;
+            }
 
 
-    const confirmed =
-        window.confirm(
-            `Supprimer le média "${media.title || media.file}" ?\n\n` +
-            "Le fichier sera placé dans la corbeille Google Drive."
-        );
+            if (!media.drive_id) {
+
+                window.alert(
+                    "Impossible de supprimer ce média : drive_id manquant."
+                );
+
+                return;
+            }
 
 
-    if (!confirmed) {
-
-        return;
-    }
-
-
-    try {
-
-        const result =
-            await callMediaApi(
-                {
-                    action:
-                        "delete_media",
-
-                    drive_id:
-                        media.drive_id
-                }
-            );
+            const confirmed =
+                window.confirm(
+                    `Supprimer le média "${media.title || media.file}" ?\n\n` +
+                    "Le fichier sera placé dans la corbeille Google Drive."
+                );
 
 
-        // Retrait immédiat de l'interface
+            if (!confirmed) {
 
-        medias =
-            medias.filter(
-                (
-                    item
-                ) =>
-                    item._id !==
-                    media._id
-            );
+                return;
+            }
 
 
-        renderMediaGallery();
+            try {
+
+                const result =
+                    await callMediaApi(
+                        {
+                            action:
+                                "delete_media",
+
+                            drive_id:
+                                media.drive_id
+                        }
+                    );
 
 
-        window.alert(
-            `✅ ${result.message || "Média supprimé."}\n\n` +
-            "Le catalogue du site sera mis à jour lors de la prochaine synchronisation."
-        );
+                // Retrait immédiat de l'interface
+
+                medias =
+                    medias.filter(
+                        (
+                            item
+                        ) =>
+                            item._id !==
+                            media._id
+                    );
 
 
-    } catch (error) {
-
-        console.error(
-            "Erreur de suppression média :",
-            error
-        );
+                renderMediaGallery();
 
 
-        window.alert(
-            "❌ Impossible de supprimer le média.\n\n" +
-            error.message
-        );
-    }
-}
+                window.alert(
+                    `✅ ${result.message || "Média supprimé."}\n\n` +
+                    "Le catalogue du site sera mis à jour lors de la prochaine synchronisation."
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Erreur de suppression média :",
+                    error
+                );
+
+
+                window.alert(
+                    "❌ Impossible de supprimer le média.\n\n" +
+                    error.message
+                );
+            }
+        }
 
 
         // ============================================================
@@ -2993,11 +3005,11 @@ if (
                     "";
             }
             if (mediaEditor) {
-    mediaEditor.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
-}
+                mediaEditor.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            }
         }
 
 
@@ -3065,276 +3077,276 @@ if (
         // ENREGISTREMENT MÉDIA
         // ============================================================
 
-       if (
-    mediaForm
-) {
+        if (
+            mediaForm
+        ) {
 
-    mediaForm.addEventListener(
-        "submit",
-        async (event) => {
+            mediaForm.addEventListener(
+                "submit",
+                async (event) => {
 
-            event.preventDefault();
-
-
-            const title =
-                mediaTitleInput.value.trim();
+                    event.preventDefault();
 
 
-            const date =
-                mediaDateInput.value;
+                    const title =
+                        mediaTitleInput.value.trim();
 
 
-            const description =
-                mediaDescriptionInput.value.trim();
+                    const date =
+                        mediaDateInput.value;
 
 
-            const file =
-                mediaFileInput
-                    ? mediaFileInput.files[0]
-                    : null;
+                    const description =
+                        mediaDescriptionInput.value.trim();
 
 
-            // ========================================================
-            // MODIFICATION
-            // ========================================================
-
-            if (
-                editingMediaId
-            ) {
-
-                const media =
-                    medias.find(
-                        (
-                            item
-                        ) =>
-                            item._id ===
-                            editingMediaId
-                    );
+                    const file =
+                        mediaFileInput
+                            ? mediaFileInput.files[0]
+                            : null;
 
 
-                if (!media) {
-
-                    window.alert(
-                        "Média introuvable."
-                    );
-
-                    return;
-                }
-
-
-                const submitButton =
-                    mediaForm.querySelector(
-                        'button[type="submit"]'
-                    );
-
-
-                try {
+                    // ========================================================
+                    // MODIFICATION
+                    // ========================================================
 
                     if (
-                        submitButton
+                        editingMediaId
                     ) {
 
-                        submitButton.disabled =
-                            true;
+                        const media =
+                            medias.find(
+                                (
+                                    item
+                                ) =>
+                                    item._id ===
+                                    editingMediaId
+                            );
 
-                        submitButton.textContent =
-                            "Enregistrement...";
+
+                        if (!media) {
+
+                            window.alert(
+                                "Média introuvable."
+                            );
+
+                            return;
+                        }
+
+
+                        const submitButton =
+                            mediaForm.querySelector(
+                                'button[type="submit"]'
+                            );
+
+
+                        try {
+
+                            if (
+                                submitButton
+                            ) {
+
+                                submitButton.disabled =
+                                    true;
+
+                                submitButton.textContent =
+                                    "Enregistrement...";
+                            }
+
+
+                            await callMediaApi(
+                                {
+                                    action:
+                                        "update_media",
+
+                                    drive_id:
+                                        media.drive_id,
+
+                                    title,
+
+                                    date,
+
+                                    description
+                                }
+                            );
+
+
+                            // Mise à jour immédiate de l'interface
+
+                            media.title =
+                                title;
+
+                            media.date =
+                                date;
+
+                            media.description =
+                                description;
+
+
+                            renderMediaGallery();
+
+
+                            closeMediaEditor();
+
+
+                            window.alert(
+                                "✅ Média modifié.\n\n" +
+                                "La modification sera prise en compte dans le catalogue après la prochaine synchronisation."
+                            );
+
+
+                        } catch (error) {
+
+                            console.error(
+                                "Erreur de modification média :",
+                                error
+                            );
+
+
+                            window.alert(
+                                "❌ Impossible de modifier le média.\n\n" +
+                                error.message
+                            );
+
+
+                        } finally {
+
+                            if (
+                                submitButton
+                            ) {
+
+                                submitButton.disabled =
+                                    false;
+
+                                submitButton.textContent =
+                                    "Enregistrer";
+                            }
+                        }
+
+
+                        return;
                     }
 
 
-                    await callMediaApi(
-                        {
-                            action:
-                                "update_media",
+                    // ========================================================
+                    // AJOUT
+                    // ========================================================
 
-                            drive_id:
-                                media.drive_id,
+                    if (!file) {
 
-                            title,
+                        window.alert(
+                            "Merci de sélectionner une photo ou une vidéo."
+                        );
 
-                            date,
-
-                            description
-                        }
-                    );
-
-
-                    // Mise à jour immédiate de l'interface
-
-                    media.title =
-                        title;
-
-                    media.date =
-                        date;
-
-                    media.description =
-                        description;
-
-
-                    renderMediaGallery();
-
-
-                    closeMediaEditor();
-
-
-                    window.alert(
-                        "✅ Média modifié.\n\n" +
-                        "La modification sera prise en compte dans le catalogue après la prochaine synchronisation."
-                    );
-
-
-                } catch (error) {
-
-                    console.error(
-                        "Erreur de modification média :",
-                        error
-                    );
-
-
-                    window.alert(
-                        "❌ Impossible de modifier le média.\n\n" +
-                        error.message
-                    );
-
-
-                } finally {
-
-                    if (
-                        submitButton
-                    ) {
-
-                        submitButton.disabled =
-                            false;
-
-                        submitButton.textContent =
-                            "Enregistrer";
+                        return;
                     }
-                }
 
 
-                return;
-            }
+                    if (!title) {
+
+                        window.alert(
+                            "Merci de renseigner un titre."
+                        );
+
+                        return;
+                    }
 
 
-            // ========================================================
-            // AJOUT
-            // ========================================================
-
-            if (!file) {
-
-                window.alert(
-                    "Merci de sélectionner une photo ou une vidéo."
-                );
-
-                return;
-            }
+                    const submitButton =
+                        mediaForm.querySelector(
+                            'button[type="submit"]'
+                        );
 
 
-            if (!title) {
+                    try {
 
-                window.alert(
-                    "Merci de renseigner un titre."
-                );
+                        if (
+                            submitButton
+                        ) {
 
-                return;
-            }
+                            submitButton.disabled =
+                                true;
 
-
-            const submitButton =
-                mediaForm.querySelector(
-                    'button[type="submit"]'
-                );
-
-
-            try {
-
-                if (
-                    submitButton
-                ) {
-
-                    submitButton.disabled =
-                        true;
-
-                    submitButton.textContent =
-                        "Envoi...";
-                }
-
-
-                const fileData =
-                    await fileToDataURL(
-                        file
-                    );
-
-
-                const result =
-                    await callMediaApi(
-                        {
-                            action:
-                                "create_media",
-
-                            fileName:
-                                file.name,
-
-                            mimeType:
-                                file.type,
-
-                            fileData,
-
-                            title,
-
-                            date,
-
-                            description
+                            submitButton.textContent =
+                                "Envoi...";
                         }
-                    );
 
 
-                closeMediaEditor();
+                        const fileData =
+                            await fileToDataURL(
+                                file
+                            );
 
 
-                window.alert(
-                    "✅ Média envoyé vers Google Drive.\n\n" +
-                    "Le fichier apparaîtra dans la galerie du site après la prochaine synchronisation."
-                );
+                        const result =
+                            await callMediaApi(
+                                {
+                                    action:
+                                        "create_media",
+
+                                    fileName:
+                                        file.name,
+
+                                    mimeType:
+                                        file.type,
+
+                                    fileData,
+
+                                    title,
+
+                                    date,
+
+                                    description
+                                }
+                            );
 
 
-                console.log(
-                    "Média créé :",
-                    result
-                );
+                        closeMediaEditor();
 
 
-            } catch (error) {
-
-                console.error(
-                    "Erreur d'ajout média :",
-                    error
-                );
+                        window.alert(
+                            "✅ Média envoyé vers Google Drive.\n\n" +
+                            "Le fichier apparaîtra dans la galerie du site après la prochaine synchronisation."
+                        );
 
 
-                window.alert(
-                    "❌ Impossible d'ajouter le média.\n\n" +
-                    error.message
-                );
+                        console.log(
+                            "Média créé :",
+                            result
+                        );
 
 
-            } finally {
+                    } catch (error) {
 
-                if (
-                    submitButton
-                ) {
+                        console.error(
+                            "Erreur d'ajout média :",
+                            error
+                        );
 
-                    submitButton.disabled =
-                        false;
 
-                    submitButton.textContent =
-                        "Enregistrer";
+                        window.alert(
+                            "❌ Impossible d'ajouter le média.\n\n" +
+                            error.message
+                        );
+
+
+                    } finally {
+
+                        if (
+                            submitButton
+                        ) {
+
+                            submitButton.disabled =
+                                false;
+
+                            submitButton.textContent =
+                                "Enregistrer";
+                        }
+                    }
+
                 }
-            }
-
+            );
         }
-    );
-}
         // ============================================================
         // GESTION DES CHAMPS — VOLONTARIAT
         // ============================================================
@@ -3363,10 +3375,10 @@ if (
             document.getElementById(
                 "field-form"
             );
-            
+
         const fieldSubmitButton =
             fieldForm?.querySelector(
-        'button[type="submit"]'
+                'button[type="submit"]'
             );
 
         const fieldModalTitle =
@@ -3391,72 +3403,72 @@ if (
 
         const fieldMaxLengthGroup =
             document.getElementById(
-              "field-max-length-group"
-                );
+                "field-max-length-group"
+            );
 
         const fieldFileTypesGroup =
             document.getElementById(
                 "field-file-types-group"
-                );
+            );
 
         const fieldFileTypesLimitInput =
             document.getElementById(
                 "field-file-types-limit"
-                );
+            );
 
         const fieldFileTypesOptions =
             document.getElementById(
                 "field-file-types-options"
-                );
+            );
 
         const fieldMaxLengthInput =
             document.getElementById(
-              "field-max-length"
-                );
+                "field-max-length"
+            );
 
         const fieldDateLimitsGroup =
             document.getElementById(
-            "field-date-limits-group"
-                );
+                "field-date-limits-group"
+            );
 
         const fieldDateMinInput =
             document.getElementById(
-            "field-date-min"
-                );
+                "field-date-min"
+            );
 
         const fieldDateMaxInput =
             document.getElementById(
-            "field-date-max"
-                );
-        
+                "field-date-max"
+            );
+
         const fieldEmailConfirmGroup =
             document.getElementById(
-             "field-email-confirm-group"
+                "field-email-confirm-group"
             );
 
         const fieldEmailConfirmInput =
             document.getElementById(
-             "field-email-confirm"
+                "field-email-confirm"
             );
-            const fieldPhoneFormatGroup =
-                 document.getElementById(
+        const fieldPhoneFormatGroup =
+            document.getElementById(
                 "field-phone-format-group"
-                    );
+            );
 
         const fieldPhoneFormatInput =
-                    document.getElementById(
+            document.getElementById(
                 "field-phone-format"
-                );
+            );
 
         const fieldMultipleGroup =
-                document.getElementById(
+            document.getElementById(
                 "field-multiple-group"
-                );
+            );
 
         const fieldMultipleInput =
-                document.getElementById(
+            document.getElementById(
                 "field-multiple"
-                );
+            );
 
         const fieldDescriptionInput =
             document.getElementById(
@@ -3478,7 +3490,7 @@ if (
                 "field-options"
             );
         const adhesionFieldsList =
-             document.getElementById(
+            document.getElementById(
                 "adhesion-fields-list"
             );
         const volunteerFieldsList =
@@ -3497,7 +3509,7 @@ if (
             document.getElementById(
                 "volunteer-fields-empty"
             );
-            const serviceCiviqueFieldsEmpty =
+        const serviceCiviqueFieldsEmpty =
             document.getElementById(
                 "service-civique-fields-empty"
             );
@@ -3545,7 +3557,7 @@ if (
             document.getElementById(
                 "cancel-activity-button"
             );
-            
+
         const activityForm =
             document.getElementById("activity-form");
 
@@ -3573,7 +3585,7 @@ if (
         const activityRegistrationInput =
             document.getElementById("activity-registration");
 
-        const activityRegistrationUrlInput = 
+        const activityRegistrationUrlInput =
             document.getElementById("activity-registration-url");
 
         const activityImageInput =
@@ -3613,7 +3625,7 @@ if (
                 "add-adhesion-field-empty-button"
             );
 
-         const addVolunteerFieldEmptyButton =
+        const addVolunteerFieldEmptyButton =
             document.getElementById(
                 "add-volunteer-field-empty-button"
             );
@@ -3623,380 +3635,415 @@ if (
                 "add-service-civique-field-empty-button"
             );
 
-           
-
-function openActivityModal() {
-    editingActivityId = null;
-
-    activityForm.reset();
-    updateActivityPreview();
-
-    activityEditor.hidden = false;
-    activitiesList.hidden = true;
-
-    if (activitiesEmpty) {
-        activitiesEmpty.hidden = true;
-    }
-
-    activityEditor.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
-}
-
-function closeActivityModalFunction() {
-    activityEditor.hidden = true;
-
-    activitiesList.hidden = false;
-
-    if (activitiesEmpty) {
-        activitiesEmpty.hidden = activitiesList.children.length > 0;
-    }
-}
-
-// ============================================================
-// APERÇU EN DIRECT — ACTIVITÉS
-// ============================================================
-
-function updateActivityPreview() {
-    if (activityPreviewTitle) {
-        activityPreviewTitle.textContent =
-            activityTitleInput.value.trim() ||
-            "Titre de l'activité";
-    }
-
-    if (activityPreviewDescription) {
-        activityPreviewDescription.textContent =
-            activityDescriptionInput.value.trim() ||
-            "La description apparaîtra ici...";
-    }
-
-    if (activityPreviewDate) {
-        activityPreviewDate.textContent =
-            formatDate(activityDateInput.value) ||
-            "Date de l'activité";
-    }
-
-    if (activityPreviewTime) {
-        const start = activityStartTimeInput.value;
-        const end = activityEndTimeInput.value;
-
-        activityPreviewTime.textContent =
-            start && end ? `${start} – ${end}` :
-            start ? `À partir de ${start}` :
-            end ? `Jusqu'à ${end}` :
-            "Horaires à définir";
-    }
-
-    if (activityPreviewLocation) {
-        activityPreviewLocation.textContent =
-            activityLocationInput.value.trim() ||
-            "Lieu à définir";
-    }
-
-    if (activityPreviewCapacity) {
-        activityPreviewCapacity.textContent =
-            activityCapacityInput.value
-                ? `Nombre de places : ${activityCapacityInput.value}`
-                : "Nombre de places non défini";
-    }
-
-    if (activityPreviewRegistration) {
-    activityPreviewRegistration.textContent =
-        activityRegistrationInput.value === "true"
-            ? "Inscription obligatoire"
-            : "Inscription non obligatoire";
-    }
-}
-
-function getActivityFormData() {
-    const capacityValue = activityCapacityInput.value.trim();
-    const registrationUrl = activityRegistrationUrlInput.value.trim();
-
-    return {
-        id: editingActivityId || generateId(),
-        title: activityTitleInput.value.trim(),
-        description: activityDescriptionInput.value.trim(),
-        date: activityDateInput.value,
-        startTime: activityStartTimeInput.value,
-        endTime: activityEndTimeInput.value,
-        location: activityLocationInput.value.trim(),
-        capacity: capacityValue ? Number(capacityValue) : null,
-        registrationRequired:
-            activityRegistrationInput.value === "true",
-        registrationUrl: registrationUrl,
-        image: (
-            activities.find(
-                item => item.id === editingActivityId
-            )?.image || ""
-        ),
-        status: "upcoming"
-    };
-}
 
 
-function readActivityImageAsBase64() {
-    return new Promise((resolve, reject) => {
-        const file = activityImageInput.files[0];
+        function openActivityModal() {
+            editingActivityId = null;
 
-        if (!file) {
-            resolve(null);
-            return;
-        }
+            activityForm.reset();
+            updateActivityPreview();
 
-        if (!file.type.startsWith("image/")) {
-            reject(new Error("Le fichier sélectionné n'est pas une image."));
-            return;
-        }
+            activityEditor.hidden = false;
+            activitiesList.hidden = true;
 
-        const reader = new FileReader();
-
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = () => reject(
-            new Error("Impossible de lire l'image sélectionnée.")
-        );
-
-        reader.readAsDataURL(file);
-    });
-}
-
-
-activityForm.addEventListener("submit", async function (event) {
-    event.preventDefault();
-
-    const activity = getActivityFormData();
-
-    if (!activity.title || !activity.date || !activity.description) {
-        alert("Merci de remplir le titre, la date et la description.");
-        return;
-    }
-
-    const submitButton = activityForm.querySelector(
-        'button[type="submit"]'
-    );
-
-    if (submitButton) {
-        submitButton.disabled = true;
-    }
-
-    try {
-
-        const imageData = await readActivityImageAsBase64();
-        
-        if (imageData) {
-            const imageResponse = await fetch(APPS_SCRIPT_URL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "text/plain;charset=utf-8"
-                },
-                body: JSON.stringify({
-                    action: "upload_activity_image",
-                    activityId: activity.id,
-                    imageData: imageData
-                })
-            });
-        
-            const imageResponseText = await imageResponse.text();
-            const imageResult = JSON.parse(imageResponseText);
-        
-            if (!imageResult.success) {
-                throw new Error(
-                    imageResult.message || "Échec de l'envoi de l'image."
-                );
+            if (activitiesEmpty) {
+                activitiesEmpty.hidden = true;
             }
-        
-            activity.image = imageResult.path;
+
+            activityEditor.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
         }
-        
+
+        function closeActivityModalFunction() {
+            activityEditor.hidden = true;
+
+            activitiesList.hidden = false;
+
+            if (activitiesEmpty) {
+                activitiesEmpty.hidden = activitiesList.children.length > 0;
+            }
+        }
+
+        // ============================================================
+        // APERÇU EN DIRECT — ACTIVITÉS
+        // ============================================================
+
+        function updateActivityPreview() {
+            if (activityPreviewTitle) {
+                activityPreviewTitle.textContent =
+                    activityTitleInput.value.trim() ||
+                    "Titre de l'activité";
+            }
+
+            if (activityPreviewDescription) {
+                activityPreviewDescription.textContent =
+                    activityDescriptionInput.value.trim() ||
+                    "La description apparaîtra ici...";
+            }
+
+            if (activityPreviewDate) {
+                activityPreviewDate.textContent =
+                    formatDate(activityDateInput.value) ||
+                    "Date de l'activité";
+            }
+
+            if (activityPreviewTime) {
+                const start = activityStartTimeInput.value;
+                const end = activityEndTimeInput.value;
+
+                activityPreviewTime.textContent =
+                    start && end ? `${start} – ${end}` :
+                        start ? `À partir de ${start}` :
+                            end ? `Jusqu'à ${end}` :
+                                "Horaires à définir";
+            }
+
+            if (activityPreviewLocation) {
+                activityPreviewLocation.textContent =
+                    activityLocationInput.value.trim() ||
+                    "Lieu à définir";
+            }
+
+            if (activityPreviewCapacity) {
+                activityPreviewCapacity.textContent =
+                    activityCapacityInput.value
+                        ? `Nombre de places : ${activityCapacityInput.value}`
+                        : "Nombre de places non défini";
+            }
+
+            if (activityPreviewRegistration) {
+                activityPreviewRegistration.textContent =
+                    activityRegistrationInput.value === "true"
+                        ? "Inscription obligatoire"
+                        : "Inscription non obligatoire";
+            }
+        }
+
+        function getActivityFormData() {
+            const capacityValue = activityCapacityInput.value.trim();
+            const registrationUrl = activityRegistrationUrlInput.value.trim();
+
+            return {
+                id: editingActivityId || generateId(),
+                title: activityTitleInput.value.trim(),
+                description: activityDescriptionInput.value.trim(),
+                date: activityDateInput.value,
+                startTime: activityStartTimeInput.value,
+                endTime: activityEndTimeInput.value,
+                location: activityLocationInput.value.trim(),
+                capacity: capacityValue ? Number(capacityValue) : null,
+                registrationRequired:
+                    activityRegistrationInput.value === "true",
+                registrationUrl: registrationUrl,
+                image: (
+                    activities.find(
+                        item => item.id === editingActivityId
+                    )?.image || ""
+                ),
+                status: "upcoming"
+            };
+        }
 
 
-        const response = await fetch(APPS_SCRIPT_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "text/plain;charset=utf-8"
-            },
-            body: JSON.stringify({
-                action: "save_activities",
-                activities: [
+        function readActivityImageAsBase64() {
+            return new Promise((resolve, reject) => {
+                const file = activityImageInput.files[0];
+
+                if (!file) {
+                    resolve(null);
+                    return;
+                }
+
+                if (!file.type.startsWith("image/")) {
+                    reject(new Error("Le fichier sélectionné n'est pas une image."));
+                    return;
+                }
+
+                const reader = new FileReader();
+
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = () => reject(
+                    new Error("Impossible de lire l'image sélectionnée.")
+                );
+
+                reader.readAsDataURL(file);
+            });
+        }
+
+
+        activityForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const activity = getActivityFormData();
+
+            if (!activity.title || !activity.date || !activity.description) {
+                alert("Merci de remplir le titre, la date et la description.");
+                return;
+            }
+
+            const submitButton = activityForm.querySelector(
+                'button[type="submit"]'
+            );
+
+            if (submitButton) {
+                submitButton.disabled = true;
+            }
+
+            try {
+
+                const imageData = await readActivityImageAsBase64();
+
+                if (imageData) {
+                    const imageResponse = await fetch(APPS_SCRIPT_URL, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "text/plain;charset=utf-8"
+                        },
+                        body: JSON.stringify({
+                            action: "upload_activity_image",
+                            activityId: activity.id,
+                            imageData: imageData
+                        })
+                    });
+
+                    const imageResponseText = await imageResponse.text();
+                    const imageResult = JSON.parse(imageResponseText);
+
+                    if (!imageResult.success) {
+                        throw new Error(
+                            imageResult.message || "Échec de l'envoi de l'image."
+                        );
+                    }
+
+                    activity.image = imageResult.path;
+                }
+
+
+
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8"
+                    },
+                    body: JSON.stringify({
+                        action: "save_activities",
+                        activities: [
+                            ...activities.filter(
+                                item => item.id !== activity.id
+                            ),
+                            activity
+                        ]
+                    })
+                });
+
+                const responseText = await response.text();
+                const result = JSON.parse(responseText);
+
+                if (!result.success) {
+                    throw new Error(
+                        result.message || "Échec de l'enregistrement."
+                    );
+                }
+
+                activities = [
                     ...activities.filter(
                         item => item.id !== activity.id
                     ),
                     activity
-                ]
-            })
+                ];
+
+                renderActivitiesList();
+                closeActivityModalFunction();
+
+                alert("Activité enregistrée sur GitHub !");
+            } catch (error) {
+                console.error("Erreur de sauvegarde :", error);
+                alert("Impossible d'enregistrer l'activité : " + error.message);
+            } finally {
+                if (submitButton) {
+                    submitButton.disabled = false;
+                }
+            }
         });
 
-        const responseText = await response.text();
-        const result = JSON.parse(responseText);
 
-        if (!result.success) {
-            throw new Error(
-                result.message || "Échec de l'enregistrement."
-            );
-        }
+        addActivityButton?.addEventListener(
+            "click",
+            openActivityModal
+        );
 
-        activities = [
-            ...activities.filter(
-                item => item.id !== activity.id
-            ),
-            activity
+        addActivityEmptyButton?.addEventListener(
+            "click",
+            openActivityModal
+        );
+
+        closeActivityModal?.addEventListener(
+            "click",
+            closeActivityModalFunction
+        );
+
+        cancelActivityButton?.addEventListener(
+            "click",
+            closeActivityModalFunction
+        );
+
+        const activityPreviewInputs = [
+            activityTitleInput,
+            activityDescriptionInput,
+            activityDateInput,
+            activityStartTimeInput,
+            activityEndTimeInput,
+            activityLocationInput,
+            activityCapacityInput,
+            activityRegistrationInput
         ];
 
-        renderActivitiesList();
-        closeActivityModalFunction();
+        // Aperçu immédiat de l'image sélectionnée
+        activityImageInput?.addEventListener("change", () => {
+            const file = activityImageInput.files[0];
 
-        alert("Activité enregistrée sur GitHub !");
-    } catch (error) {
-        console.error("Erreur de sauvegarde :", error);
-        alert("Impossible d'enregistrer l'activité : " + error.message);
-    } finally {
-        if (submitButton) {
-            submitButton.disabled = false;
-        }
-    }
-});
+            if (!activityPreviewImage) return;
 
+            // Aucune nouvelle image sélectionnée :
+            // on conserve l'image déjà affichée.
+            if (!file) return;
 
-addActivityButton?.addEventListener(
-    "click",
-    openActivityModal
-);
+            if (!file.type.startsWith("image/")) {
+                alert("Merci de sélectionner un fichier image valide.");
+                activityImageInput.value = "";
+                return;
+            }
 
-addActivityEmptyButton?.addEventListener(
-    "click",
-    openActivityModal
-);
+            const reader = new FileReader();
 
-closeActivityModal?.addEventListener(
-    "click",
-    closeActivityModalFunction
-);
+            reader.onload = (event) => {
+                activityPreviewImage.replaceChildren();
 
-cancelActivityButton?.addEventListener(
-    "click",
-    closeActivityModalFunction
-);
+                const image = document.createElement("img");
+                image.src = event.target.result;
+                image.alt = "Aperçu de l'image de l'activité";
 
-const activityPreviewInputs = [
-    activityTitleInput,
-    activityDescriptionInput,
-    activityDateInput,
-    activityStartTimeInput,
-    activityEndTimeInput,
-    activityLocationInput,
-    activityCapacityInput,
-    activityRegistrationInput
-];
+                image.style.width = "100%";
+                image.style.height = "100%";
+                image.style.objectFit = "cover";
 
-activityPreviewInputs.forEach((input) => {
-    input?.addEventListener("input", updateActivityPreview);
-    input?.addEventListener("change", updateActivityPreview);
-});
+                activityPreviewImage.appendChild(image);
+            };
+
+            reader.readAsDataURL(file);
+        });
+
+        activityPreviewInputs.forEach((input) => {
+            input?.addEventListener("input", updateActivityPreview);
+            input?.addEventListener("change", updateActivityPreview);
+        });
 
 
         // ============================================================
         // DONNÉES TEMPORAIRES
         // ============================================================
 
-       
+
         let inscriptionFields = {
-    adhesion: [],
-    volontariat: [],
-    "service-civique": []
-};
-
-let currentInscriptionType = "adhesion";
-
-async function loadInscriptionFields() {
-    try {
-        const response = await fetch(
-            "../data/inscriptions.json"
-        );
-
-        if (!response.ok) {
-            throw new Error(
-                `Erreur HTTP ${response.status}`
-            );
-        }
-
-        const data = await response.json();
-
-        inscriptionFields = {
-            adhesion:
-                data.adhesion?.fields || [],
-
-            volontariat:
-                data.volontariat?.fields || [],
-
-            "service-civique":
-                data["service-civique"]?.fields || []
+            adhesion: [],
+            volontariat: [],
+            "service-civique": []
         };
 
-    } catch (error) {
+        let currentInscriptionType = "adhesion";
 
-        console.error(
-            "Erreur lors du chargement des inscriptions :",
-            error
-        );
-    }
-}
-async function saveInscriptionFields() {
-    try {
-       const payload = {
-    action: "save_inscription_fields",
-    type: currentInscriptionType,
-    fields: inscriptionFields[currentInscriptionType]
-    };
+        async function loadInscriptionFields() {
+            try {
+                const response = await fetch(
+                    "../data/inscriptions.json"
+                );
 
-        const response = await fetch(
-            APPS_SCRIPT_URL,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type":
-                        "text/plain;charset=utf-8"
-                },
-                body: JSON.stringify(payload)
+                if (!response.ok) {
+                    throw new Error(
+                        `Erreur HTTP ${response.status}`
+                    );
+                }
+
+                const data = await response.json();
+
+                inscriptionFields = {
+                    adhesion:
+                        data.adhesion?.fields || [],
+
+                    volontariat:
+                        data.volontariat?.fields || [],
+
+                    "service-civique":
+                        data["service-civique"]?.fields || []
+                };
+
+            } catch (error) {
+
+                console.error(
+                    "Erreur lors du chargement des inscriptions :",
+                    error
+                );
             }
-        );
-
-        const responseText =
-            await response.text();
-
-        let result;
-
-        try {
-            result =
-                JSON.parse(responseText);
-        } catch (error) {
-            throw new Error(
-                "Réponse invalide du serveur Apps Script."
-            );
         }
+        async function saveInscriptionFields() {
+            try {
+                const payload = {
+                    action: "save_inscription_fields",
+                    type: currentInscriptionType,
+                    fields: inscriptionFields[currentInscriptionType]
+                };
 
-        if (!result.success) {
-            throw new Error(
-                result.message ||
-                "Le serveur a refusé l'enregistrement."
-            );
+                const response = await fetch(
+                    APPS_SCRIPT_URL,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type":
+                                "text/plain;charset=utf-8"
+                        },
+                        body: JSON.stringify(payload)
+                    }
+                );
+
+                const responseText =
+                    await response.text();
+
+                let result;
+
+                try {
+                    result =
+                        JSON.parse(responseText);
+                } catch (error) {
+                    throw new Error(
+                        "Réponse invalide du serveur Apps Script."
+                    );
+                }
+
+                if (!result.success) {
+                    throw new Error(
+                        result.message ||
+                        "Le serveur a refusé l'enregistrement."
+                    );
+                }
+
+                console.log(
+                    "Configuration des inscriptions enregistrée."
+                );
+
+            } catch (error) {
+                console.error(
+                    "Erreur d'enregistrement des inscriptions :",
+                    error
+                );
+
+                window.alert(
+                    "❌ Impossible d'enregistrer la configuration.\n\n" +
+                    error.message
+                );
+            }
         }
-
-        console.log(
-            "Configuration des inscriptions enregistrée."
-        );
-
-    } catch (error) {
-        console.error(
-            "Erreur d'enregistrement des inscriptions :",
-            error
-        );
-
-        window.alert(
-            "❌ Impossible d'enregistrer la configuration.\n\n" +
-            error.message
-        );
-    }
-}
         let isSavingField = false;
         let editingFieldId = null;
 
@@ -4046,32 +4093,32 @@ async function saveInscriptionFields() {
         // ============================================================
 
         function renderInscriptionFields() {
-             const fieldsList =
+            const fieldsList =
                 currentInscriptionType === "adhesion"
-                ? adhesionFieldsList
-                : currentInscriptionType === "volontariat"
-                ? volunteerFieldsList
-                : serviceCiviqueFieldsList;
+                    ? adhesionFieldsList
+                    : currentInscriptionType === "volontariat"
+                        ? volunteerFieldsList
+                        : serviceCiviqueFieldsList;
 
-        const fieldsEmpty =
+            const fieldsEmpty =
                 currentInscriptionType === "adhesion"
-                ? adhesionFieldsEmpty
-                : currentInscriptionType === "volontariat"
-                ? volunteerFieldsEmpty
-                : serviceCiviqueFieldsEmpty;
+                    ? adhesionFieldsEmpty
+                    : currentInscriptionType === "volontariat"
+                        ? volunteerFieldsEmpty
+                        : serviceCiviqueFieldsEmpty;
 
 
-if (
-    !fieldsList ||
-    !fieldsEmpty
-) {
+            if (
+                !fieldsList ||
+                !fieldsEmpty
+            ) {
 
-    return;
-}
+                return;
+            }
 
 
-fieldsList.innerHTML =
-    "";
+            fieldsList.innerHTML =
+                "";
 
 
             if (
@@ -4120,16 +4167,16 @@ fieldsList.innerHTML =
 
                             <h3>
                                 ${escapeHtml(
-                                    field.label
-                                )}
+                        field.label
+                    )}
                             </h3>
 
                             <span class="field-type">
                                 ${escapeHtml(
-                                    getFieldTypeLabel(
-                                        field.type
-                                    )
-                                )}
+                        getFieldTypeLabel(
+                            field.type
+                        )
+                    )}
                             </span>
 
                         </div>
@@ -4137,30 +4184,27 @@ fieldsList.innerHTML =
 
                         <p class="field-management-description">
 
-                            ${
+                            ${field.description
+                            ? escapeHtml(
                                 field.description
-                                    ? escapeHtml(
-                                        field.description
-                                    )
-                                    : "Aucune description"
-                            }
+                            )
+                            : "Aucune description"
+                        }
 
                         </p>
 
 
                         <span
-                            class="field-required-badge ${
-                                field.required
-                                    ? "required"
-                                    : "optional"
-                            }"
+                            class="field-required-badge ${field.required
+                            ? "required"
+                            : "optional"
+                        }"
                         >
 
-                            ${
-                                field.required
-                                    ? "Obligatoire"
-                                    : "Facultatif"
-                            }
+                            ${field.required
+                            ? "Obligatoire"
+                            : "Facultatif"
+                        }
 
                         </span>
                     `;
@@ -4318,7 +4362,7 @@ fieldsList.innerHTML =
 
 
                 fieldMaxLengthInput.value =
-                    field.maxLength || 100;    
+                    field.maxLength || 100;
 
 
                 fieldDateMinInput.value =
@@ -4335,41 +4379,41 @@ fieldsList.innerHTML =
                         )
                         : "";
 
-                        fieldFileTypesLimitInput.checked =
-    Boolean(
-        field.fileTypesLimited
-    );
+                fieldFileTypesLimitInput.checked =
+                    Boolean(
+                        field.fileTypesLimited
+                    );
 
-document.querySelectorAll(
-    ".field-file-type-option"
-).forEach(
-    (option) => {
-        option.checked =
-            Array.isArray(
-                field.fileTypes
-            )
-            && field.fileTypes.includes(
-                option.value
-            );
-    }
-);
+                document.querySelectorAll(
+                    ".field-file-type-option"
+                ).forEach(
+                    (option) => {
+                        option.checked =
+                            Array.isArray(
+                                field.fileTypes
+                            )
+                            && field.fileTypes.includes(
+                                option.value
+                            );
+                    }
+                );
 
-if (fieldFileTypesOptions) {
-    fieldFileTypesOptions.hidden =
-        !fieldFileTypesLimitInput.checked;
-}
-fieldEmailConfirmInput.checked =
-    Boolean(
-        field.confirmEmail
-    );
+                if (fieldFileTypesOptions) {
+                    fieldFileTypesOptions.hidden =
+                        !fieldFileTypesLimitInput.checked;
+                }
+                fieldEmailConfirmInput.checked =
+                    Boolean(
+                        field.confirmEmail
+                    );
 
-fieldPhoneFormatInput.value =
-    field.phoneFormat || "none";
+                fieldPhoneFormatInput.value =
+                    field.phoneFormat || "none";
 
-fieldMultipleInput.checked =
-    Boolean(
-        field.multiple
-    );
+                fieldMultipleInput.checked =
+                    Boolean(
+                        field.multiple
+                    );
 
             } else {
 
@@ -4448,102 +4492,102 @@ fieldMultipleInput.checked =
 
         function updateFieldOptionsVisibility() {
 
-    if (!fieldTypeInput) {
-        return;
-    }
+            if (!fieldTypeInput) {
+                return;
+            }
 
 
-    const type =
-        fieldTypeInput.value;
+            const type =
+                fieldTypeInput.value;
 
 
-    // ========================================================
-    // OPTIONS — LISTE / CASE À COCHER
-    // ========================================================
+            // ========================================================
+            // OPTIONS — LISTE / CASE À COCHER
+            // ========================================================
 
-    const needsOptions =
-        type === "select" ||
-        type === "checkbox";
-
-
-    if (fieldOptionsGroup) {
-
-        fieldOptionsGroup.hidden =
-            !needsOptions;
-    }
+            const needsOptions =
+                type === "select" ||
+                type === "checkbox";
 
 
-    // ========================================================
-    // LONGUEUR MAXIMALE — TEXTE COURT
-    // ========================================================
+            if (fieldOptionsGroup) {
 
-    const needsMaxLength =
-        type === "text";
-
-
-    if (fieldMaxLengthGroup) {
-
-        fieldMaxLengthGroup.hidden =
-            !needsMaxLength;
-    }
+                fieldOptionsGroup.hidden =
+                    !needsOptions;
+            }
 
 
-    // ========================================================
-    // CONFIRMATION — E-MAIL
-    // ========================================================
+            // ========================================================
+            // LONGUEUR MAXIMALE — TEXTE COURT
+            // ========================================================
 
-    const needsEmailConfirmation =
-        type === "email";
-
-
-    if (fieldEmailConfirmGroup) {
-
-        fieldEmailConfirmGroup.hidden =
-            !needsEmailConfirmation;
-    }
-
-    const needsDateLimits =
-    type === "date";
+            const needsMaxLength =
+                type === "text";
 
 
-    if (fieldDateLimitsGroup) {
+            if (fieldMaxLengthGroup) {
 
-        fieldDateLimitsGroup.hidden =
-             !needsDateLimits;
-    }
-    const needsFileTypes =
-    type === "file";
+                fieldMaxLengthGroup.hidden =
+                    !needsMaxLength;
+            }
 
-    if (fieldFileTypesGroup) {
 
-        fieldFileTypesGroup.hidden =
-            !needsFileTypes;
-}
-    // ========================================================
-    // FORMAT — TÉLÉPHONE
-    // ========================================================
+            // ========================================================
+            // CONFIRMATION — E-MAIL
+            // ========================================================
 
-    const needsPhoneFormat =
-        type === "tel";
+            const needsEmailConfirmation =
+                type === "email";
 
-    if (fieldPhoneFormatGroup) {
 
-        fieldPhoneFormatGroup.hidden =
-            !needsPhoneFormat;
-    }
-    // ========================================================
-    // SÉLECTION MULTIPLE — CASES À COCHER
-    // ========================================================
+            if (fieldEmailConfirmGroup) {
 
-    const needsMultipleSelection =
-    type === "checkbox";
+                fieldEmailConfirmGroup.hidden =
+                    !needsEmailConfirmation;
+            }
 
-    if (fieldMultipleGroup) {
+            const needsDateLimits =
+                type === "date";
 
-            fieldMultipleGroup.hidden =
-            !needsMultipleSelection;
-}
-}
+
+            if (fieldDateLimitsGroup) {
+
+                fieldDateLimitsGroup.hidden =
+                    !needsDateLimits;
+            }
+            const needsFileTypes =
+                type === "file";
+
+            if (fieldFileTypesGroup) {
+
+                fieldFileTypesGroup.hidden =
+                    !needsFileTypes;
+            }
+            // ========================================================
+            // FORMAT — TÉLÉPHONE
+            // ========================================================
+
+            const needsPhoneFormat =
+                type === "tel";
+
+            if (fieldPhoneFormatGroup) {
+
+                fieldPhoneFormatGroup.hidden =
+                    !needsPhoneFormat;
+            }
+            // ========================================================
+            // SÉLECTION MULTIPLE — CASES À COCHER
+            // ========================================================
+
+            const needsMultipleSelection =
+                type === "checkbox";
+
+            if (fieldMultipleGroup) {
+
+                fieldMultipleGroup.hidden =
+                    !needsMultipleSelection;
+            }
+        }
 
         // ============================================================
         // AJOUT / MODIFICATION
@@ -4575,35 +4619,35 @@ fieldMultipleInput.checked =
 
                     const maxLength =
                         type === "text"
-                        ? Number(
-                        fieldMaxLengthInput.value
-                                )
-                        : null;
-                     const dateMin =
-                            type === "date"
-                        ? fieldDateMinInput.value
-                                    : "";
+                            ? Number(
+                                fieldMaxLengthInput.value
+                            )
+                            : null;
+                    const dateMin =
+                        type === "date"
+                            ? fieldDateMinInput.value
+                            : "";
 
                     const dateMax =
                         type === "date"
-                        ? fieldDateMaxInput.value
-                                    : "";
-        if (
-    type === "text" &&
-    (
-        !Number.isInteger(maxLength) ||
-        maxLength < 1
-    )
-) {
+                            ? fieldDateMaxInput.value
+                            : "";
+                    if (
+                        type === "text" &&
+                        (
+                            !Number.isInteger(maxLength) ||
+                            maxLength < 1
+                        )
+                    ) {
 
-    window.alert(
-        "Merci de renseigner une longueur maximale valide."
-    );
+                        window.alert(
+                            "Merci de renseigner une longueur maximale valide."
+                        );
 
-    fieldMaxLengthInput.focus();
+                        fieldMaxLengthInput.focus();
 
-    return;
-}
+                        return;
+                    }
 
 
                     const options =
@@ -4621,30 +4665,30 @@ fieldMultipleInput.checked =
                     const fileTypesLimited =
                         type === "file"
                             ? fieldFileTypesLimitInput.checked
-                             : false;
+                            : false;
 
                     const fileTypes =
                         type === "file" && fileTypesLimited
                             ? Array.from(
-                             document.querySelectorAll(
-                            ".field-file-type-option:checked"
+                                document.querySelectorAll(
+                                    ".field-file-type-option:checked"
                                 )
-                             ).map(option => option.value)
-                                : [];
-                            const confirmEmail =
-                                 type === "email"
-                                    ? fieldEmailConfirmInput.checked
-                                     : false;
+                            ).map(option => option.value)
+                            : [];
+                    const confirmEmail =
+                        type === "email"
+                            ? fieldEmailConfirmInput.checked
+                            : false;
 
-                            const phoneFormat =
-                                 type === "tel"
-                                    ? fieldPhoneFormatInput.value
-                                    : "none";
+                    const phoneFormat =
+                        type === "tel"
+                            ? fieldPhoneFormatInput.value
+                            : "none";
 
-                            const multiple =
-                                type === "checkbox"
-                                    ? fieldMultipleInput.checked
-                                    : false;
+                    const multiple =
+                        type === "checkbox"
+                            ? fieldMultipleInput.checked
+                            : false;
                     if (!label) {
 
                         window.alert(
@@ -4717,7 +4761,7 @@ fieldMultipleInput.checked =
                             type === "text"
                                 ? maxLength
                                 : null;
-                        
+
                         field.dateMin =
                             type === "date"
                                 ? dateMin
@@ -4734,7 +4778,7 @@ fieldMultipleInput.checked =
                                 ? options
                                 : [];
                         field.fileTypesLimited =
-                             type === "file"
+                            type === "file"
                                 ? fileTypesLimited
                                 : false;
 
@@ -4742,7 +4786,7 @@ fieldMultipleInput.checked =
                             type === "file"
                                 ? fileTypes
                                 : [];
-                                
+
                         field.confirmEmail =
                             type === "email"
                                 ? confirmEmail
@@ -4827,37 +4871,37 @@ fieldMultipleInput.checked =
 
 
                     if (isSavingField) {
-    return;
-}
+                        return;
+                    }
 
-isSavingField = true;
+                    isSavingField = true;
 
-if (fieldSubmitButton) {
-    fieldSubmitButton.disabled = true;
+                    if (fieldSubmitButton) {
+                        fieldSubmitButton.disabled = true;
 
-    fieldSubmitButton.innerHTML =
-        '<div class="loader"></div>';
-}
+                        fieldSubmitButton.innerHTML =
+                            '<div class="loader"></div>';
+                    }
 
-try {
+                    try {
 
-    await saveInscriptionFields();
+                        await saveInscriptionFields();
 
-    renderInscriptionFields();
+                        renderInscriptionFields();
 
-    closeFieldModal();
+                        closeFieldModal();
 
-} finally {
+                    } finally {
 
-    isSavingField = false;
+                        isSavingField = false;
 
-    if (fieldSubmitButton) {
-        fieldSubmitButton.disabled = false;
+                        if (fieldSubmitButton) {
+                            fieldSubmitButton.disabled = false;
 
-        fieldSubmitButton.textContent =
-            "Enregistrer";
-    }
-}
+                            fieldSubmitButton.textContent =
+                                "Enregistrer";
+                        }
+                    }
                 }
             );
         }
@@ -4905,7 +4949,7 @@ try {
         ) {
 
             const field =
-               inscriptionFields[currentInscriptionType].find(
+                inscriptionFields[currentInscriptionType].find(
                     (
                         item
                     ) =>
@@ -4938,7 +4982,7 @@ try {
                 );
 
 
-           await saveInscriptionFields();
+            await saveInscriptionFields();
             renderInscriptionFields();
         }
 
@@ -4947,88 +4991,88 @@ try {
         // BOUTONS AJOUTER
         // ============================================================
 
-       if (
-    addAdhesionFieldButton
-) {
+        if (
+            addAdhesionFieldButton
+        ) {
 
-    addAdhesionFieldButton.addEventListener(
-        "click",
-        () => {
+            addAdhesionFieldButton.addEventListener(
+                "click",
+                () => {
 
-            openFieldModal();
+                    openFieldModal();
+                }
+            );
         }
-    );
-}
 
 
-if (
-    addVolunteerFieldButton
-) {
+        if (
+            addVolunteerFieldButton
+        ) {
 
-    addVolunteerFieldButton.addEventListener(
-        "click",
-        () => {
+            addVolunteerFieldButton.addEventListener(
+                "click",
+                () => {
 
-            openFieldModal();
+                    openFieldModal();
+                }
+            );
         }
-    );
-}
 
 
-if (
-    addServiceCiviqueFieldButton
-) {
+        if (
+            addServiceCiviqueFieldButton
+        ) {
 
-    addServiceCiviqueFieldButton.addEventListener(
-        "click",
-        () => {
+            addServiceCiviqueFieldButton.addEventListener(
+                "click",
+                () => {
 
-            openFieldModal();
+                    openFieldModal();
+                }
+            );
         }
-    );
-}
 
 
-if (
-    addAdhesionFieldEmptyButton
-) {
+        if (
+            addAdhesionFieldEmptyButton
+        ) {
 
-    addAdhesionFieldEmptyButton.addEventListener(
-        "click",
-        () => {
+            addAdhesionFieldEmptyButton.addEventListener(
+                "click",
+                () => {
 
-            openFieldModal();
+                    openFieldModal();
+                }
+            );
         }
-    );
-}
 
 
-if (
-    addVolunteerFieldEmptyButton
-) {
+        if (
+            addVolunteerFieldEmptyButton
+        ) {
 
-    addVolunteerFieldEmptyButton.addEventListener(
-        "click",
-        () => {
+            addVolunteerFieldEmptyButton.addEventListener(
+                "click",
+                () => {
 
-            openFieldModal();
+                    openFieldModal();
+                }
+            );
         }
-    );
-}
 
 
-if (
-    addServiceCiviqueFieldEmptyButton
-) {
+        if (
+            addServiceCiviqueFieldEmptyButton
+        ) {
 
-    addServiceCiviqueFieldEmptyButton.addEventListener(
-        "click",
-        () => {
+            addServiceCiviqueFieldEmptyButton.addEventListener(
+                "click",
+                () => {
 
-            openFieldModal();
+                    openFieldModal();
+                }
+            );
         }
-    );
-}
 
 
         // ============================================================
@@ -5087,18 +5131,18 @@ if (
         }
         if (fieldFileTypesLimitInput) {
 
-    fieldFileTypesLimitInput.addEventListener(
-        "change",
-        () => {
+            fieldFileTypesLimitInput.addEventListener(
+                "change",
+                () => {
 
-            if (fieldFileTypesOptions) {
+                    if (fieldFileTypesOptions) {
 
-                fieldFileTypesOptions.hidden =
-                    !fieldFileTypesLimitInput.checked;
-            }
+                        fieldFileTypesOptions.hidden =
+                            !fieldFileTypesLimitInput.checked;
+                    }
+                }
+            );
         }
-     );  
-    }
 
 
         // ============================================================
@@ -5106,65 +5150,68 @@ if (
         // ============================================================
 
         loadInscriptionFields().then(() => {
-             renderInscriptionFields();
+            renderInscriptionFields();
         });
         // ============================================================
         // SOUS-ONGLETS DES INSCRIPTIONS
         // ============================================================
 
-const inscriptionSubtabs =
-    document.querySelectorAll(
-        ".inscriptions-subtab"
-    );
+        const inscriptionSubtabs =
+            document.querySelectorAll(
+                ".inscriptions-subtab"
+            );
 
-    console.log(
-    "Sous-onglets trouvés :",
-    inscriptionSubtabs.length
-    );
+        console.log(
+            "Sous-onglets trouvés :",
+            inscriptionSubtabs.length
+        );
 
-const inscriptionSubcontents =
-    document.querySelectorAll(
-        ".inscription-subcontent"
-    );
+        const inscriptionSubcontents =
+            document.querySelectorAll(
+                ".inscription-subcontent"
+            );
 
-inscriptionSubtabs.forEach(
-    (button) => {
+        inscriptionSubtabs.forEach(
+            (button) => {
 
-        button.addEventListener(
-            "click",
-            () => {
+                button.addEventListener(
+                    "click",
+                    () => {
 
-                const target =
-                    button.dataset.inscriptionTab;
+                        const target =
+                            button.dataset.inscriptionTab;
 
-                currentInscriptionType = target;
-                
-                renderInscriptionFields();
+                        currentInscriptionType = target;
 
-                inscriptionSubtabs.forEach(
-                    (tab) => {
+                        renderInscriptionFields();
 
-                        tab.classList.toggle(
-                            "active",
-                            tab === button
+                        inscriptionSubtabs.forEach(
+                            (tab) => {
+
+                                tab.classList.toggle(
+                                    "active",
+                                    tab === button
+                                );
+
+                            }
                         );
 
-                    }
-                );
+                        inscriptionSubcontents.forEach(
+                            (content) => {
 
-                inscriptionSubcontents.forEach(
-                    (content) => {
+                                const isActive =
+                                    content.dataset.inscriptionContent ===
+                                    target;
 
-                        const isActive =
-                            content.dataset.inscriptionContent ===
-                            target;
+                                content.hidden =
+                                    !isActive;
 
-                        content.hidden =
-                            !isActive;
+                                content.classList.toggle(
+                                    "active",
+                                    isActive
+                                );
 
-                        content.classList.toggle(
-                            "active",
-                            isActive
+                            }
                         );
 
                     }
@@ -5172,9 +5219,6 @@ inscriptionSubtabs.forEach(
 
             }
         );
-
-    }
-);
         // ============================================================
         // INITIALISATION
         // ============================================================
@@ -5191,25 +5235,25 @@ inscriptionSubtabs.forEach(
                 defaultTab
             );
         }
- 
-// ------------------------------------------------------------
-// CHARGEMENT DES ACTUALITÉS
-// ------------------------------------------------------------
 
-loadActualitesFromServer();
+        // ------------------------------------------------------------
+        // CHARGEMENT DES ACTUALITÉS
+        // ------------------------------------------------------------
 
-// ------------------------------------------------------------
-// CHARGEMENT DES ACTIVITÉS
-// ------------------------------------------------------------
+        loadActualitesFromServer();
 
-loadActivitiesFromServer();
+        // ------------------------------------------------------------
+        // CHARGEMENT DES ACTIVITÉS
+        // ------------------------------------------------------------
+
+        loadActivitiesFromServer();
 
 
-// ------------------------------------------------------------
-// CHARGEMENT DES MÉDIAS
-// ------------------------------------------------------------
+        // ------------------------------------------------------------
+        // CHARGEMENT DES MÉDIAS
+        // ------------------------------------------------------------
 
-loadMediasFromServer();
+        loadMediasFromServer();
 
 
 

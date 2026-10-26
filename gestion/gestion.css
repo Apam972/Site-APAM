@@ -2453,3 +2453,20 @@ body {
 #activity-image::file-selector-button:hover {
     background-color: #e88b08;
 }
+
+.activity-card-image {
+    display: block;
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 12px;
+}
+
+#activity-preview-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+}
