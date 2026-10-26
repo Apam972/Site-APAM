@@ -511,7 +511,10 @@ document.addEventListener(
                 if (activity.image) {
                     const image = document.createElement("img");
 
-                    image.src = activity.image;
+                    image.src = new URL(
+                        activity.image.replace(/^\/+/, ""),
+                        window.location.origin + "/"
+                    ).href;
                     image.alt = activity.title || "Image de l'activité";
                     image.className = "activity-card-image";
                     image.loading = "lazy";
