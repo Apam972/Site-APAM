@@ -12,5 +12,19 @@
         "registrationUrl": "https://docs.google.com/forms/d/e/1FAIpQLSe2OJj7otjR19oOeTTwmvE2_SSiCUlPIpv5MKUrivBqgsMGXg/viewform?usp=header",
         "image": "",
         "status": "upcoming"
+    },
+    {
+        "id": "mvpb5d26eye2ko",
+        "title": "test 2",
+        "description": "test ajout",
+        "date": "2026-10-26",
+        "startTime": "12:43",
+        "endTime": "15:43",
+        "location": "place d'arme",
+        "capacity": 2,
+        "registrationRequired": false,
+        "registrationUrl": "",
+        "image": "",
+        "status": "upcoming"
     }
 ]
