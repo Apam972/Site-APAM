@@ -979,9 +979,8 @@ body {
 
 .activity-card {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 24px;
+    gap: 20px;
     padding: 26px;
     background: #fff;
     border: 1px solid rgba(0, 0, 0, 0.06);
@@ -997,8 +996,9 @@ body {
 }
 
 .activity-card-info {
-    flex: 1;
+    flex: 1 1 0;
     min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 .activity-card-info h3 {
