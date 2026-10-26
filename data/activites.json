@@ -26,5 +26,19 @@
         "registrationUrl": "",
         "image": "assets/activites/mvpb5d26eye2ko.png",
         "status": "upcoming"
+    },
+    {
+        "id": "mvpj4f0qy8k1k2",
+        "title": "TEST PERSISTANCE 123",
+        "description": "test",
+        "date": "2026-10-26",
+        "startTime": "13:26",
+        "endTime": "13:28",
+        "location": "place d'arme",
+        "capacity": 2,
+        "registrationRequired": false,
+        "registrationUrl": "",
+        "image": "",
+        "status": "upcoming"
     }
 ]
