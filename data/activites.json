@@ -1,19 +1,5 @@
 [
     {
-        "id": "mvpb5d26eye2ko",
-        "title": "test 2",
-        "description": "test ajout",
-        "date": "2026-10-26",
-        "startTime": "12:43",
-        "endTime": "15:43",
-        "location": "place d'arme",
-        "capacity": 2,
-        "registrationRequired": false,
-        "registrationUrl": "",
-        "image": "",
-        "status": "upcoming"
-    },
-    {
         "id": "mvpf33mk2kr9hv",
         "title": "test 7",
         "description": "test 7 choix de l'image a la création",
@@ -25,6 +11,20 @@
         "registrationRequired": false,
         "registrationUrl": "",
         "image": "assets/activites/mvpf33mk2kr9hv.png",
+        "status": "upcoming"
+    },
+    {
+        "id": "mvpb5d26eye2ko",
+        "title": "test 2",
+        "description": "test ajout",
+        "date": "2026-10-26",
+        "startTime": "12:43",
+        "endTime": "15:43",
+        "location": "place d'arme",
+        "capacity": 2,
+        "registrationRequired": false,
+        "registrationUrl": "",
+        "image": "assets/activites/mvpb5d26eye2ko.png",
         "status": "upcoming"
     }
 ]
