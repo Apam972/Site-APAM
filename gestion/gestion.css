@@ -1044,10 +1044,6 @@ body {
         align-items: stretch;
         padding: 22px;
     }
-
-    .gestion-section-header > button {
-        width: 100%;
-    }
     
     .activity-card-image {
         flex: 0 0 auto;
@@ -1055,6 +1051,12 @@ body {
         height: 180px;
         margin-bottom: 0;
     }
+
+    .gestion-section-header > button {
+        width: 100%;
+    }
+    
+    
 
 
     .activity-card {
@@ -2462,15 +2464,18 @@ body {
     background-color: #e88b08;
 }
 
+
 .activity-card-image {
     display: block;
     flex: 0 0 180px;
     width: 180px;
     height: 140px;
+    min-width: 0;
     object-fit: cover;
     border-radius: 10px;
-    margin-bottom: 0;
+    margin: 0;
 }
+
 
 #activity-preview-image img {
     display: block;
