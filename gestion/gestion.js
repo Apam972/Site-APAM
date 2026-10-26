@@ -3585,9 +3585,39 @@ function getActivityFormData() {
         registrationRequired:
             activityRegistrationInput.value === "true",
         registrationUrl: registrationUrl,
-        image: "",
+        image: (
+            activities.find(
+                item => item.id === editingActivityId
+            )?.image || ""
+        ),
         status: "upcoming"
     };
+}
+
+
+function readActivityImageAsBase64() {
+    return new Promise((resolve, reject) => {
+        const file = activityImageInput.files[0];
+
+        if (!file) {
+            resolve(null);
+            return;
+        }
+
+        if (!file.type.startsWith("image/")) {
+            reject(new Error("Le fichier sélectionné n'est pas une image."));
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(
+            new Error("Impossible de lire l'image sélectionnée.")
+        );
+
+        reader.readAsDataURL(file);
+    });
 }
 
 
@@ -3610,6 +3640,36 @@ activityForm.addEventListener("submit", async function (event) {
     }
 
     try {
+
+        const imageData = await readActivityImageAsBase64();
+        
+        if (imageData) {
+            const imageResponse = await fetch(APPS_SCRIPT_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8"
+                },
+                body: JSON.stringify({
+                    action: "upload_activity_image",
+                    activityId: activity.id,
+                    imageData: imageData
+                })
+            });
+        
+            const imageResponseText = await imageResponse.text();
+            const imageResult = JSON.parse(imageResponseText);
+        
+            if (!imageResult.success) {
+                throw new Error(
+                    imageResult.message || "Échec de l'envoi de l'image."
+                );
+            }
+        
+            activity.image = imageResult.path;
+        }
+        
+
+
         const response = await fetch(APPS_SCRIPT_URL, {
             method: "POST",
             headers: {
