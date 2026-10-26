@@ -1048,6 +1048,14 @@ body {
     .gestion-section-header > button {
         width: 100%;
     }
+    
+    .activity-card-image {
+        flex: 0 0 auto;
+        width: 100%;
+        height: 180px;
+        margin-bottom: 0;
+    }
+
 
     .activity-card {
         flex-direction: column;
@@ -2456,11 +2464,12 @@ body {
 
 .activity-card-image {
     display: block;
-    width: 100%;
+    flex: 0 0 180px;
+    width: 180px;
     height: 140px;
     object-fit: cover;
     border-radius: 10px;
-    margin-bottom: 12px;
+    margin-bottom: 0;
 }
 
 #activity-preview-image img {
