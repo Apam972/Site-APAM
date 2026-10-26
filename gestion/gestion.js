@@ -474,9 +474,11 @@ async function loadActivitiesFromServer() {
         // RENDU DE LA LISTE
         // ============================================================
 
-        // ============================================================
+        
+// ============================================================
 // RENDU DE LA LISTE DES ACTIVITÉS
 // ============================================================
+
 
 function renderActivitiesList() {
 
@@ -487,69 +489,199 @@ function renderActivitiesList() {
     activitiesList.innerHTML = "";
 
     if (activities.length === 0) {
-
         activitiesEmpty.hidden = false;
-
         return;
     }
 
     activitiesEmpty.hidden = true;
 
-    activities.forEach(
-        (activity) => {
+    activities.forEach((activity) => {
 
-            const card =
-                document.createElement(
-                    "article"
-                );
+        const card = document.createElement("article");
+        card.className = "activity-card";
 
-            card.className =
-                "activity-card";
+        const info = document.createElement("div");
+        info.className = "activity-card-info";
 
-            card.innerHTML = `
-                <div class="activity-card-info">
+        const title = document.createElement("h3");
+        title.textContent = activity.title || "Sans titre";
 
-                    <h3>
-                        ${escapeHtml(
-                            activity.title ||
-                            "Sans titre"
-                        )}
-                    </h3>
+        const description = document.createElement("p");
+        description.textContent =
+            activity.description || "Aucune description";
 
-                    <p>
-                        ${escapeHtml(
-                            activity.description ||
-                            "Aucune description"
-                        )}
-                    </p>
+        info.append(title, description);
 
-                </div>
+        const actions = document.createElement("div");
+        actions.className = "activity-card-actions";
 
-                <div class="activity-card-actions">
+        const editButton = document.createElement("button");
+        editButton.type = "button";
+        editButton.className = "button-secondary";
+        editButton.textContent = "Modifier";
 
-                    <button
-                        type="button"
-                        class="button-secondary"
-                    >
-                        Modifier
-                    </button>
+        editButton.addEventListener("click", () => {
+            editActivity(activity.id);
+        });
 
-                    <button
-                        type="button"
-                        class="button-primary"
-                    >
-                        Supprimer
-                    </button>
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.className = "button-primary";
+        deleteButton.textContent = "Supprimer";
 
-                </div>
-            `;
+        deleteButton.addEventListener("click", () => {
+            deleteActivity(activity.id);
+        });
 
-            activitiesList.appendChild(
-                card
+        actions.append(editButton, deleteButton);
+        card.append(info, actions);
+        activitiesList.appendChild(card);
+    });
+}
+
+
+// ============================================================
+// MODIFIER UNE ACTIVITÉ
+// ============================================================
+
+function editActivity(activityId) {
+
+    const activity = activities.find(
+        item => String(item.id) === String(activityId)
+    );
+
+    if (!activity) {
+        alert("Impossible de retrouver cette activité.");
+        return;
+    }
+
+    editingActivityId = activity.id;
+
+    activityForm.reset();
+
+    activityTitleInput.value = activity.title || "";
+    activityDescriptionInput.value = activity.description || "";
+    activityDateInput.value = activity.date || "";
+    activityStartTimeInput.value = activity.startTime || "";
+    activityEndTimeInput.value = activity.endTime || "";
+    activityLocationInput.value = activity.location || "";
+
+    activityCapacityInput.value =
+        activity.capacity ?? "";
+
+    activityRegistrationInput.value =
+        activity.registrationRequired ? "true" : "false";
+
+    activityRegistrationUrlInput.value =
+        activity.registrationUrl || "";
+
+    // Réinitialiser uniquement le champ fichier.
+    // L'image existante sera conservée lors de la sauvegarde.
+    activityImageInput.value = "";
+
+    // Afficher l'image existante dans l'aperçu.
+    if (activityPreviewImage) {
+        activityPreviewImage.replaceChildren();
+
+        if (activity.image) {
+            const image = document.createElement("img");
+
+            image.src = activity.image;
+            image.alt = activity.title || "Image de l'activité";
+
+            image.style.width = "100%";
+            image.style.height = "100%";
+            image.style.objectFit = "cover";
+
+            activityPreviewImage.appendChild(image);
+        } else {
+            const placeholder = document.createElement("span");
+            placeholder.textContent = "Affiche de l'activité";
+            activityPreviewImage.appendChild(placeholder);
+        }
+    }
+
+    updateActivityPreview();
+
+    activityEditor.hidden = false;
+    activitiesList.hidden = true;
+    activitiesEmpty.hidden = true;
+
+    activityEditor.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
+
+
+// ============================================================
+// SUPPRIMER UNE ACTIVITÉ
+// ============================================================
+
+async function deleteActivity(activityId) {
+
+    const activity = activities.find(
+        item => String(item.id) === String(activityId)
+    );
+
+    if (!activity) {
+        alert("Impossible de retrouver cette activité.");
+        return;
+    }
+
+    const confirmed = confirm(
+        `Voulez-vous vraiment supprimer l'activité "${activity.title}" ?`
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+
+        const remainingActivities = activities.filter(
+            item => String(item.id) !== String(activityId)
+        );
+
+        const response = await fetch(APPS_SCRIPT_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
+            body: JSON.stringify({
+                action: "save_activities",
+                activities: remainingActivities
+            })
+        });
+
+        const responseText = await response.text();
+        const result = JSON.parse(responseText);
+
+        if (!response.ok || !result.success) {
+            throw new Error(
+                result.message || "Échec de la suppression."
             );
         }
-    );
+
+        activities = remainingActivities;
+
+        renderActivitiesList();
+
+        alert("Activité supprimée avec succès.");
+
+    } catch (error) {
+
+        console.error(
+            "Erreur lors de la suppression de l'activité :",
+            error
+        );
+
+        alert(
+            "Impossible de supprimer l'activité : " + error.message
+        );
+    }
 }
+
 
 
         function renderNewsList(
