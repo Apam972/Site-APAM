@@ -440,24 +440,32 @@ async function loadActivitiesFromServer() {
 
     try {
 
-        const response = await fetch(
-            "../data/activites.json"
-        );
-
-        if (!response.ok) {
-            throw new Error(
-                "Impossible de charger activites.json"
-            );
+       const response = await fetch(
+        `../data/activites.json?ts=${Date.now()}`,
+        {
+        cache: "no-store"
         }
+    );
 
-        activities = await response.json();
-
-        console.log(
-            
-            "Activités chargées :",
-            activities
+    if (!response.ok) {
+    throw new Error(
+        `Impossible de charger activites.json (${response.status})`
         );
-        renderActivitiesList();
+    }
+
+    const data = await response.json();
+
+    if (!Array.isArray(data)) {
+    throw new Error(
+        "activites.json ne contient pas une liste valide."
+    );
+}
+
+activities = data;
+
+console.log("Activités chargées :", activities);
+
+renderActivitiesList();
 
     } catch (error) {
 
