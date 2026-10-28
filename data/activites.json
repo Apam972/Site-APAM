@@ -11,7 +11,7 @@
         "registrationRequired": false,
         "registrationUrl": "",
         "image": "assets/activites/mvpf33mk2kr9hv.png",
-        "status": "upcoming"
+        "status": "active"
     },
     {
         "id": "mvpb5d26eye2ko",
@@ -25,7 +25,7 @@
         "registrationRequired": false,
         "registrationUrl": "",
         "image": "assets/activites/mvpb5d26eye2ko.png",
-        "status": "upcoming"
+        "status": "inactive"
     },
     {
         "id": "mvpj4f0qy8k1k2",
@@ -39,6 +39,20 @@
         "registrationRequired": false,
         "registrationUrl": "",
         "image": "",
-        "status": "upcoming"
+        "status": "archived"
+    },
+    {
+        "id": "mvsjtyyl6bcqf1",
+        "title": "test actif",
+        "description": "test",
+        "date": "2026-10-28",
+        "startTime": "16:09",
+        "endTime": "16:10",
+        "location": "place d'arme",
+        "capacity": 20,
+        "registrationRequired": false,
+        "registrationUrl": "",
+        "image": "assets/activites/mvsjtyyl6bcqf1.jpg",
+        "status": "active"
     }
 ]
