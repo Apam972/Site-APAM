@@ -56,17 +56,17 @@
         "status": "inactive"
     },
     {
-        "id": "mw28cvi0fgnd66",
-        "title": "test actif (copie)",
-        "description": "test",
-        "date": "2026-10-28",
-        "startTime": "16:09",
-        "endTime": "16:10",
-        "location": "place d'arme",
-        "capacity": 20,
+        "id": "mw29sctbkanup8",
+        "title": "test 7 (copie)",
+        "description": "test 7 choix de l'image a la création",
+        "date": "2026-10-27",
+        "startTime": "13:33",
+        "endTime": "15:38",
+        "location": "place d'armes",
+        "capacity": 2,
         "registrationRequired": false,
         "registrationUrl": "",
-        "image": "assets/activites/mvsjtyyl6bcqf1.jpg",
+        "image": "assets/activites/mvpf33mk2kr9hv.png",
         "status": "active"
     }
 ]
