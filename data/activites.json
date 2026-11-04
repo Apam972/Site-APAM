@@ -11,7 +11,7 @@
         "registrationRequired": false,
         "registrationUrl": "",
         "image": "assets/activites/mvpb5d26eye2ko.png",
-        "status": "inactive"
+        "status": "archived"
     },
     {
         "id": "mvpj4f0qy8k1k2",
@@ -53,6 +53,20 @@
         "registrationRequired": false,
         "registrationUrl": "",
         "image": "assets/activites/mvpf33mk2kr9hv.png",
+        "status": "inactive"
+    },
+    {
+        "id": "mw27n710u1ule3",
+        "title": "test 2 (copie)",
+        "description": "test ajout",
+        "date": "2026-10-26",
+        "startTime": "12:43",
+        "endTime": "15:43",
+        "location": "place d'arme",
+        "capacity": 2,
+        "registrationRequired": false,
+        "registrationUrl": "",
+        "image": "assets/activites/mvpb5d26eye2ko.png",
         "status": "active"
     }
 ]
