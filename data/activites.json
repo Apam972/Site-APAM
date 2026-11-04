@@ -68,19 +68,5 @@
         "registrationUrl": "",
         "image": "assets/activites/mvpb5d26eye2ko.png",
         "status": "active"
-    },
-    {
-        "id": "mw27tqt7lliq1c",
-        "title": "test actif (copie)",
-        "description": "test",
-        "date": "2026-10-28",
-        "startTime": "16:09",
-        "endTime": "16:10",
-        "location": "place d'arme",
-        "capacity": 20,
-        "registrationRequired": false,
-        "registrationUrl": "",
-        "image": "assets/activites/mvsjtyyl6bcqf1.jpg",
-        "status": "active"
     }
 ]
