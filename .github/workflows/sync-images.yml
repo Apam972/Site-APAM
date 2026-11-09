@@ -1,6 +1,6 @@
 name: Synchronisation des médias APAM
 
-on:
+'on':
  
   workflow_dispatch:
 
